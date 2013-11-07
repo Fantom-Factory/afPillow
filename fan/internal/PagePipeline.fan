@@ -6,7 +6,7 @@ using afBedSheet::ResponseProcessors
 using afBedSheet::Text
 using afEfanExtra::EfanExtra
 
-const class PagePipeline : HttpPipelineFilter {
+internal const class PagePipeline : HttpPipelineFilter {
 		
 	@Inject	private const HttpRequest 			httpReq
 	@Inject	private const EfanExtra				efanExtra
