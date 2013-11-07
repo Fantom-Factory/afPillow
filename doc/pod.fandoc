@@ -1,14 +1,44 @@
 Overview [#overview]
 ********************
-A library for integrating efanXtra components with the afBedSheet web framework
+A library for integrating efanXtra components with the afBedSheet web framework.
+
+By adding 'afBedSheetEfanExtra' to your project, web requests are automatically routed to your pages.
 
 
 
 Quick Start [#quickStart]
 *************************
+Awesome.fan:
 pre>
-  Example here
+  using afBedSheetEfanExtra::Page
+
+  const mixin Awesome : Page { }
 <pre
+
+Awesome.efan:
+pre>
+Look ma, I'm Awesome!
+<pre
+
+Start your web app and instantly see the result:
+pre>
+$ curl localhost:8080/awesome
+Look ma, I'm Awesome!
+<pre
+
+
+
+Usage [#usage]
+**************
+Page names may optionaly have a 'Page' suffix, so both of the following classes are routed to '/index':
+
+  Index.fan     --> /index
+  IndexPage.fan --> /index
+
+Camel casing class names results in a '/' delimiter. Examples:
+
+  Index.fan      --> /index
+  AdminIndex.fan --> /admin/index
 
 
 
@@ -17,4 +47,4 @@ Release Notes [#releaseNotes]
 
 v0.0.2 [#v0.0.2]
 ----------------
- - New: Preview Release 
+ - New: Preview Release
