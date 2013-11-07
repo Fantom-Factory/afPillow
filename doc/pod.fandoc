@@ -1,8 +1,8 @@
 Overview [#overview]
 ********************
-A library for integrating efanXtra components with the afBedSheet web framework.
+A library for integrating [efanXtra]`http://repo.status302.com/doc/afBedSheet` components with the [afBedSheet]`http://repo.status302.com/doc/afBedSheet` web framework.
 
-By adding 'afBedSheetEfanExtra' to your project, web requests are automatically routed to your pages.
+'afBedSheetEfanExtra' automatically routes web requests to pages and returns the rendered response.
 
 
 
@@ -30,6 +30,9 @@ Look ma, I'm Awesome!
 
 Usage [#usage]
 **************
+[Pages]`Page` are [efanXtra]`http://repo.status302.com/doc/afBedSheet` components and so behave in exactly the same way.
+Ensure your page classes are 'const mixin's and extend the `Page` class.
+
 Page names may optionaly have a 'Page' suffix, so both of the following classes are routed to '/index':
 
   Index.fan     --> /index

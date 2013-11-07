@@ -1,12 +1,32 @@
 # BedSheetEfanExtra
 
-BedSheetEfanExtra is a [Fantom](http://fantom.org/) library for ...
+`afBedSheetEfanExtra` is a [Fantom](http://fantom.org/) library for integrating [efanXtra](http://repo.status302.com/doc/afBedSheet) components with the [afBedSheet](http://repo.status302.com/doc/afBedSheet) web framework.
+
+`afBedSheetEfanExtra` automatically routes web requests to pages and returns the rendered response.
 
 
 
 ## Quick Start
 
-    Example here
+Quick Start [#quickStart]
+*************************
+Awesome.fan:
+
+    using afBedSheetEfanExtra::Page
+
+    const mixin Awesome : Page { }
+
+
+Awesome.efan:
+
+    Look ma, I'm Awesome!
+
+
+Start your web app and instantly see the result:
+
+    $ curl localhost:8080/awesome
+    Look ma, I'm Awesome!
+
 
 
 ## Documentation
