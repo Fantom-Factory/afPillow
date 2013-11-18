@@ -14,6 +14,7 @@ class BedSheetEfanExtraModule {
 		binder.bindImpl(PageFinder#)
 		binder.bindImpl(Pages#)
 		binder.bindImpl(BedSheetEfanExtraPrinter#)
+		binder.bindImpl(EfanPageMeta#).withScope(ServiceScope.perThread)
 	}
 	
 	@Contribute { serviceType=HttpPipeline# }
