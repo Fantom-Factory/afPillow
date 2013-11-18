@@ -48,6 +48,10 @@ Camel casing class names results in a '/' delimiter. Examples:
 Release Notes [#releaseNotes]
 *****************************
 
+v0.0.4 [#v0.0.4]
+----------------
+ - New: Added 'EfanPageMeta' which returns the active rendering page.
+
 v0.0.2 [#v0.0.2]
 ----------------
  - New: Preview Release
