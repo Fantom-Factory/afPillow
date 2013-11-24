@@ -31,11 +31,8 @@ internal const class BedSheetEfanExtraPrinter {
 		buf.add("\nEfan Library: '${libName}' has ${comTypes.size} pages:\n")
 
 		comTypes.each |comType| {
-			try {
-				// chill, there should be a better to get hold of the clientUri without instantiating the page
-				line := comType.name.toDisplayName.padl(maxName) + " : " + pages[comType].clientUri.toStr 
-				buf.add("  ${line}\n")
-			} catch (Err e) { /* for abstract pages... grr! */ }
+			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.clientUri(comType).toStr 
+			buf.add("  ${line}\n")
 		}
 		return buf.toStr
 	}
