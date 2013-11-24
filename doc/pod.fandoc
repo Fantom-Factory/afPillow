@@ -50,6 +50,7 @@ Release Notes [#releaseNotes]
 
 v0.0.4 [#v0.0.4]
 ----------------
+ - New: Added '@PageRoute' facet that lets you specify a bespoke uri
  - New: Added 'EfanPageMeta' which returns the active rendering page.
 
 v0.0.2 [#v0.0.2]
