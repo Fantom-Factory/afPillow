@@ -11,7 +11,6 @@ class BedSheetEfanExtraModule {
 
 	static Void bind(ServiceBinder binder) {
 		binder.bindImpl(PagePipeline#)
-		binder.bindImpl(PageFinder#)
 		binder.bindImpl(Pages#)
 		binder.bindImpl(BedSheetEfanExtraPrinter#)
 		binder.bindImpl(EfanPageMeta#).withScope(ServiceScope.perThread)

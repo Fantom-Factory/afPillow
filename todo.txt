@@ -2,6 +2,10 @@
 For 1.0.0
 =========
 
+Match init() params from uri
+
+Add service for adding client uri finders / matchers
+
 add index routes - e.g. 
 /equinox 	--> redirect
 /equinox/	--> redirect
