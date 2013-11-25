@@ -5,14 +5,14 @@ class Build : BuildPod {
 	new make() {
 		podName = "afBedSheetEfanExtra"
 		summary = "A library for integrating efanXtra components with the afBedSheet web framework"
-		version = Version([0,0,4])
+		version = Version([0,0,5])
 
 		meta	= [	"org.name"		: "Alien-Factory",
 					"org.uri"		: "http://www.alienfactory.co.uk/",
 					"vcs.uri"		: "https://bitbucket.org/Alien-Factory/afbedsheetefanextra",
 					"proj.name"		: "BedSheetEfanExtra",
 					"license.name"	: "BSD 2-Clause License",	
-					"repo.private"	: "false"
+					"repo.private"	: "true"
 
 					,"afIoc.module"	: "afBedSheetEfanExtra::BedSheetEfanExtraModule"
 				]
@@ -29,7 +29,7 @@ class Build : BuildPod {
 		docSrc = true
 
 		// exclude test code when building the pod
-		srcDirs = srcDirs.exclude { it.toStr.startsWith("test/") }
-		resDirs = resDirs.exclude { it.toStr.startsWith("test/") }
+//		srcDirs = srcDirs.exclude { it.toStr.startsWith("test/") }
+//		resDirs = resDirs.exclude { it.toStr.startsWith("test/") }
 	}
 }
