@@ -21,9 +21,9 @@ class Build : BuildPod {
 				]
 
 
-		depends = ["sys 1.0", "afIoc 1.4+", "afIocConfig 0+", "afBedSheet 1.0+", "afEfanExtra 0+", "afSlim 0+", "afPlastic 1.0.4+"]
-		srcDirs = [`test/unit-tests/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
-		resDirs = [`doc/`]
+		depends = ["sys 1.0", "afIoc 1.4+", "afIocConfig 0+", "afBedSheet 1.0+", "afEfanExtra 0+", "afPlastic 1.0.4+"]
+		srcDirs = [`test/unit-tests/`, `test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
+		resDirs = [`doc/`, `test/app/`]
 
 		docApi = true
 		docSrc = true
