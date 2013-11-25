@@ -30,11 +30,10 @@ const class Pages {
 		return pages[uri]
 		// TODO: throw err if not found (checked?)
 	}
-	
+
 	Uri clientUri(Type pageType) {
 		if (pageType.hasFacet(PageRoute#)) {
-			// TODO: Stoopid F4 facet()
-			return ((PageRoute) pageType.facets.find { it.typeof == PageRoute# }).uri
+			return toUriFromPageRoute(pageType)
 		} else {
 			return toUriFromTypeName(pageType)
 		}
@@ -42,6 +41,17 @@ const class Pages {
 
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
 
+	private Uri toUriFromPageRoute(Type pageType) {
+		// TODO: Stoopid F4 facet()
+		pageRoute 	:= (PageRoute) pageType.facets.find { it.typeof == PageRoute# }
+		uri			:= pageRoute.uri
+	    if (uri.scheme != null || uri.host != null || uri.port!= null )
+			throw BedSheetEfanExtraErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
+	    if (!uri.isPathAbs)
+			throw BedSheetEfanExtraErr(ErrMsgs.pageRouteShouldStartWithSlash(pageType, uri))
+		return uri
+	}
+	
 	private Uri toUriFromTypeName(Type pageType) {
 		pageName := pageType.name
 		if (pageName.endsWith("Impl"))
