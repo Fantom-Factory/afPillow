@@ -5,3 +5,5 @@ const mixin BasicNested : Page { }
 
 @PageRoute { uri=`/facetRemapped` } 
 const mixin FacetPage 	: Page { }
+
+const mixin WelcomepagePage : Page { }

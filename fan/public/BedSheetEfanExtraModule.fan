@@ -1,7 +1,9 @@
 using afIoc
 using afIocConfig
 using afBedSheet
-using afEfanExtra
+using afEfanExtra::EfanLibraries
+using afEfanExtra::ComponentCompiler
+using afEfanExtra::EfanConfigIds as EeConfigIds
 using afPlastic
 
 ** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.
@@ -26,7 +28,7 @@ class BedSheetEfanExtraModule {
 		if (meta.appPod != null)
 			config["app"] = meta.appPod
 	}
-	
+
 	@Contribute { serviceType=ComponentCompiler# }
 	internal static Void contributeComponentCompilerCallbacks(OrderedConfig config, BedSheetMetaData meta) {
 		config.add(|PlasticClassModel model| {
@@ -34,13 +36,18 @@ class BedSheetEfanExtraModule {
 				model.usingPod(meta.appPod)
 		})
 	}
-	
+
 	@Contribute { serviceType=ApplicationDefaults# }
 	internal static Void contributeApplicationDefaults(MappedConfig config) {
 		// we'll do our own logging thanks!
-		config[EfanConfigIds.supressStartupLogging]	= true
+		config[EeConfigIds.supressStartupLogging]	= true
 	}
-	
+
+	@Contribute { serviceType=FactoryDefaults# }
+	internal static Void contributeFactoryDefaults(MappedConfig config) {
+		config[EfanConfigIds.welcomePage]			= "index"
+	}
+
 	@Contribute { serviceType=RegistryStartup# }
 	internal static Void contributeRegistryStartup(OrderedConfig conf, BedSheetEfanExtraPrinter efanPrinter) {
 		conf.add |->| {

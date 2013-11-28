@@ -1,4 +1,5 @@
 using afIoc
+using afIocConfig
 using afBedSheet
 using afEfanExtra
 
@@ -10,7 +11,13 @@ internal const class T_AppModule {
 	}
 
 	@Contribute { serviceType=Routes# }
-	static Void contributeRoutes(OrderedConfig conf) {
-		conf.add(Route(`/anything`, 	Str#toStr))
+	static Void contributeRoutes(OrderedConfig config) {
+		config.add(Route(`/anything`, 	Str#toStr))
 	}
+	
+	@Contribute { serviceType=ApplicationDefaults# }
+	static Void contributeAppDefaults(MappedConfig config) {
+		config[afBedSheetEfanExtra::EfanConfigIds.welcomePage] = "welcomepage"
+	}
+	
 }
