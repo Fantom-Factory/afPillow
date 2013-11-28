@@ -18,8 +18,7 @@ const mixin Pages {
 	** Returns 'true' if the given page type is a welcome page.
 	abstract Bool isWelcomePage(Type pageType)
 	
-	** Returns the 'raw' clientUri of the page - no directory conversions are made.
-	@NoDoc
+	** Returns the uri that this page maps to
 	abstract Uri clientUri(Type pageType)
 
 }
@@ -45,7 +44,6 @@ const class PagesImpl : Pages {
 	}
 	
 	** Returns the page instance associated with the given type. 
-	@Operator
 	override Page get(Type pageType) {
 		(Page) efanExtra.component(pageType)
 	}

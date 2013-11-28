@@ -16,18 +16,6 @@ internal const class PagePipeline : HttpPipelineFilter {
 	@Inject	private const ResponseProcessors	responseProcessors
 	@Inject	private const Pages					pages
 	@Inject	private const EfanPageMeta			efanPageMeta
-
-//	Bool isWelcomePage(Type pageType) {
-//		clientUri := clientUri(pageType)
-//		if (clientUri.isDir)
-//			return false
-//		return clientUri.name.equalsIgnoreCase(welcomePage.name)
-//	}
-	
-	// TODO: assert welcomepage does not start with /
-//	@Config { id="afEfan.welcomePage" }
-//	@Inject private const Str 		welcomePage
-
 	
 	new make(|This|in) { in(this) }
 	
@@ -39,7 +27,6 @@ internal const class PagePipeline : HttpPipelineFilter {
 
 		
 		// redirect welcome pages to directory
-//		nameMatch := page.clientUri.name.equalsIgnoreCase(welcomePage)
 		if (!url.isDir && pages.isWelcomePage(pageType)) {
 			redirect := Redirect.movedTemporarily(url.parent)
 			responseProcessors.processResponse(redirect)
