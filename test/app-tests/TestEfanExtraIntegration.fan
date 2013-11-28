@@ -1,21 +1,6 @@
-using afIoc
-using afPlastic::PlasticCompiler
 using afBedSheet
-using afIocConfig::ApplicationDefaults
 
-internal class TestEfanXtraIntegration : Test {
-
-	BedClient? client
-	
-	override Void setup() {
-		server := BedServer(T_AppModule#).startup
-		server.injectIntoFields(this)
-		client = server.makeClient
-	}
-
-	override Void teardown() {
-		client?.shutdown
-	}	
+internal class TestEfanXtraIntegration : EfanTest {	
 
 	Void testPageMapping404() {
 		res := client.get(`/oops`)
@@ -36,5 +21,4 @@ internal class TestEfanXtraIntegration : Test {
 		res := client.get(`/facetRemapped`)
 		verifyEq(res.asStr, "Facet Mapping Okay")
 	}
-	
 }
