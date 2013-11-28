@@ -44,9 +44,17 @@ Camel casing class names results in a '/' delimiter. Examples:
   AdminIndex.fan --> /admin/index
 
 
+Welcome Pages [#welcomePages]
+*****************************
+TODO:
+
 
 Release Notes [#releaseNotes]
 *****************************
+
+v0.0.6 [#v0.0.6]
+----------------
+ - New: Added Welcome Pages! Complete with redirects to the directory url.
 
 v0.0.4 [#v0.0.4]
 ----------------
