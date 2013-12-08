@@ -1,9 +1,9 @@
 using afIoc
 using afIocConfig
 using afBedSheet
-using afEfanExtra
+using afEfanXtra
 
-@SubModule { modules=[BedSheetEfanExtraModule#, EfanExtraModule#] }
+@SubModule { modules=[BedSheetEfanExtraModule#, EfanXtraModule#] }
 internal const class T_AppModule {
 	
 	static Void bind(ServiceBinder binder) {

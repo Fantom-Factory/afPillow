@@ -1,9 +1,9 @@
 using afIoc
 using afIocConfig
 using afBedSheet
-using afEfanExtra::EfanLibraries
-using afEfanExtra::ComponentCompiler
-using afEfanExtra::EfanConfigIds as EeConfigIds
+using afEfanXtra::EfanLibraries
+using afEfanXtra::ComponentCompiler
+using afEfanXtra::EfanConfigIds as EeConfigIds
 using afPlastic
 
 ** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.

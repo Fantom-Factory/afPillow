@@ -1,10 +1,8 @@
 using afIoc::Inject
-using afEfanExtra::Component
-using afEfan::EfanRenderer
+using afEfanXtra::EfanComponent
 
 ** Your web page classes should extend this!
-@Component
-const mixin Page : EfanRenderer {
+const mixin Page : EfanComponent {
 	
 	@NoDoc
 	@Inject abstract Pages _af_pages
