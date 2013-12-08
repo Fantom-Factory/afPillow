@@ -9,12 +9,12 @@ using afPlastic
 ** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.
 ** 
 ** This class is public so it may be referenced explicitly in tests.
-class BedSheetEfanExtraModule {
+class PillowModule {
 
 	static Void bind(ServiceBinder binder) {
 		binder.bindImpl(PagePipeline#)
 		binder.bindImpl(Pages#)
-		binder.bindImpl(BedSheetEfanExtraPrinter#)
+		binder.bindImpl(PillowPrinter#)
 		binder.bindImpl(EfanPageMeta#).withScope(ServiceScope.perThread)
 	}
 	
@@ -49,7 +49,7 @@ class BedSheetEfanExtraModule {
 	}
 
 	@Contribute { serviceType=RegistryStartup# }
-	internal static Void contributeRegistryStartup(OrderedConfig conf, BedSheetEfanExtraPrinter efanPrinter) {
+	internal static Void contributeRegistryStartup(OrderedConfig conf, PillowPrinter efanPrinter) {
 		conf.add |->| {
 			efanPrinter.logLibraries
 		}

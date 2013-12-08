@@ -25,7 +25,7 @@ const mixin Pages {
 
 const class PagesImpl : Pages {
 
-	@Config { id="afEfan.welcomePage" }
+	@Config { id="pillow.welcomePage" }
 	@Inject private const Str 		welcomePage
 	@Inject	private const EfanXtra	efanXtra
 			private const Str:Type	pages	// use Str as key for case insensitivity
@@ -86,9 +86,9 @@ const class PagesImpl : Pages {
 		pageRoute 	:= (PageRoute) pageType.facets.find { it.typeof == PageRoute# }
 		uri			:= pageRoute.uri
 	    if (uri.scheme != null || uri.host != null || uri.port!= null )
-			throw BedSheetEfanExtraErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
+			throw PillowErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
 	    if (!uri.isPathAbs)
-			throw BedSheetEfanExtraErr(ErrMsgs.pageRouteShouldStartWithSlash(pageType, uri))
+			throw PillowErr(ErrMsgs.pageRouteShouldStartWithSlash(pageType, uri))
 		return uri
 	}
 	

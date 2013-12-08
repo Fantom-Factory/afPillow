@@ -1,8 +1,8 @@
-# BedSheetEfanExtra
+# Pillow
 
-`afBedSheetEfanExtra` is a [Fantom](http://fantom.org/) library for integrating [efanXtra](http://repo.status302.com/doc/afBedSheet) components with the [afBedSheet](http://repo.status302.com/doc/afBedSheet) web framework.
+`afPillow` is a [Fantom](http://fantom.org/) library for integrating [efanXtra](http://repo.status302.com/doc/afBedSheet) components with the [afBedSheet](http://repo.status302.com/doc/afBedSheet) web framework.
 
-`afBedSheetEfanExtra` automatically routes web requests to pages and returns the rendered response.
+`afPillow` automatically routes web requests to pages and returns the rendered response.
 
 
 
@@ -12,7 +12,7 @@ Quick Start [#quickStart]
 *************************
 Awesome.fan:
 
-    using afBedSheetEfanExtra::Page
+    using afPillow::Page
 
     const mixin Awesome : Page { }
 
@@ -31,18 +31,18 @@ Start your web app and instantly see the result:
 
 ## Documentation
 
-Full API & fandocs are available on the [status302 repository](http://repo.status302.com/doc/afBedSheetEfanExtra/#overview).
+Full API & fandocs are available on the [status302 repository](http://repo.status302.com/doc/afPillow/#overview).
 
 
 
 ## Install
 
-Download from [status302](http://repo.status302.com/browse/afBedSheetEfanExtra).
+Download from [status302](http://repo.status302.com/browse/afPillow).
 
 Or install via fanr:
 
-    $ fanr install -r http://repo.status302.com/fanr/ afBedSheetEfanExtra
+    $ fanr install -r http://repo.status302.com/fanr/ afPillow
 
 To use in a project, add a dependency in your `build.fan`:
 
-    depends = ["sys 1.0", ..., "afBedSheetEfanExtra 0+"]
+    depends = ["sys 1.0", ..., "afPillow 0+"]

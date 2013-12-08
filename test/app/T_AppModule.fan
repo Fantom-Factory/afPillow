@@ -3,7 +3,7 @@ using afIocConfig
 using afBedSheet
 using afEfanXtra
 
-@SubModule { modules=[BedSheetEfanExtraModule#, EfanXtraModule#] }
+@SubModule { modules=[PillowModule#, EfanXtraModule#] }
 internal const class T_AppModule {
 	
 	static Void bind(ServiceBinder binder) {
@@ -17,7 +17,7 @@ internal const class T_AppModule {
 	
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeAppDefaults(MappedConfig config) {
-		config[afBedSheetEfanExtra::EfanConfigIds.welcomePage] = "welcomepage"
+		config[afPillow::EfanConfigIds.welcomePage] = "welcomepage"
 	}
 	
 }

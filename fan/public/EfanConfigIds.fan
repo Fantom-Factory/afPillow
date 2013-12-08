@@ -1,10 +1,10 @@
 
-** Config values as provided by BedSheetEfanExtra.
+** Config values as provided by Pillow.
 const mixin EfanConfigIds {
 
 	** The name of directory welcome pages.
 	** Defaults to "index".
-	static const Str welcomePage		:=	"afEfan.welcomePage"
+	static const Str welcomePage		:=	"pillow.welcomePage"
 
 	** TODO: needs to be an enum
 	** - redirectDirectoryToWelcomePage
