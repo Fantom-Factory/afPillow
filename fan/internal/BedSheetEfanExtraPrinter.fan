@@ -1,12 +1,12 @@
 using afIoc::Inject
-using afEfanExtra::EfanExtra
-using afEfanExtra::EfanExtraPrinter
+using afEfanXtra::EfanXtra
+using afEfanXtra::EfanXtraPrinter
 
 internal const class BedSheetEfanExtraPrinter {
 	private const static Log log := Utils.getLog(BedSheetEfanExtraPrinter#)
 
-	@Inject private	const EfanExtra 		efanExtra
-	@Inject private	const EfanExtraPrinter	eePrinter
+	@Inject private	const EfanXtra 			efanExtra
+	@Inject private	const EfanXtraPrinter	exPrinter
 	@Inject private	const Pages				pages
 
 	new make(|This| in) { in(this) }
@@ -17,7 +17,7 @@ internal const class BedSheetEfanExtraPrinter {
 		efanExtra.libraries.each |libName| {
 			// log the components, filtering out pages
 			details += pageDetailsToStr(libName)
-			details += eePrinter.libraryDetailsToStr(libName) |Type component->Bool| { !component.fits(Page#) }
+			details += exPrinter.libraryDetailsToStr(libName) |Type component->Bool| { !component.fits(Page#) }
 		}
 		
 		log.info(details)		

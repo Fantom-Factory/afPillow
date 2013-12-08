@@ -1,6 +1,6 @@
 using afIoc::Inject
 using afIocConfig::Config
-using afEfanExtra::EfanExtra
+using afEfanXtra::EfanXtra
 
 ** (Service) - Holds a collection of known pages.
 const mixin Pages {
@@ -27,7 +27,7 @@ const class PagesImpl : Pages {
 
 	@Config { id="afEfan.welcomePage" }
 	@Inject private const Str 		welcomePage
-	@Inject	private const EfanExtra	efanExtra
+	@Inject	private const EfanXtra	efanXtra
 			private const Str:Type	pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
@@ -35,8 +35,8 @@ const class PagesImpl : Pages {
 
 		pages := Utils.makeMap(Str#, Type#)
 
-		efanExtra.libraries.each |libName| {
-			efanExtra.componentTypes(libName).findAll { (it != Page#) && it.fits(Page#) }.each {
+		efanXtra.libraries.each |libName| {
+			efanXtra.componentTypes(libName).findAll { (it != Page#) && it.fits(Page#) }.each {
 				pages[getRawClientUri(it).toStr] = it 
 			}
 		}
@@ -45,7 +45,7 @@ const class PagesImpl : Pages {
 	
 	** Returns the page instance associated with the given type. 
 	override Page get(Type pageType) {
-		(Page) efanExtra.component(pageType)
+		(Page) efanXtra.component(pageType)
 	}
 	
 	override Type? getTypeByUri(Uri uri) {

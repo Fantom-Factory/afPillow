@@ -6,13 +6,13 @@ using afBedSheet::HttpRequest
 using afBedSheet::ResponseProcessors
 using afBedSheet::Text
 using afBedSheet::Redirect
-using afEfanExtra::EfanExtra
+using afEfanXtra::EfanXtra
 using afIoc
 
 internal const class PagePipeline : HttpPipelineFilter {
 		
 	@Inject	private const HttpRequest 			httpReq
-	@Inject	private const EfanExtra				efanExtra
+	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const ResponseProcessors	responseProcessors
 	@Inject	private const Pages					pages
 	@Inject	private const EfanPageMeta			efanPageMeta
@@ -25,7 +25,6 @@ internal const class PagePipeline : HttpPipelineFilter {
 		if (pageType == null)
 			return noHandle(handler)
 
-		
 		// redirect welcome pages to directory
 		if (!url.isDir && pages.isWelcomePage(pageType)) {
 			redirect := Redirect.movedTemporarily(url.parent)
@@ -36,7 +35,7 @@ internal const class PagePipeline : HttpPipelineFilter {
 		page := pages[pageType]
 		efanPageMeta.setActivePage(page)
 		
-		html := efanExtra.render(pageType)
+		html := efanXtra.render(pageType)
 		text := Text.fromHtml(html)	// TODO: how do we know it's HTML?
 
 		responseProcessors.processResponse(text)
