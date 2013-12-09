@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "A library for integrating efanXtra components with the afBedSheet web framework"
-		version = Version([0,0,5])
+		version = Version("0.0.5")
 
 		meta	= [	"org.name"		: "Alien-Factory",
 					"org.uri"		: "http://www.alienfactory.co.uk/",

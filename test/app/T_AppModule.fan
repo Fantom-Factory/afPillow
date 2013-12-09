@@ -17,7 +17,7 @@ internal const class T_AppModule {
 	
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeAppDefaults(MappedConfig config) {
-		config[afPillow::EfanConfigIds.welcomePage] = "welcomepage"
+		config[afPillow::PillowConfigIds.welcomePage] = "welcomepage"
 	}
 	
 }
