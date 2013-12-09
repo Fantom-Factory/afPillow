@@ -3,7 +3,7 @@ using afIocConfig
 using afBedSheet
 using afEfanXtra::EfanLibraries
 using afEfanXtra::ComponentCompiler
-using afEfanXtra::EfanConfigIds as EeConfigIds
+using afEfanXtra::EfanXtraConfigIds
 using afPlastic
 
 ** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.
@@ -40,12 +40,12 @@ class PillowModule {
 	@Contribute { serviceType=ApplicationDefaults# }
 	internal static Void contributeApplicationDefaults(MappedConfig config) {
 		// we'll do our own logging thanks!
-		config[EeConfigIds.supressStartupLogging]	= true
+		config[EfanXtraConfigIds.supressStartupLogging]	= true
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }
 	internal static Void contributeFactoryDefaults(MappedConfig config) {
-		config[EfanConfigIds.welcomePage]			= "index"
+		config[PillowConfigIds.welcomePage]			= "index"
 	}
 
 	@Contribute { serviceType=RegistryStartup# }

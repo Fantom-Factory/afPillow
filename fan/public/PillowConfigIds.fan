@@ -1,6 +1,6 @@
 
 ** Config values as provided by Pillow.
-const mixin EfanConfigIds {
+const mixin PillowConfigIds {
 
 	** The name of directory welcome pages.
 	** Defaults to "index".
