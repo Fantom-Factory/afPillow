@@ -1,5 +1,6 @@
 using afIoc
 
+// FIXME: rename to RenderMeta / PageRenderMeta?
 ** (Service) - Holds info about the current rendering page.
 ** This class name is likely to change.
 const mixin EfanPageMeta {

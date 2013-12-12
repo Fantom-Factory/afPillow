@@ -9,13 +9,13 @@ using afBedSheet::Redirect
 using afEfanXtra::EfanXtra
 using afIoc
 
+// FIXME: PagePipeline -kill me!
 internal const class PagePipeline : HttpPipelineFilter {
 		
 	@Inject	private const HttpRequest 			httpReq
 	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const ResponseProcessors	responseProcessors
 	@Inject	private const Pages					pages
-	@Inject	private const EfanPageMeta			efanPageMeta
 	
 	new make(|This|in) { in(this) }
 	
@@ -32,11 +32,8 @@ internal const class PagePipeline : HttpPipelineFilter {
 			return true
 		}
 
-		page := pages[pageType]
-		efanPageMeta.setActivePage(page)
-		
-		html := efanXtra.render(pageType)
-		text := Text.fromHtml(html)	// TODO: how do we know it's HTML?
+		html := pages.renderPage(pageType, Obj#.emptyList)
+		text := Text.fromHtml(html)	// TODO: how do we know it's HTML? - check facet
 
 		responseProcessors.processResponse(text)
 		return true
