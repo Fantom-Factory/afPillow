@@ -1,6 +1,8 @@
 using afIoc::Inject
 using afIocConfig::Config
-using afEfanXtra::EfanXtra
+using afEfanXtra
+using afBedSheet::Text
+using afBedSheet::ValueEncoders
 
 ** (Service) - Holds a collection of known pages.
 const mixin Pages {
@@ -9,6 +11,7 @@ const mixin Pages {
 	@Operator
 	abstract Page get(Type pageType)
 	
+	// FIXME: delete!
 	** Returns the page type associated with the given uri.
 	abstract Type? getTypeByUri(Uri uri)
 
@@ -21,14 +24,23 @@ const mixin Pages {
 	** Returns the uri that this page maps to
 	abstract Uri clientUri(Type pageType)
 
+	** FIXME: Fandoc!- uses ValueEncoder
+	abstract Obj? renderPage(Type pageType, Obj[]? initParams)
+
+	@NoDoc
+	abstract Obj? renderPageToText(Type pageType, Obj[]? initParams)
+
 }
 
 const class PagesImpl : Pages {
 
 	@Config { id="pillow.welcomePage" }
-	@Inject private const Str 		welcomePage
-	@Inject	private const EfanXtra	efanXtra
-			private const Str:Type	pages	// use Str as key for case insensitivity
+	@Inject private const Str 			welcomePage
+	@Inject	private const EfanPageMeta	efanPageMeta
+	@Inject	private const ValueEncoders	valueEncoders
+	@Inject	private const EfanXtra		efanXtra
+	@Inject	private const ComponentMeta	comMeta
+			private const Str:Type		pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
 		in(this) 
@@ -69,8 +81,39 @@ const class PagesImpl : Pages {
 		return clientUri.name.equalsIgnoreCase(welcomePage)
 	}
 
+	override Obj? renderPage(Type pageType, Obj[]? initParams) {
+		page := get(pageType)
+		efanPageMeta.setActivePage(page)
+		return efanXtra.render(pageType, initParams)
+	}
+
+	override Obj? renderPageToText(Type pageType, Obj[]? initParams) {
+		
+		initMeth := comMeta.findMethod(pageType, InitRender#)
+		
+		convert := (initMeth != null && initParams != null)
+		args 	:= convert ? convertArgs(initMeth, initParams) : Obj#.emptyList
+
+		obj := renderPage(pageType, args)
+		// FIXME: how dow we know it's HTML?
+		if (obj != null && obj.typeof.fits(Str#))
+			return Text.fromHtml(obj)
+		return obj
+	}
 
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
+
+	** Convert the Str from Routes into real arg objs
+	private Obj[] convertArgs(Method method, Obj?[] argsIn) {
+		// FIXME:test when we have more args than method parama!
+		argsOut := argsIn.map |arg, i -> Obj?| {
+			paramType	:= method.params[i].type
+			convert		:= arg != null && arg.typeof.fits(Str#)
+			value		:= convert ? valueEncoders.toValue(paramType, arg) : arg
+			return value
+		}
+		return argsOut
+	}
 
 	private Uri getRawClientUri(Type pageType) {
 		// TODO: maybe contribute ClientUriResolvers
