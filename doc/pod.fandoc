@@ -9,11 +9,11 @@ Something for your web app to get its teeth into!
 
 Install [#install]
 ******************
-Download from [Status302]`http://repo.status302.com/browse/afPillow` and copy to '%FAN_HOME/lib/fan/'.
+Install 'afPillow' with the [Fantom Respository Manager]`http://fantom.org/doc/docFanr/Tool.html#install`:
 
-Or install via [fanr]`http://fantom.org/doc/docFanr/Tool.html#install`:
+  C:\> fanr install -r http://repo.status302.com/fanr/ afPillow
 
-  $ fanr install -r http://repo.status302.com/fanr/ afPillow
+Or download the pod from [Status302]`http://repo.status302.com/browse/afPillow` and copy to '%FAN_HOME%/lib/fan/'.
 
 To use in a [Fantom]`http://fantom.org/` project, add a dependency to its 'build.fan':
 
@@ -41,6 +41,7 @@ using afPillow
 const mixin Example : Page {
   abstract Int age
 
+  @InitRender
   Void initRender(Int age) {
     this.age = age
   }
@@ -86,20 +87,59 @@ Then point your browser at `http://localhost:8069/example/42`:
 
 Usage [#usage]
 **************
-[Pages]`Page` are [efanXtra]`http://repo.status302.com/doc/afBedSheet` components and so behave in exactly the same way.
-Ensure your page classes are 'const mixin' and extend the `Page` class.
+To create a web page, define a 'const mixin' that extends [Page]`Page`. Example:
 
-Camel casing class names results in a '/' delimiter. Examples:
+pre>
+  using afPillow
 
-  Index.fan      --> /index
-  AdminIndex.fan --> /admin/index
+  const mixin Admin : Page {
+    ...
+  }
+<pre
 
+[Pages]`Page` are [efanXtra]`http://repo.status302.com/doc/afBedSheet` components and behave in exactly the same way.
+
+'Pillow' will automatically route uris with your page name, to your page.
+Camel casing class names results in a '/' delimiter.
+Examples:
+
+  `/admin`        --> Admin.fan
+  `/admin/secret` --> AdminSecret.fan
+
+As seen in the [Quick Start]`#quickStart` example, uris are automatically mapped to the '@InitRender' methods of your Pages,
+with uri segments mapped to '@InitRender' parameters. If the '@InitRender' method returns a BedSheet response, page rendering
+is aborted and the response object is processed instead. Example:
+
+pre>
+using afBedSheet
+using afPillow
+
+const mixin Example : Page {
+
+  @InitRender
+  Obj? initRender(Int age) {
+    if (age > 69)
+      return Redirect.movedTemporarily(`/too-old`)
+
+    return null
+  }
+}
+<pre
 
 
 Welcome Pages [#welcomePages]
 *****************************
-TODO:
-http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml
+'Pillow' supports the routing of welcome pages, also known as directory pages.
+
+If 'Pillow' recieves a directory uri (a uri that ends in /slash/) then it renders a
+[welcome page]`PillowConfigIds#welcomePage`, which defaults to 'Index'.
+Examples:
+
+  `/`        --> Index.fan
+  `/admin/`  --> AdminIndex.fan
+
+More can be read about directory urls in the article:
+[Should Your URLs Point to the Directory or the Index Page?]`http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml`
 
 
 

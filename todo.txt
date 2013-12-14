@@ -6,6 +6,7 @@ Update welcome page to index.html -> index.*
 
 add welcome page / redirect strategy -> see EfanXtraConfigIds 
 
+Change the MimeType
 
 redirects are important - there should only be the ONE url for any given page. multiple page for the same context
 http://moz.com/learn/seo/duplicate-content
