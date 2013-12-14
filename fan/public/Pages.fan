@@ -4,43 +4,40 @@ using afEfanXtra
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
 
-** (Service) - Holds a collection of known pages.
+** (Service) - Methods for discovering and rendering pages.
 const mixin Pages {
 
-	** Returns the page instance associated with the given type. 
+	** Returns the page instance for the given page type. 
 	@Operator
 	abstract Page get(Type pageType)
 	
-	// FIXME: delete!
-	** Returns the page type associated with the given uri.
-	abstract Type? getTypeByUri(Uri uri)
-
 	** Returns all page types.
 	abstract Type[] pageTypes()
 	
 	** Returns 'true' if the given page type is a welcome page.
 	abstract Bool isWelcomePage(Type pageType)
 	
-	** Returns the uri that this page maps to
+	** Returns the uri that the given page type maps to.
 	abstract Uri clientUri(Type pageType)
 
-	** FIXME: Fandoc!- uses ValueEncoder
+	** Renders the given page, passing the 'initParams' to the '@InitRender' method. 
+	** 
+	** Note that 'initParams' are converted their appropriate type via BedSheet's ValueEncoder service.
 	abstract Obj? renderPage(Type pageType, Obj[]? initParams)
 
 	@NoDoc
 	abstract Obj? renderPageToText(Type pageType, Obj[]? initParams)
-
 }
 
-const class PagesImpl : Pages {
+internal const class PagesImpl : Pages {
 
-	@Config { id="pillow.welcomePage" }
-	@Inject private const Str 			welcomePage
-	@Inject	private const EfanPageMeta	efanPageMeta
-	@Inject	private const ValueEncoders	valueEncoders
-	@Inject	private const EfanXtra		efanXtra
-	@Inject	private const ComponentMeta	comMeta
-			private const Str:Type		pages	// use Str as key for case insensitivity
+	@Config { id="afPillow.welcomePage" }
+	@Inject private const Str 				welcomePage
+	@Inject	private const PageRenderMeta	pageRenderMeta
+	@Inject	private const ValueEncoders		valueEncoders
+	@Inject	private const EfanXtra			efanXtra
+	@Inject	private const ComponentMeta		comMeta
+			private const Str:Type			pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
 		in(this) 
@@ -59,13 +56,6 @@ const class PagesImpl : Pages {
 	override Page get(Type pageType) {
 		(Page) efanXtra.component(pageType)
 	}
-	
-	override Type? getTypeByUri(Uri uri) {
-		if (uri.isDir)
-			uri = uri.plusName(welcomePage)
-		return pages[uri.toStr]
-		// TODO: throw err if not found (checked?)
-	}
 
 	override Type[] pageTypes() {
 		pages.vals
@@ -83,7 +73,7 @@ const class PagesImpl : Pages {
 
 	override Obj? renderPage(Type pageType, Obj[]? initParams) {
 		page := get(pageType)
-		efanPageMeta.setActivePage(page)
+		pageRenderMeta.setActivePage(page)
 		return efanXtra.render(pageType, initParams)
 	}
 
@@ -117,17 +107,16 @@ const class PagesImpl : Pages {
 
 	private Uri getRawClientUri(Type pageType) {
 		// TODO: maybe contribute ClientUriResolvers
-		if (pageType.hasFacet(PageRoute#)) {
-			return toUriFromPageRoute(pageType)
+		if (pageType.hasFacet(PageUri#)) {
+			return toUriFromPageUri(pageType)
 		} else {
 			return toUriFromTypeName(pageType)
 		}
 	}
 	
-	private Uri toUriFromPageRoute(Type pageType) {
-		// TODO: Stoopid F4 facet()
-		pageRoute 	:= (PageRoute) pageType.facets.find { it.typeof == PageRoute# }
-		uri			:= pageRoute.uri
+	private Uri toUriFromPageUri(Type pageType) {
+		pageUri := (PageUri) Type#.method("facet").callOn(pageType, [PageUri#])	// Stoopid F4
+		uri		:= pageUri.uri
 	    if (uri.scheme != null || uri.host != null || uri.port!= null )
 			throw PillowErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
 	    if (!uri.isPathAbs)

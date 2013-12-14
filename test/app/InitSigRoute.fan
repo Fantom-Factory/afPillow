@@ -1,5 +1,6 @@
 using afEfanXtra
 
+@NoDoc
 const mixin InitSigRoute : Page {
 	
 	abstract Int x

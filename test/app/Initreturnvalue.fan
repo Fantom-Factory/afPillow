@@ -1,6 +1,7 @@
 using afEfanXtra
 using afBedSheet
 
+@NoDoc
 const mixin Initreturnvalue : Page {
 	
 	@InitRender

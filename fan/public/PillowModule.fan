@@ -9,17 +9,17 @@ using afPlastic
 ** This class is public so it may be referenced explicitly in tests.
 class PillowModule {
 
-	static Void bind(ServiceBinder binder) {
-		binder.bindImpl(PagePipeline#)
+	internal static Void bind(ServiceBinder binder) {
 		binder.bindImpl(Pages#)
 		binder.bindImpl(PillowPrinter#)
-		binder.bindImpl(EfanPageMeta#).withScope(ServiceScope.perThread)
+		binder.bindImpl(PageRenderMeta#).withScope(ServiceScope.perThread)
 	}
 	
-	@Contribute { serviceType=HttpPipeline# }
-	internal static Void contributeHttpPipeline(OrderedConfig config, PagePipeline pagePipeline) {
-		config.addOrdered("PagePipeline", pagePipeline, ["after: BedSheetFilters"])
-	}
+//	@Contribute { serviceType=HttpPipeline# }
+//	internal static Void contributeHttpPipeline(OrderedConfig config, PagePipeline pagePipeline) {
+//		// FIXME: contribute own Routes filter
+////		config.addOrdered("PagePipeline", pagePipeline, ["after: BedSheetFilters"])
+//	}
 
 	@Contribute { serviceType=EfanLibraries# }
 	internal static Void contributeEfanLibraries(MappedConfig config, BedSheetMetaData meta) {
@@ -36,7 +36,7 @@ class PillowModule {
 	}
 
 	@Contribute { serviceType=Routes# }
-	static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
+	internal static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
 
 		pages.pageTypes.each |pageType| {
 			initMeth := componentMeta.findMethod(pageType, InitRender#)

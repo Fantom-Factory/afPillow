@@ -4,7 +4,7 @@ class Build : BuildPod {
 
 	new make() {
 		podName = "afPillow"
-		summary = "A library for integrating efanXtra components with the afBedSheet web framework"
+		summary = "Something for your web app to get its teeth into!"
 		version = Version("0.0.5")
 
 		meta	= [	"org.name"		: "Alien-Factory",
@@ -21,7 +21,14 @@ class Build : BuildPod {
 				]
 
 
-		depends = ["sys 1.0", "afIoc 1.4.10+", "afIocConfig 0+", "afBedSheet 1.1+", "afEfanXtra 0+", "afEfan 1.3+", "afPlastic 1.0.4+"]
+		depends = [	"sys 1.0", 
+					"afIoc 1.4.10+", 
+					"afIocConfig 0+", 
+					"afBedSheet 1.2+", 
+					"afEfanXtra 1+", 
+					"afPlastic 1.0.4+"
+				]
+
 		srcDirs = [`test/unit-tests/`, `test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
 		resDirs = [`doc/`, `test/app/`]
 

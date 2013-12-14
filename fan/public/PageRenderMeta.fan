@@ -1,17 +1,21 @@
 using afIoc
 
-// FIXME: rename to RenderMeta / PageRenderMeta?
-** (Service) - Holds info about the current rendering page.
-** This class name is likely to change.
-const mixin EfanPageMeta {
+** (Service) - Meta info about the current rendering page.
+const mixin PageRenderMeta {
 	
+	** Returns the current rendering page.
 	abstract Page activePage()
 
+	// TODO: activePageType so we can find out which library it's from
+//	abstract Page activePageType()
+
+	@NoDoc
 	abstract Void setActivePage(Page page)
 }
 
-const class EfanPageMetaImpl : EfanPageMeta {
+internal const class PageRenderMetaImpl : PageRenderMeta {
 	
+	// FIXME: use a ThreadStack
 	private const ThreadStash stash
 	
 	new make(ThreadStashManager stashManager) {
