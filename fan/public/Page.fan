@@ -1,7 +1,7 @@
 using afIoc::Inject
 using afEfanXtra::EfanComponent
 
-** Your web page classes should extend this!
+** Extend to define a web page.
 const mixin Page : EfanComponent {
 	
 	@NoDoc

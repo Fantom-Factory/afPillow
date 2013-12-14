@@ -1,42 +1,93 @@
 Overview [#overview]
 ********************
-A library for integrating [efanXtra]`http://repo.status302.com/doc/afBedSheet` components with the [afBedSheet]`http://repo.status302.com/doc/afBedSheet` web framework.
+Something for your web app to get its teeth into!
 
-'afPillow' automatically routes web requests to pages and returns the rendered response.
+'Pillow' is a library for integrating [efanXtra]`http://repo.status302.com/doc/afBedSheet` components with the
+[BedSheet]`http://repo.status302.com/doc/afBedSheet` web framework. It automatically routes web requests to pages and returns the rendered response.
+
+
+
+Install [#install]
+******************
+Download from [Status302]`http://repo.status302.com/browse/afPillow` and copy to '%FAN_HOME/lib/fan/'.
+
+Or install via [fanr]`http://fantom.org/doc/docFanr/Tool.html#install`:
+
+  $ fanr install -r http://repo.status302.com/fanr/ afPillow
+
+To use in a [Fantom]`http://fantom.org/` project, add a dependency to its 'build.fan':
+
+  depends = ["sys 1.0", ..., "afPillow 0+"]
 
 
 
 Quick Start [#quickStart]
 *************************
-Awesome.fan:
+Example.efan:
 pre>
-  using afPillow::Page
-
-  const mixin Awesome : Page { }
+Hello Mum! I'm <%= age %> years old!
 <pre
 
-Awesome.efan:
+Example.fan:
 pre>
-Look ma, I'm Awesome!
+using afIoc
+using afEfanXtra
+using afPillow
+
+
+
+// ---- The only class you need! ----
+
+const mixin Example : Page {
+  abstract Int age
+
+  Void initRender(Int age) {
+    this.age = age
+  }
+}
+
+
+
+// ---- Standard BedSheet Support Classes ----
+
+class Main {
+  Int main() {
+    afBedSheet::Main().main([AppModule#.qname, "8069"])
+  }
+}
+
+// SubModule only needed when running from a script
+@SubModule { modules=[EfanXtraModule#, PillowModule#] }
+class AppModule {
+
+   // Contribution needed when running from a script
+   @Contribute { serviceType=EfanTemplateDirectories# }
+   static Void contributeEfanDirs(OrderedConfig config) {
+
+      // Look for Example.efan in the same dir as this file
+      config.add(`./`)
+   }
+}
 <pre
 
-Start your web app and instantly see the result:
+Run the **Example.fan** script from the command line:
 pre>
-$ curl localhost:8080/awesome
-Look ma, I'm Awesome!
+C:\> fan Example.fan
+
+Efan Library: 'app' has 1 page(s):
+  Example : /example
 <pre
+
+Then point your browser at `http://localhost:8069/example/42`:
+
+  Hello Mum! I'm 42 years old!
 
 
 
 Usage [#usage]
 **************
 [Pages]`Page` are [efanXtra]`http://repo.status302.com/doc/afBedSheet` components and so behave in exactly the same way.
-Ensure your page classes are 'const mixin's and extend the `Page` class.
-
-Page names may optionaly have a 'Page' suffix, so both of the following classes are routed to '/index':
-
-  Index.fan     --> /index
-  IndexPage.fan --> /index
+Ensure your page classes are 'const mixin' and extend the `Page` class.
 
 Camel casing class names results in a '/' delimiter. Examples:
 
@@ -44,17 +95,24 @@ Camel casing class names results in a '/' delimiter. Examples:
   AdminIndex.fan --> /admin/index
 
 
+
 Welcome Pages [#welcomePages]
 *****************************
 TODO:
 http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml
+
+
 
 Release Notes [#releaseNotes]
 *****************************
 
 v0.0.6 [#v0.0.6]
 ----------------
- - New: Added Welcome Pages! Complete with redirects to the directory url.
+ - New: Page uris and BedSheet routes are generated from the '@InitRender' method signature.
+ - New: Directory uris may now serve welcome pages.
+ - Chg: Renamed project to 'afPillow' (from 'afBedSheetEfanExtra').
+ - Chg: Reanmed 'EfanPageMeta' to 'RenderPageMeta'.
+ - Chg: Renamed 'PageRoute' to 'PageUri'.
 
 v0.0.4 [#v0.0.4]
 ----------------
