@@ -13,12 +13,15 @@ class PillowModule {
 		binder.bindImpl(Pages#)
 		binder.bindImpl(PillowPrinter#)
 		binder.bindImpl(PageRenderMeta#).withScope(ServiceScope.perThread)
+
+//		binder.bindImpl(Routes#).withId("PillowRoutes")
 	}
 	
+	// TODO: afIoc-1.5
 //	@Contribute { serviceType=HttpPipeline# }
-//	internal static Void contributeHttpPipeline(OrderedConfig config, PagePipeline pagePipeline) {
-//		// FIXME: contribute own Routes filter
-////		config.addOrdered("PagePipeline", pagePipeline, ["after: BedSheetFilters"])
+//	internal static Void contributeHttpPipeline(OrderedConfig config, Registry reg) {
+//		pillowRoutes := reg.serviceById("PillowRoutes")
+//		config.addOrdered("PillowRoutes", pillowRoutes, ["after: BedSheetFilters"])
 //	}
 
 	@Contribute { serviceType=EfanLibraries# }
@@ -35,7 +38,8 @@ class PillowModule {
 		})
 	}
 
-	@Contribute { serviceType=Routes# }
+//	@Contribute { serviceId="PillowRoutes" }
+	@Contribute { serviceId="Routes" }
 	internal static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
 
 		pages.pageTypes.each |pageType| {
