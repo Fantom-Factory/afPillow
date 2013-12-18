@@ -76,4 +76,8 @@ Run the **Example.fan** script from the command line:
     C:\> curl http://localhost:8069/example/42
     
     Hello Mum! I'm 42 years old!
-    
+
+
+## Documentation
+
+Full API & fandocs are available on the [status302 repository](http://repo.status302.com/doc/afPillow/#overview).
