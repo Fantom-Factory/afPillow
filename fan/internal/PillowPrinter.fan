@@ -28,7 +28,7 @@ internal const class PillowPrinter {
 		comTypes := efanExtra.componentTypes(libName).findAll { it.fits(Page#) }
 
 		maxName	 := (Int) comTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
-		buf.add("\nEfan Library: '${libName}' has ${comTypes.size} pages:\n\n")
+		buf.add("\nefan Library: '${libName}' has ${comTypes.size} pages:\n\n")
 
 		comTypes.each |comType| {
 			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.clientUri(comType).toStr 
