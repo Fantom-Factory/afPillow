@@ -48,7 +48,9 @@ class PillowModule {
 			regex := ""
 			noOfParams.times { regex += "/*" }
 			clientUri := pages.clientUri(pageType)
-			config.add(Route(`${clientUri}${regex}`, PageRenderFactory(pageType)))
+			
+			// allow the file system to trump pillow pages
+			config.addOrdered(pageType.qname, Route(`${clientUri}${regex}`, PageRenderFactory(pageType)), ["after: FileHandlerEnd"])
 		}
 
 		// TODO: should we? redirect welcome pages to directory

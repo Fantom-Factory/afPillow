@@ -23,10 +23,10 @@ const mixin Pages {
 	** Renders the given page, passing the 'initParams' to the '@InitRender' method. 
 	** 
 	** Note that 'initParams' are converted their appropriate type via BedSheet's ValueEncoder service.
-	abstract Obj? renderPage(Type pageType, Obj[]? initParams)
+	abstract Str renderPage(Type pageType, Obj[]? initParams)
 
 	@NoDoc
-	abstract Obj? renderPageToText(Type pageType, Obj[]? initParams)
+	abstract Text renderPageToText(Type pageType, Obj[]? initParams)
 }
 
 internal const class PagesImpl : Pages {
@@ -71,24 +71,22 @@ internal const class PagesImpl : Pages {
 		return clientUri.name.equalsIgnoreCase(welcomePage)
 	}
 
-	override Obj? renderPage(Type pageType, Obj[]? initParams) {
+	override Str renderPage(Type pageType, Obj[]? initParams) {
 		page := get(pageType)
 		pageRenderMeta.setActivePage(page)
 		return efanXtra.render(pageType, initParams)
 	}
 
-	override Obj? renderPageToText(Type pageType, Obj[]? initParams) {
+	override Text renderPageToText(Type pageType, Obj[]? initParams) {
 		
 		initMeth := comMeta.findMethod(pageType, InitRender#)
 		
 		convert := (initMeth != null && initParams != null)
 		args 	:= convert ? convertArgs(initMeth, initParams) : Obj#.emptyList
 
-		obj := renderPage(pageType, args)
+		page := renderPage(pageType, args)
 		// FIXME: how dow we know it's HTML?
-		if (obj != null && obj.typeof.fits(Str#))
-			return Text.fromHtml(obj)
-		return obj
+		return Text.fromHtml(page)
 	}
 
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
