@@ -2,7 +2,7 @@ Overview [#overview]
 ********************
 Something for your web app to get its teeth into!
 
-'Pillow' is a library for integrating [efanXtra]`http://repo.status302.com/doc/afBedSheet` components with the
+'Pillow' is a library for integrating [efanXtra]`http://repo.status302.com/doc/afEfanXtra` components with the
 [BedSheet]`http://repo.status302.com/doc/afBedSheet` web framework.
 It automatically routes web requests to pages and returns the rendered response.
 
