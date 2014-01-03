@@ -5,8 +5,8 @@ using afBedSheet
 const mixin Initreturnvalue : Page {
 	
 	@InitRender
-	Text initRender() {
-		Text.fromPlain("Train trouble.")
+	Void initRender() {
+		throw ReProcessErr(Text.fromPlain("Train trouble."))
 	}
 }
 
