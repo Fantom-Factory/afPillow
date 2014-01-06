@@ -2,6 +2,8 @@
 For 1.0.0
 =========
 
+Option to turn off auto routing
+
 http://localhost:8069/example/ --> Err500
 
 Update welcome page to index.html -> index.*
@@ -13,6 +15,9 @@ Change the MimeType
 redirects are important - there should only be the ONE url for any given page. multiple page for the same context
 http://moz.com/learn/seo/duplicate-content
 https://www.google.co.uk/search?q=seo+duplicate+content
+
+afIoc::IocErr (when index page has init params)
+- Route `//*` must only contain a path. e.g. `/foo/bar`
 
 For Future
 ==========
