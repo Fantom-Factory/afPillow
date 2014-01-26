@@ -1,7 +1,7 @@
 using afIoc
-using afBedSheet
+using afBounce
 
-internal abstract class EfanTest : Test {
+internal abstract class PillowTest : Test {
 	BedClient? client
 	
 	override Void setup() {

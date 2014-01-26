@@ -1,6 +1,6 @@
 using afBedSheet
 
-internal class TestInitSigRoute : EfanTest {
+internal class TestInitSigRoute : PillowTest {
 
 	Void testCorrectRoutes() {
 		res := client.get(`/Init/Sig/Route/69/Dude!`)
