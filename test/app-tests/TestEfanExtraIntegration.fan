@@ -1,6 +1,6 @@
 using afBedSheet
 
-internal class TestEfanXtraIntegration : EfanTest {	
+internal class TestEfanXtraIntegration : PillowTest {	
 
 	Void testPageMapping404() {
 		res := client.get(`/oops`)

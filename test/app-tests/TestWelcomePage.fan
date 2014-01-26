@@ -1,6 +1,6 @@
 using afBedSheet
 
-internal class TestWelcomePage : EfanTest {
+internal class TestWelcomePage : PillowTest {
 
 	// TODO: welcome page redirects
 //	Void testWelcomePageRediretsToDirectory() {

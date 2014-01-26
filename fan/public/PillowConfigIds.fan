@@ -19,7 +19,11 @@ const mixin PillowConfigIds {
  
 	** The component name of directory welcome pages.
 	** Defaults to "index".
-	static const Str welcomePage		:=	"afPillow.welcomePage"
+	static const Str welcomePage			:=	"afPillow.welcomePage"
+
+	** The default 'Content-Type' to serve pages up as, if it can not be determined.
+	** Defaults to 'MimeType("text/plain")'
+	static const Str defaultContentType		:=	"afPillow.defaultContentType"
 
 	** TODO: needs to be an enum
 	** - off (component only)

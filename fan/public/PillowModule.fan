@@ -10,9 +10,10 @@ using afPlastic
 class PillowModule {
 
 	internal static Void bind(ServiceBinder binder) {
-		binder.bindImpl(Pages#)
-		binder.bindImpl(PillowPrinter#)
-		binder.bindImpl(PageRenderMeta#).withScope(ServiceScope.perThread)
+		binder.bind(Pages#)
+		binder.bind(PillowPrinter#)
+		binder.bind(ContentTypeResolver#)
+		binder.bind(PageRenderMeta#).withScope(ServiceScope.perThread)
 
 //		binder.bindImpl(Routes#).withId("PillowRoutes")
 	}
@@ -21,7 +22,7 @@ class PillowModule {
 //	@Contribute { serviceType=HttpPipeline# }
 //	internal static Void contributeHttpPipeline(OrderedConfig config, Registry reg) {
 //		pillowRoutes := reg.serviceById("PillowRoutes")
-//		config.addOrdered("PillowRoutes", pillowRoutes, ["after: BedSheetFilters"])
+//		config.addOrdered("PillowRoutes", pillowRoutes, ["after: Routes"])
 //	}
 
 	@Contribute { serviceType=EfanLibraries# }
@@ -70,6 +71,7 @@ class PillowModule {
 	@Contribute { serviceType=FactoryDefaults# }
 	internal static Void contributeFactoryDefaults(MappedConfig config) {
 		config[PillowConfigIds.welcomePage]			= "index"
+		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
 	}
 
 	@Contribute { serviceType=RegistryStartup# }

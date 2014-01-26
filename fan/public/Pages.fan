@@ -1,6 +1,9 @@
 using afIoc::Inject
 using afIocConfig::Config
-using afEfanXtra
+using afEfanXtra::EfanXtra
+using afEfanXtra::ComponentMeta
+using afEfanXtra::InitRender
+using afEfanXtra::EfanTemplateFinder
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
 
@@ -32,12 +35,13 @@ const mixin Pages {
 internal const class PagesImpl : Pages {
 
 	@Config { id="afPillow.welcomePage" }
-	@Inject private const Str 				welcomePage
-	@Inject	private const PageRenderMeta	pageRenderMeta
-	@Inject	private const ValueEncoders		valueEncoders
-	@Inject	private const EfanXtra			efanXtra
-	@Inject	private const ComponentMeta		comMeta
-			private const Str:Type			pages	// use Str as key for case insensitivity
+	@Inject private const Str 					welcomePage
+	@Inject	private const PageRenderMeta		pageRenderMeta
+	@Inject	private const ValueEncoders			valueEncoders
+	@Inject	private const EfanXtra				efanXtra
+	@Inject	private const ComponentMeta			comMeta
+	@Inject	private const ContentTypeResolver	ctResolver
+			private const Str:Type				pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
 		in(this) 
@@ -78,15 +82,12 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Text renderPageToText(Type pageType, Obj[]? initParams) {
-		
 		initMeth := comMeta.findMethod(pageType, InitRender#)
-		
 		convert := (initMeth != null && initParams != null)
 		args 	:= convert ? convertArgs(initMeth, initParams) : Obj#.emptyList
-
-		page := renderPage(pageType, args)
-		// FIXME: how dow we know it's HTML?
-		return Text.fromHtml(page)
+		pageStr := renderPage(pageType, args)
+		cType	:= ctResolver.contentType(pageType)
+		return Text.fromMimeType(pageStr, cType)
 	}
 
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
