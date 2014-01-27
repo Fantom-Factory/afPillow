@@ -1,9 +1,9 @@
 Overview [#overview]
 ********************
-Something for your web app to get its teeth into!
+'Pillow' - Something for your web app to get its teeth into!
 
-'Pillow' is a library for integrating [efanXtra]`http://repo.status302.com/doc/afEfanXtra` components with the
-[BedSheet]`http://repo.status302.com/doc/afBedSheet` web framework.
+'Pillow' is a library for integrating [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components with the
+[BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` web framework.
 It automatically routes web requests to pages and returns the rendered response.
 
 
@@ -13,8 +13,6 @@ Install [#install]
 Install 'afPillow' with the [Fantom Respository Manager]`http://fantom.org/doc/docFanr/Tool.html#install`:
 
   C:\> fanr install -r http://repo.status302.com/fanr/ afPillow
-
-Or download the pod from [Status302]`http://repo.status302.com/browse/afPillow` and copy it to '%FAN_HOME%/lib/fan/'.
 
 To use in a [Fantom]`http://fantom.org/` project, add a dependency to its 'build.fan':
 
@@ -98,7 +96,7 @@ pre>
   }
 <pre
 
-[Pages]`Page` are [efanXtra]`http://repo.status302.com/doc/afBedSheet` components and behave in exactly the same way.
+[Pages]`Page` are [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components and behave in exactly the same way.
 
 'Pillow' will automatically route uris with your page name, to your page.
 Camel casing class names results in a '/' delimiter.
@@ -107,7 +105,9 @@ Examples:
   `/admin`        --> Admin.fan
   `/admin/secret` --> AdminSecret.fan
 
-As seen in the [Quick Start]`#quickStart` example, uris are automatically mapped to the '@InitRender' methods of your Pages,
+Or you can use the [@PageUri]`PageUri` facet to define an explicit URI.
+
+As seen in the [Quick Start]`#quickStart` example, requests are automatically mapped to the '@InitRender' methods of your Pages,
 with uri segments mapped to '@InitRender' parameters. If the '@InitRender' method returns a BedSheet response, page rendering
 is aborted and the response object is processed instead. Example:
 
@@ -128,12 +128,13 @@ const mixin Example : Page {
 <pre
 
 
+
 Welcome Pages [#welcomePages]
 *****************************
 'Pillow' supports the routing of welcome pages, also known as directory pages.
 
 If 'Pillow' recieves a directory uri (a uri that ends in /slash/) then it renders a
-[welcome page]`PillowConfigIds#welcomePage`, which defaults to 'Index'.
+[welcome page]`PillowConfigIds.welcomePage`, which defaults to 'Index'.
 Examples:
 
   `/`        --> Index.fan
@@ -144,14 +145,36 @@ More can be read about directory urls in the article:
 
 
 
+Content Type [#contentType]
+***************************
+Page template files should use a double extension in their name, for example,
+
+  IndexPage.xhtml.slim
+
+The outer extension denotes the type of templating to use, [Slim]`http://www.fantomfactory.org/pods/afSlim` in our example.
+The innter extension is used to find the [Content-Type]`http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17`
+that is sent in the HTTP response header. In our example, the 'Content-Type' would be set to ' application/xhtml+xml'.
+
+If a double extension is not used, or not know, then the default content type, as defined by the config value, is used.
+
+Use the [@PageContentType]`PageContentType` facet to explicitly set the content type.
+
+
+
 Release Notes [#releaseNotes]
 *****************************
+
+v0.0.8 [#v0.0.8]
+----------------
+ - New: Use the '@PageContentType' facet to explicitly define the content type for your page.
+ - New: Use a double extension (e.g. 'indexPage.xhtml.slim') to set the content type for the page.
+ - Bug: '@InitRender' params could incorrectly match for directory index pages.
 
 v0.0.6 [#v0.0.6]
 ----------------
  - New: Page uris and BedSheet routes are generated from the '@InitRender' method signature.
  - New: Directory uris may now serve welcome pages.
- - Chg: Updated to use 'BedSheet' 1.2.
+ - Chg: Updated to use 'BedSheet 1.2'.
  - Chg: Renamed project to 'afPillow' (from 'afBedSheetEfanExtra').
  - Chg: Reanmed 'EfanPageMeta' to 'RenderPageMeta'.
  - Chg: Renamed 'PageRoute' to 'PageUri'.
@@ -164,3 +187,4 @@ v0.0.4 [#v0.0.4]
 v0.0.2 [#v0.0.2]
 ----------------
  - New: Preview Release
+

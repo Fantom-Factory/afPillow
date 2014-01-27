@@ -51,7 +51,7 @@ class PillowModule {
 			clientUri := pages.clientUri(pageType)
 			
 			// allow the file system to trump pillow pages
-			config.addOrdered(pageType.qname, Route(`${clientUri}${regex}`, PageRenderFactory(pageType)), ["after: FileHandlerEnd"])
+			config.addOrdered(pageType.qname, Route(`${clientUri}${regex}`, PageRenderFactory(pageType, initMeth)), ["after: FileHandlerEnd"])
 		}
 
 		// TODO: should we? redirect welcome pages to directory
@@ -83,14 +83,28 @@ class PillowModule {
 }
 
 internal const class PageRenderFactory : RouteResponseFactory {
-	const Type pageType
+	const Type 		pageType
+	const Method? 	method
 	
-	new make(Type pageType) {
-		this.pageType = pageType
+	new make(Type pageType, Method? initMethod) {
+		this.pageType 	= pageType
+		this.method 	= initMethod
 	}
 	
 	override Bool matchSegments(Str?[] segments) {
-		return true
+		if (method == null)
+			return segments.isEmpty
+
+		if (segments.size > method.params.size)
+			return false
+		
+		match := method.params.all |Param param, i->Bool| {
+			if (i >= segments.size)
+				return param.hasDefault
+			return (segments[i] == null) ? param.type.isNullable : true
+		}
+		
+		return match
 	}
 
 	override Obj? createResponse(Str?[] segments) {

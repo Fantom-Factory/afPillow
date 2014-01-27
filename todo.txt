@@ -4,8 +4,6 @@ For 1.0.0
 
 Option to turn off auto routing (for fantex)
 
-http://localhost:8069/example/ --> Err500
-
 Update welcome page to index.html -> index.*
 
 add welcome page / redirect strategy -> see EfanXtraConfigIds 
