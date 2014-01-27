@@ -108,7 +108,7 @@ internal const class PagesImpl : Pages {
 	}
 
 	private Uri getRawClientUri(Type pageType) {
-		// TODO: maybe contribute ClientUriResolvers
+		// TODO: maybe contribute ClientUriResolvers - step1, have a ClientUriResolverClass?
 		if (pageType.hasFacet(PageUri#)) {
 			return toUriFromPageUri(pageType)
 		} else {

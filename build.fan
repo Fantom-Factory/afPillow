@@ -1,11 +1,11 @@
-using build::BuildPod
+using build
 
 class Build : BuildPod {
 
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("0.0.6.1")
+		version = Version("0.0.8")
 
 		meta	= [	
 			"org.name"		: "Alien-Factory",
@@ -15,6 +15,7 @@ class Build : BuildPod {
 			"vcs.uri"		: "https://bitbucket.org/AlienFactory/afpillow",
 			"license.name"	: "BSD 2-Clause License",	
 			"repo.private"	: "false",
+			
 			"afIoc.module"	: "afPillow::PillowModule"
 		]
 
@@ -23,12 +24,13 @@ class Build : BuildPod {
 		]
 
 		depends = [	
-			"sys 1.0", 
-			"afIoc 1.4.10+", 
-			"afIocConfig 0+", 
-			"afBedSheet 1.2.2+", 
-			"afEfanXtra 1.0.4+", 
-			"afPlastic 1.0.4+",
+			"sys 1.0",
+			
+			"afIoc 1.5.2+", 
+			"afIocConfig 1.0.2+", 
+			"afBedSheet 1.3.0+", 
+			"afEfanXtra 1.0.8+", 
+			"afPlastic 1.0.10+",
 
 			"afButter 0+",
 			"afBounce 0+"
