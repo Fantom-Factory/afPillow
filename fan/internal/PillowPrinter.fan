@@ -26,12 +26,15 @@ internal const class PillowPrinter {
 	Str pageDetailsToStr(Str libName) {
 		buf		 := StrBuf()
 		comTypes := efanExtra.componentTypes(libName).findAll { it.fits(Page#) }
+		
+		if (comTypes.isEmpty)
+			return ""
 
 		maxName	 := (Int) comTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
 		buf.add("\nefan Library: '${libName}' has ${comTypes.size} pages:\n\n")
 
 		comTypes.each |comType| {
-			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.clientUri(comType).toStr 
+			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.serverUri(comType).toStr 
 			buf.add("  ${line}\n")
 		}
 		return buf.toStr

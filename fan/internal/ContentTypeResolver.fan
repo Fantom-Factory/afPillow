@@ -17,6 +17,7 @@ internal const class ContentTypeResolverImpl : ContentTypeResolver {
 	new make(|This| in) { in(this) } 
 	
 	override MimeType contentType(Type pageType) {
+		// TODO: make configurable
 
 		// look for an explicit content type from the @PageContentType facet
 		pageCt := (PageContentType?) Type#.method("facet").callOn(pageType, [PageContentType#, false])

@@ -6,7 +6,7 @@ const mixin Basic 		: Page { }
 const mixin BasicNested : Page { }
 
 @NoDoc
-@PageUri { uri=`/facetRemapped` } 
+@PageUri { uri=`/facetRemapped` }
 const mixin FacetPage 	: Page { }
 
 @NoDoc
