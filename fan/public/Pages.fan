@@ -18,8 +18,8 @@ const mixin Pages {
 	** Returns 'true' if the given page type is a welcome page.
 	abstract Bool isWelcomePage(Type pageType)
 	
-	** Returns the uri that the given page type maps to.
-	abstract Uri clientUri(Type pageType)
+	** Returns a URI that can be used to render the given page and context.
+	abstract Uri clientUri(Type pageType, Obj[]? context := null)
 
 	** Renders the given page, passing the 'initParams' to the '@InitRender' method. 
 	** 
@@ -68,7 +68,7 @@ internal const class PagesImpl : Pages {
 		pages.vals
 	}
 	
-	override Uri clientUri(Type pageType) {
+	override Uri clientUri(Type pageType, Obj[]? context := null) {
 		clientUri := clientUriResolver.clientUri(pageType)
 
 		// add extra WebMod paths - but only if we're part of a web request!
@@ -79,9 +79,18 @@ internal const class PagesImpl : Pages {
 		if (isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
 		
+		// append context
+		if (context != null) {
+			initTypes := initTypes(pageType)
+			if (initTypes.size != context.size)
+				throw Err("Dude!")	// TODO: better err msg
+			args := context.map { valueEncoders.toValue(Str#, it) }.join("/")
+			clientUri = clientUri.plusSlash + args.toUri			
+		}
+
 		// if rendering, append PageContext params
 		page := RenderingPageMetaImpl.peek?.page
-		if (page != null) {
+		if (context == null && page != null) {
 			fields	:= pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
 			args	:= fields.map { it.get(page) }.map { valueEncoders.toValue(Str#, it) }.join("/")
 			clientUri = clientUri.plusSlash + args.toUri
@@ -117,6 +126,7 @@ internal const class PagesImpl : Pages {
 		return `${clientUri}`
 	}
 	
+	// move to PageMeta
 	override Type[] initTypes(Type pageType) {
 		fields 	 := pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
 		initMeth := componentMeta.findMethod(pageType, InitRender#)

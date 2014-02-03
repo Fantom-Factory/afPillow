@@ -10,7 +10,7 @@ using afPlastic
 class PillowModule {
 
 	internal static Void bind(ServiceBinder binder) {
-		binder.bind(Pages#)
+		binder.bind(Pages#).withoutProxy	// default method values
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
 		binder.bind(ClientUriResolver#)
