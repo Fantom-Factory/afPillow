@@ -1,6 +1,7 @@
 using afIoc::Inject
 using afEfanXtra::EfanComponent
 
+// TODO: kill me and replace with a facet
 ** Extend to define a web page.
 const mixin Page : EfanComponent {
 	
@@ -16,9 +17,6 @@ const mixin Page : EfanComponent {
 	** <pre  
 	Uri clientUri() {
 		_af_pages.clientUri(typeof)
-		
-		// TODO: add extra mod path to uris
-		// TODO: add passivate info to uris
 	}
 	
 }

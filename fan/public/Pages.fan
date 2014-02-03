@@ -6,14 +6,12 @@ using afEfanXtra::InitRender
 using afEfanXtra::EfanTemplateFinder
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
+using afBedSheet::HttpRequest
+using concurrent::Actor
 
 ** (Service) - Methods for discovering and rendering pages.
 const mixin Pages {
 
-	** Returns the page instance for the given page type. 
-//	@Operator
-//	abstract Page get(Type pageType)
-	
 	** Returns all page types.
 	abstract Type[] pageTypes()
 	
@@ -43,13 +41,14 @@ internal const class PagesImpl : Pages {
 
 	@Config { id="afPillow.welcomePage" }
 	@Inject private const Str 					welcomePage
-	@Inject	private const PageRenderMeta		pageRenderMeta
+	@Inject	private const RenderingPageMeta		renderingPage
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const ComponentMeta			comMeta
 	@Inject	private const ContentTypeResolver	contentTypeResolver
 	@Inject	private const ClientUriResolver		clientUriResolver
 	@Inject	private const ComponentMeta			componentMeta
+	@Inject	private const HttpRequest			httpRequest
 			private const Str:Type				pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
@@ -65,30 +64,42 @@ internal const class PagesImpl : Pages {
 		this.pages = pages
 	}
 	
-	** Returns the page instance associated with the given type. 
-//	override Page get(Type pageType) {
-//		(Page) efanXtra.component(pageType)
-//	}
-
 	override Type[] pageTypes() {
 		pages.vals
 	}
 	
 	override Uri clientUri(Type pageType) {
 		clientUri := clientUriResolver.clientUri(pageType)
-		// TODO: add webmod prefix if in a req
-		return clientUri.name.equalsIgnoreCase(welcomePage) ? clientUri.parent : clientUri
+
+		// add extra WebMod paths - but only if we're part of a web request!
+		if (Actor.locals["web.req"] != null && httpRequest.modBase != `/`)
+			clientUri = httpRequest.modBase + clientUri.toStr[1..-1].toUri
+
+		// convert welcome pages
+		if (isWelcomeUri(clientUri))
+			clientUri = clientUri.parent
+		
+		// if rendering, append PageContext params
+		page := RenderingPageMetaImpl.peek?.page
+		if (page != null) {
+			fields	:= pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
+			args	:= fields.map { it.get(page) }.map { valueEncoders.toValue(Str#, it) }.join("/")
+			clientUri = clientUri.plusSlash + args.toUri
+		}
+		
+		return clientUri
 	}
 	
 	override Bool isWelcomePage(Type pageType) {
 		clientUri := clientUriResolver.clientUri(pageType)
-		return clientUri.name.equalsIgnoreCase(welcomePage)
+		return isWelcomeUri(clientUri)
 	}
 
 	override Str renderPage(Type pageType, Obj[]? initParams) {
 		page := (Page) efanXtra.component(pageType)
-		pageRenderMeta.setActivePage(page)
-		return efanXtra.render(pageType, initParams)
+		return RenderingPageMetaImpl.pushRenderingPage(page, pageType) |->Str| {
+			return efanXtra.render(pageType, initParams)
+		}
 	}
 
 	override Text renderPageToText(Type pageType, Obj[]? initArgs) {
@@ -136,5 +147,9 @@ internal const class PagesImpl : Pages {
 			return value
 		}
 		return argsOut
+	}
+	
+	private Bool isWelcomeUri(Uri clientUri) {
+		return clientUri.name.equalsIgnoreCase(welcomePage)
 	}
 }

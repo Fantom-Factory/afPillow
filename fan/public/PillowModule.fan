@@ -14,7 +14,7 @@ class PillowModule {
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
 		binder.bind(ClientUriResolver#)
-		binder.bind(PageRenderMeta#).withScope(ServiceScope.perThread)
+		binder.bind(RenderingPageMeta#)
 
 //		binder.bindImpl(Routes#).withId("PillowRoutes")
 	}
@@ -33,14 +33,7 @@ class PillowModule {
 	}
 
 	@Contribute { serviceType=ComponentCompiler# }
-	internal static Void contributeComponentCompilerCallbacks(OrderedConfig config, BedSheetMetaData meta) {
-		config.add(|Type comType, PlasticClassModel model| {
-			// let every component (& page) use the pod it was defined in.
-			// TODO: is this needed? If so, move to the compiler and use the pod it was defined in.
-			if (meta.appPod != null)
-				model.usingPod(meta.appPod)
-		})
-		
+	internal static Void contributeComponentCompilerCallbacks(OrderedConfig config) {
 		pageCompiler := (PageCompiler) config.autobuild(PageCompiler#)
 		config.add(pageCompiler.callback)
 	}

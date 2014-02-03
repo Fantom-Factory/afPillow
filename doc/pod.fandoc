@@ -163,6 +163,9 @@ Use the [@PageContentType]`PageContentType` facet to explicitly set the content 
 
 Release Notes [#releaseNotes]
 *****************************
+v0.0.10 [#v0.0.10]
+----------------
+ - Chg: Renamed 'PageRenderMeta' -> 'RenderingPageMeta'.
 
 v0.0.8 [#v0.0.8]
 ----------------
