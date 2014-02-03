@@ -19,7 +19,7 @@ internal const class PageRenderMetaImpl : PageRenderMeta {
 	private const ThreadStash stash
 	
 	new make(ThreadStashManager stashManager) {
-		stash = stashManager.createStash("PageMeta")
+		stash = stashManager.createStash("afPillow.PageMeta")
 	}
 	
 	override Page activePage() {

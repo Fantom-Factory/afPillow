@@ -13,6 +13,7 @@ class PillowModule {
 		binder.bind(Pages#)
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
+		binder.bind(ClientUriResolver#)
 		binder.bind(PageRenderMeta#).withScope(ServiceScope.perThread)
 
 //		binder.bindImpl(Routes#).withId("PillowRoutes")
@@ -33,25 +34,27 @@ class PillowModule {
 
 	@Contribute { serviceType=ComponentCompiler# }
 	internal static Void contributeComponentCompilerCallbacks(OrderedConfig config, BedSheetMetaData meta) {
-		config.add(|PlasticClassModel model| {
+		config.add(|Type comType, PlasticClassModel model| {
+			// let every component (& page) use the pod it was defined in.
+			// TODO: is this needed? If so, move to the compiler and use the pod it was defined in.
 			if (meta.appPod != null)
 				model.usingPod(meta.appPod)
 		})
+		
+		pageCompiler := (PageCompiler) config.autobuild(PageCompiler#)
+		config.add(pageCompiler.callback)
 	}
 
 //	@Contribute { serviceId="PillowRoutes" }
 	@Contribute { serviceId="Routes" }
 	internal static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
 
-		pages.pageTypes.each |pageType| {
-			initMeth := componentMeta.findMethod(pageType, InitRender#)
-			noOfParams := initMeth?.params?.size ?: 0
-			regex := ""
-			noOfParams.times { regex += "/*" }
-			clientUri := pages.clientUri(pageType)
+		pages.pageTypes.each |pageType| {		
+			serverUri	:= pages.serverUri(pageType)
+			initTypes	:= pages.initTypes(pageType)
 			
 			// allow the file system to trump pillow pages
-			config.addOrdered(pageType.qname, Route(`${clientUri}${regex}`, PageRenderFactory(pageType, initMeth)), ["after: FileHandlerEnd"])
+			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: FileHandlerEnd"])
 		}
 
 		// TODO: should we? redirect welcome pages to directory
@@ -84,24 +87,25 @@ class PillowModule {
 
 internal const class PageRenderFactory : RouteResponseFactory {
 	const Type 		pageType
-	const Method? 	method
+	const Type[]	initParams
 	
-	new make(Type pageType, Method? initMethod) {
+	new make(Type pageType, Type[] initParams) {
 		this.pageType 	= pageType
-		this.method 	= initMethod
+		this.initParams	= initParams
 	}
 	
 	override Bool matchSegments(Str?[] segments) {
-		if (method == null)
+		if (initParams.isEmpty)
 			return segments.isEmpty
 
-		if (segments.size > method.params.size)
+		if (segments.size > initParams.size)
 			return false
 		
-		match := method.params.all |Param param, i->Bool| {
+		match := initParams.all |Type type, i->Bool| {
 			if (i >= segments.size)
-				return param.hasDefault
-			return (segments[i] == null) ? param.type.isNullable : true
+//				return param.hasDefault	// default params currently not allowed (plastic issue)
+				return false
+			return (segments[i] == null) ? type.isNullable : true
 		}
 		
 		return match

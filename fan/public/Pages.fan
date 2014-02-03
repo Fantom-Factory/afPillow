@@ -11,8 +11,8 @@ using afBedSheet::ValueEncoders
 const mixin Pages {
 
 	** Returns the page instance for the given page type. 
-	@Operator
-	abstract Page get(Type pageType)
+//	@Operator
+//	abstract Page get(Type pageType)
 	
 	** Returns all page types.
 	abstract Type[] pageTypes()
@@ -30,6 +30,13 @@ const mixin Pages {
 
 	@NoDoc
 	abstract Text renderPageToText(Type pageType, Obj[]? initParams)
+	
+	@NoDoc
+	abstract Uri serverUri(Type pageType)
+	
+	@NoDoc
+	abstract Type[] initTypes(Type pageType)
+	
 }
 
 internal const class PagesImpl : Pages {
@@ -40,7 +47,9 @@ internal const class PagesImpl : Pages {
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const ComponentMeta			comMeta
-	@Inject	private const ContentTypeResolver	ctResolver
+	@Inject	private const ContentTypeResolver	contentTypeResolver
+	@Inject	private const ClientUriResolver		clientUriResolver
+	@Inject	private const ComponentMeta			componentMeta
 			private const Str:Type				pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
@@ -50,54 +59,76 @@ internal const class PagesImpl : Pages {
 
 		efanXtra.libraries.each |libName| {
 			efanXtra.componentTypes(libName).findAll { (it != Page#) && it.fits(Page#) }.each {
-				pages[getRawClientUri(it).toStr] = it 
+				pages[clientUriResolver.clientUri(it).toStr] = it 
 			}
 		}
 		this.pages = pages
 	}
 	
 	** Returns the page instance associated with the given type. 
-	override Page get(Type pageType) {
-		(Page) efanXtra.component(pageType)
-	}
+//	override Page get(Type pageType) {
+//		(Page) efanXtra.component(pageType)
+//	}
 
 	override Type[] pageTypes() {
 		pages.vals
 	}
 	
 	override Uri clientUri(Type pageType) {
-		clientUri := getRawClientUri(pageType)
+		clientUri := clientUriResolver.clientUri(pageType)
+		// TODO: add webmod prefix if in a req
 		return clientUri.name.equalsIgnoreCase(welcomePage) ? clientUri.parent : clientUri
 	}
 	
 	override Bool isWelcomePage(Type pageType) {
-		clientUri := getRawClientUri(pageType)
+		clientUri := clientUriResolver.clientUri(pageType)
 		return clientUri.name.equalsIgnoreCase(welcomePage)
 	}
 
 	override Str renderPage(Type pageType, Obj[]? initParams) {
-		page := get(pageType)
+		page := (Page) efanXtra.component(pageType)
 		pageRenderMeta.setActivePage(page)
 		return efanXtra.render(pageType, initParams)
 	}
 
-	override Text renderPageToText(Type pageType, Obj[]? initParams) {
-		initMeth := comMeta.findMethod(pageType, InitRender#)
-		convert := (initMeth != null && initParams != null)
-		args 	:= convert ? convertArgs(initMeth, initParams) : Obj#.emptyList
+	override Text renderPageToText(Type pageType, Obj[]? initArgs) {
+		types	:= initTypes(pageType)
+		args 	:= convertArgs(initArgs, types)
 		pageStr := renderPage(pageType, args)
-		cType	:= ctResolver.contentType(pageType)
+		cType	:= contentTypeResolver.contentType(pageType)
 		return Text.fromMimeType(pageStr, cType)
 	}
 
+	override Uri serverUri(Type pageType) {
+		clientUri := clientUri(pageType).toStr
+		noOfParams := initTypes(pageType).size
+		noOfParams.times { clientUri += "/*" }
+		return `${clientUri}`
+	}
+	
+	override Type[] initTypes(Type pageType) {
+		fields 	 := pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
+		initMeth := componentMeta.findMethod(pageType, InitRender#)
+		
+		if (!fields.isEmpty && initMeth != null)
+			throw PillowErr(ErrMsgs.pageCanNotHaveInitRenderAndPageContext(pageType))
+
+		if (!fields.isEmpty)
+			return fields.map { it.type }
+		if (initMeth != null)
+			return initMeth.params.map { it.type }
+		return Type#.emptyList
+	}
+	
+	
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
 
 	** Convert the Str from Routes into real arg objs
-	private Obj[] convertArgs(Method method, Obj?[] argsIn) {
+	private Obj[] convertArgs(Obj?[] argsIn, Type[] convertTo) {
 		argsOut := argsIn.map |arg, i -> Obj?| {
 			// guard against having more args than the method has params! 
 			// Should never happen if the Routes do their job!
-			paramType	:= method.params.getSafe(i)?.type
+			paramType := convertTo.getSafe(i)
 			if (paramType == null)
 				return arg			
 			convert		:= arg != null && arg.typeof.fits(Str#)
@@ -106,34 +137,4 @@ internal const class PagesImpl : Pages {
 		}
 		return argsOut
 	}
-
-	private Uri getRawClientUri(Type pageType) {
-		// TODO: maybe contribute ClientUriResolvers - step1, have a ClientUriResolverClass?
-		if (pageType.hasFacet(PageUri#)) {
-			return toUriFromPageUri(pageType)
-		} else {
-			return toUriFromTypeName(pageType)
-		}
-	}
-	
-	private Uri toUriFromPageUri(Type pageType) {
-		pageUri := (PageUri) Type#.method("facet").callOn(pageType, [PageUri#])	// Stoopid F4
-		uri		:= pageUri.uri
-	    if (uri.scheme != null || uri.host != null || uri.port!= null )
-			throw PillowErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
-	    if (!uri.isPathAbs)
-			throw PillowErr(ErrMsgs.pageRouteShouldStartWithSlash(pageType, uri))
-		return uri
-	}
-	
-	private Uri toUriFromTypeName(Type pageType) {
-		pageName := pageType.name
-		if (pageName.endsWith("Impl"))
-			pageName = pageName[0..-5]
-		if (pageName.endsWith("Page"))
-			pageName = pageName[0..-5]
-		pageUri := pageName.toDisplayName.replace(" ", "/").lower
-	
-		return ("/" + pageUri).toUri
-	}	
 }
