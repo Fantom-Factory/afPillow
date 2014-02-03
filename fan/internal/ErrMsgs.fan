@@ -12,4 +12,8 @@ internal const class ErrMsgs {
 	static Str pageCanNotHaveInitRenderAndPageContext(Type pageType) {
 		"Page ${pageType.qname} may NOT have both an @InitRender method AND and use @PageContext. Choose one!"
 	}
+
+	static Str renderingPageMetaNotRendering() {
+		"Pillow is NOT currently rendering a page."
+	}
 }
