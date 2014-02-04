@@ -61,16 +61,17 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
-		meta	:= pageMeta(eventMethod.parent)
-		args 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
-		page 	:= efanXtra.component(pageType)
+		page 		:= efanXtra.component(pageType)
+		pageMeta	:= pageMeta(eventMethod.parent)
+		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)
+		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
-		return efanLibraries.library(pageType).callMethod(pageType, pageContext) |->Obj?| {
+		return efanLibraries.library(pageType).callMethod(pageType, initArgs) |->Obj?| {
 //			types := (Type?[]) args.map { it?.typeof }
 //			if (!ReflectUtils.paramTypesFitMethodSignature(types, method))
 //				throw EfanErr(ErrMsgs.metaTypesDoNotFitMethod(null, method, types))
 	
-			return eventMethod.callOn(page, args)
+			return eventMethod.callOn(page, eventArgs)
 		}
 	}
 	
