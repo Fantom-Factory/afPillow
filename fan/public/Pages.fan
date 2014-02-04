@@ -11,7 +11,7 @@ const mixin Pages {
 	** Returns all page types.
 	abstract Type[] pageTypes()
 	
-	abstract PageMeta pageMeta(Type pageType)
+	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext)
 	
 	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
 	@NoDoc
@@ -49,20 +49,20 @@ internal const class PagesImpl : Pages {
 		pages.vals
 	}
 	
-	override PageMeta pageMeta(Type pageType) {
-		registry.autobuild(PageMeta#, [pageType])
+	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext) {
+		registry.autobuild(PageMeta#, [pageType, pageContext])
 	}
 
-	override Text renderPageToText(Type pageType, Obj?[] context) {
-		meta	:= pageMeta(pageType)
-		args 	:= convertArgs(context, meta.contextTypes)
+	override Text renderPageToText(Type pageType, Obj?[] pageContext) {
+		meta	:= pageMeta(pageType, pageContext)
+		args 	:= convertArgs(pageContext, meta.contextTypes)
 		pageStr := meta.render(args)
 		return Text.fromMimeType(pageStr, meta.contentType)
 	}
 
 	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
 		page 		:= efanXtra.component(pageType)
-		pageMeta	:= pageMeta(eventMethod.parent)
+		pageMeta	:= pageMeta(pageType, pageContext)
 		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		

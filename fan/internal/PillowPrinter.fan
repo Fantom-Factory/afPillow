@@ -34,13 +34,13 @@ internal const class PillowPrinter {
 		buf.add("\nefan Library: '${libName}' has ${pageTypes.size} pages:\n\n")
 
 		pageTypes.each |pageType| {
-			pageMeta 	:= pages.pageMeta(pageType)
+			pageMeta 	:= pages.pageMeta(pageType, null)
 			serverGlob	:= pageMeta.serverGlob
 			line := pageType.name.toDisplayName.padl(maxName) + " : " + serverGlob
 			buf.add("  ${line}\n")
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventGlob := serverGlob.plusSlash + pageMeta.eventMeta(eventMethod.name).eventGlob
+				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
 				line = ("-(" + eventMethod.name + ")").padl(maxName) + " : " + eventGlob
 				buf.add("  ${line}\n")
 			}
