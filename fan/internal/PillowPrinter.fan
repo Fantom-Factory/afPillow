@@ -17,7 +17,7 @@ internal const class PillowPrinter {
 		efanExtra.libraries.each |libName| {
 			// log the components, filtering out pages
 			details += pageDetailsToStr(libName)
-			details += exPrinter.libraryDetailsToStr(libName) |Type component->Bool| { !component.fits(Page#) }
+			details += exPrinter.libraryDetailsToStr(libName) |Type component->Bool| { !component.hasFacet(Page#) }
 		}
 		
 		log.info(details)
@@ -25,7 +25,7 @@ internal const class PillowPrinter {
 
 	Str pageDetailsToStr(Str libName) {
 		buf		 := StrBuf()
-		pageTypes := efanExtra.componentTypes(libName).findAll { it.fits(Page#) }
+		pageTypes := efanExtra.componentTypes(libName).findAll { it.hasFacet(Page#) }
 		
 		if (pageTypes.isEmpty)
 			return ""

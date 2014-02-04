@@ -2,7 +2,8 @@ using afEfanXtra
 using afBedSheet
 
 @NoDoc
-const mixin Initreturnvalue : Page {
+@Page
+const mixin Initreturnvalue : EfanComponent {
 	
 	@InitRender
 	Void initRender() {
