@@ -1,9 +1,9 @@
 using afIoc
 using afEfanXtra
 
+@NoDoc
 @PageUri { uri=`/pageContextStr` }
-@EfanTemplate { uri=`fan://afEfanXtra/res/viaRenderMethod.efan`}
-@Page
+@Page { template=`fan://afEfanXtra/res/viaRenderMethod.efan`}
 const mixin T_PageContext : EfanComponent {
 	@Inject			abstract Pages 	pages
 	@PageContext	abstract Str 	context
@@ -22,9 +22,9 @@ const mixin T_PageContext : EfanComponent {
 }
 
 
+@NoDoc
 @PageUri { uri=`/pageContextStrMulti` }
-@EfanTemplate { uri=`fan://afEfanXtra/res/viaRenderMethod.efan`}
-@Page
+@Page { template=`fan://afEfanXtra/res/viaRenderMethod.efan`}
 const mixin T_PageContextMulti : EfanComponent {
 	@Inject			abstract Pages	pages	
 	@PageContext	abstract Str?	name

@@ -68,6 +68,11 @@ class PillowModule {
 //		}
 	}
 
+	@Contribute { serviceType=EfanTemplateFinders# }
+	internal static Void contributeEfanTemplateFinders(OrderedConfig config) {
+		config.addOrdered("FindByPageFacetValue", FindEfanByPageFacetValue())
+	}
+
 	@Contribute { serviceType=ApplicationDefaults# }
 	internal static Void contributeApplicationDefaults(MappedConfig config) {
 		// we'll do our own logging thanks!

@@ -2,7 +2,7 @@ using afIoc
 using afPlastic
 using afEfanXtra
 
-const class PageCompiler {
+internal const class PageCompiler {
 	
 	@Inject	private const Pages 			pages
 	@Inject	private const ComponentMeta		componentMeta

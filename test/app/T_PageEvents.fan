@@ -4,6 +4,7 @@ using afBedSheet
 
 @PageUri { uri=`/pageEvents` }
 @Page
+@NoDoc
 const mixin T_PageEvents : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
 	
@@ -21,6 +22,7 @@ const mixin T_PageEvents : EfanComponent {
 
 @PageUri { uri=`/pageCtxEvents` }
 @Page
+@NoDoc
 const mixin T_PageCtxEvents : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str?		name
