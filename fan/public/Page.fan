@@ -22,4 +22,15 @@ facet class Page {
 	**  - if absolute, the template is assumed to be a pod resource, e.g. '/templates/Notice.efan'
 	const Uri? template
 	
+	** Use to set an explicit 'Content-Type' the page should be served with. 
+	** The 'Content-Type' is set in the HTTP response header.   
+	** 
+	** pre>
+	** using afPillow
+	** using afEfanXtra
+	** 
+	** @Page { contentType=MimeType("text/plain") }
+	** const mixin Matrix : EfanComponent { ... }
+	** <pre
+	const MimeType? contentType
 }

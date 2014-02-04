@@ -19,10 +19,10 @@ internal const class ContentTypeResolverImpl : ContentTypeResolver {
 	override MimeType contentType(Type pageType) {
 		// TODO: make configurable
 
-		// look for an explicit content type from the @PageContentType facet
-		pageCt := (PageContentType?) Type#.method("facet").callOn(pageType, [PageContentType#, false])
-		if (pageCt != null)
-			return pageCt.contentType
+		// look for an explicit content type from the @Page facet
+		page := (Page?) Type#.method("facet").callOn(pageType, [Page#])
+		if (page.contentType != null)
+			return page.contentType
 		
 		// look for content type from the extension
 		file	:= templatefinder.findTemplate(pageType)
