@@ -5,7 +5,7 @@
 ** pre>
 ** using afIoc
 ** using afIocConfig
-** using afEfanXtra
+** using afPillow
 **  
 ** class AppModule {
 ** 
