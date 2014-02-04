@@ -40,7 +40,7 @@ internal const class PillowPrinter {
 			buf.add("  ${line}\n")
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventGlob := serverGlob.plusSlash + pageMeta.eventMeta(eventMethod.name).eventGlob
 				line = ("-(" + eventMethod.name + ")").padl(maxName) + " : " + eventGlob
 				buf.add("  ${line}\n")
 			}
