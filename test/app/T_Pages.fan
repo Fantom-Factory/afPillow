@@ -10,8 +10,7 @@ const mixin Basic 		: EfanComponent { }
 const mixin BasicNested : EfanComponent { }
 
 @NoDoc
-@PageUri { uri=`/facetRemapped` }
-@Page
+@Page { uri=`/facetRemapped` }
 const mixin FacetPage 	: EfanComponent { }
 
 @NoDoc

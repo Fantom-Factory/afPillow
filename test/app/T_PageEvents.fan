@@ -2,8 +2,7 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@PageUri { uri=`/pageEvents` }
-@Page
+@Page { uri=`/pageEvents` }
 @NoDoc
 const mixin T_PageEvents : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
@@ -20,8 +19,7 @@ const mixin T_PageEvents : EfanComponent {
 }
 
 
-@PageUri { uri=`/pageCtxEvents` }
-@Page
+@Page { uri=`/pageCtxEvents` }
 @NoDoc
 const mixin T_PageCtxEvents : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta

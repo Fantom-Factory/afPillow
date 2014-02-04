@@ -13,16 +13,17 @@ internal const class ClientUriResolverImpl : ClientUriResolver {
 	
 	override Uri clientUri(Type pageType) {
 		// TODO: make configurable
-		if (pageType.hasFacet(PageUri#)) {
-			return toUriFromPageUri(pageType)
-		} else {
-			return toUriFromTypeName(pageType)
-		}
+		uri := toUriFromPageUri(pageType)
+		if (uri != null)
+			return uri
+		return toUriFromTypeName(pageType)
 	}
 	
-	private Uri toUriFromPageUri(Type pageType) {
-		pageUri := (PageUri) Type#.method("facet").callOn(pageType, [PageUri#])	// Stoopid F4
-		uri		:= pageUri.uri
+	private Uri? toUriFromPageUri(Type pageType) {
+		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
+		uri	 := page.uri
+		if (uri == null)
+			return null
 	    if (uri.scheme != null || uri.host != null || uri.port!= null )
 			throw PillowErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
 	    if (!uri.isPathAbs)
