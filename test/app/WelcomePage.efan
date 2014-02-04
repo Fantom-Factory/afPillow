@@ -1,1 +1,1 @@
-WelcomePage ClientUri: <%= clientUri %>
+WelcomePage ClientUri: <%= pageMeta.pageUri %>

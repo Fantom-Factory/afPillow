@@ -10,11 +10,11 @@ using afPlastic
 class PillowModule {
 
 	internal static Void bind(ServiceBinder binder) {
-		binder.bind(Pages#).withoutProxy	// default method values
+		binder.bind(Pages#)
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
 		binder.bind(ClientUriResolver#)
-		binder.bind(RenderingPageMeta#)
+		binder.bind(PageMeta#, PageMetaPeekABoo#)
 
 //		binder.bindImpl(Routes#).withId("PillowRoutes")
 	}
@@ -42,18 +42,21 @@ class PillowModule {
 	@Contribute { serviceId="Routes" }
 	internal static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
 
+		config.addPlaceholder("PillowStart", ["after: FileHandlerEnd"])
+		config.addPlaceholder("PillowEnd", 	 ["after: PillowStart"])
+		
 		pages.pageTypes.each |pageType| {
-			pageMeta 	:= pages.pageMeta(pageType)
+			pageMeta 	:= pages.pageMeta(pageType, null)
 			serverUri	:= pageMeta.serverGlob
 			initTypes	:= pageMeta.contextTypes
 			
 			// allow the file system to trump pillow pages
-			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: FileHandlerEnd"])
+			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: PillowStart", "before: PillowEnd"])
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventUri := serverUri.plusSlash + pageMeta.eventMeta(eventMethod.name).eventGlob
+				eventUri := serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
 				qname	 := "${pageType.qname}/${eventMethod.name}"
-				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod)), ["after: FileHandlerEnd"])
+				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod)), ["after: PillowStart", "before: PillowEnd"])
 			}
 		}
 

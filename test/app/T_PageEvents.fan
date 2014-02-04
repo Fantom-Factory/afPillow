@@ -4,7 +4,7 @@ using afBedSheet
 
 @PageUri { uri=`/pageEvents` }
 const mixin T_PageEvents : Page {
-	@Inject	abstract Pages pages
+	@Inject	abstract PageMeta	pageMeta
 	
 	@PageEvent
 	Text plainEvent() {
@@ -20,9 +20,9 @@ const mixin T_PageEvents : Page {
 
 @PageUri { uri=`/pageCtxEvents` }
 const mixin T_PageCtxEvents : Page {
-	@Inject			abstract Pages	pages	
-	@PageContext	abstract Str?	name
-	@PageContext	abstract Int? 	iq
+	@Inject			abstract PageMeta	pageMeta
+	@PageContext	abstract Str?		name
+	@PageContext	abstract Int? 		iq
 	
 	@PageEvent
 	Text plainEvent() {

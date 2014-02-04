@@ -1,9 +1,9 @@
 <html>
 <body>
 
-	<a id="plainEvent" href="<%= pages.pageMeta(T_PageEvents#).eventMeta("plainEvent").clientUri %>">Plain Event</a>
+	<a id="plainEvent" href="<%= pageMeta.eventUri("plainEvent", null) %>">Plain Event</a>
 
-	<a id="ctxEvent" href="<%= pages.pageMeta(T_PageEvents#).eventMeta("ctxEvent").clientUri(["Emma", 69]) %>">Event with Context</a>
+	<a id="ctxEvent" href="<%= pageMeta.eventUri("ctxEvent", ["Emma", 69]) %>">Event with Context</a>
 
 	<!-- create invalid link -->
 

@@ -4,19 +4,19 @@ using afEfanXtra
 @PageUri { uri=`/pageContextStr` }
 @EfanTemplate { uri=`fan://afEfanXtra/res/viaRenderMethod.efan`}
 const mixin T_PageContext : Page {
-	@Inject			abstract Pages pages
-	@PageContext	abstract Str context
+	@Inject			abstract Pages 	pages
+	@PageContext	abstract Str 	context
 	
 	Str render() {
 		if (context == "err") {
 			try {
-				return pages.pageMeta(T_PageContext#).clientUri(["Muhaha", `/blah`]).toStr
+				return pages.pageMeta(T_PageContext#, ["Muhaha", `/blah`]).pageUri.toStr
 			} catch (Err e) {
 				return e.msg
 			}
 		}
 		return
-		"context=${context}\nclientUri=" + pages.pageMeta(T_PageContext#).clientUri + "\nclientUri=" + pages.pageMeta(T_PageContext#).clientUri(["Dude"])
+		"context=${context}\nclientUri=" + pages.pageMeta(T_PageContext#, null).pageUri + "\nclientUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri
 	}
 }
 
@@ -26,20 +26,20 @@ const mixin T_PageContext : Page {
 const mixin T_PageContextMulti : Page {
 	@Inject			abstract Pages	pages	
 	@PageContext	abstract Str?	name
-	@PageContext	abstract Int? 	age
+	@PageContext	abstract Int?	age
 
 	Str render() {
 		if (name == "err") {
 			try {
-				return pages.pageMeta(T_PageContextMulti#).clientUri(["Muhaha"]).toStr
+				return pages.pageMeta(T_PageContextMulti#, ["Muhaha"]).pageUri.toStr
 			} catch (Err e) {
 				return e.msg
 			}
 		}
 		return 
 		"context=${name}/${age}
-		 clientUri=${pages.pageMeta(T_PageContextMulti#).clientUri}
-		 singleUri=" + pages.pageMeta(T_PageContext#).clientUri(["Dude"]) + "\n" +
-		 "clientUri=" + pages.pageMeta(T_PageContextMulti#).clientUri(["Dude", 666])
+		 clientUri=${pages.pageMeta(T_PageContextMulti#, null).pageUri}
+		 singleUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri + "\n" +
+		 "clientUri=" + pages.pageMeta(T_PageContextMulti#, ["Dude", 666]).pageUri
 	}
 }

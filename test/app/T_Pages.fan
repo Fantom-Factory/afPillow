@@ -1,3 +1,4 @@
+using afIoc
 
 @NoDoc
 const mixin Basic 		: Page { }
@@ -10,4 +11,6 @@ const mixin BasicNested : Page { }
 const mixin FacetPage 	: Page { }
 
 @NoDoc
-const mixin WelcomepagePage : Page { }
+const mixin WelcomepagePage : Page {
+	@Inject	abstract PageMeta	pageMeta
+}
