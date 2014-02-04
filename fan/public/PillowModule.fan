@@ -53,7 +53,7 @@ class PillowModule {
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
 				eventUri := serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
 				qname	 := "${pageType.qname}/${eventMethod.name}"
-				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, eventMethod)), ["after: FileHandlerEnd"])
+				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod)), ["after: FileHandlerEnd"])
 			}
 		}
 
@@ -95,24 +95,22 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 	
 	override Bool matchSegments(Str?[] segments) {
-		if (initParams.isEmpty)
-			return segments.isEmpty
-
-		if (segments.size > initParams.size)
-			return false
-		
-		match := initParams.all |Type type, i->Bool| {
-			if (i >= segments.size)
-//				return param.hasDefault	// default params currently not allowed (plastic issue)
-				return false
-			return (segments[i] == null) ? type.isNullable : true
-		}
-		
-		return match
+		matchesParams(initParams, segments)
 	}
 
+	// TODO: afBedSheet-1.3.2, kill this matchesParams()
+	static Bool matchesParams(Type[] params, Str?[] segments) {
+		if (segments.size > params.size)
+			return false
+		return params.all |Type param, i->Bool| {
+			if (i >= segments.size)
+				return false
+			return (segments[i] == null) ? param.isNullable : true
+		}
+	}
+	
 	override Obj? createResponse(Str?[] segments) {
-		// segments is RO and (internally) needs to be a Str, so can't just append pageType to the start of segments.
+		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
 		MethodCall(Pages#renderPageToText, [pageType, segments])
 	}
 }
@@ -120,27 +118,51 @@ internal const class PageRenderFactory : RouteResponseFactory {
 ** Copied from 'afBedSheet.MethodCallFactory'
 internal const class EventCallerFactory : RouteResponseFactory {
 	const Type 		pageType
+	const Type[]	initParams
 	const Method 	eventMethod
 	
-	new make(Type pageType, Method eventMethod) {
+	new make(Type pageType, Type[] initParams, Method eventMethod) {
 		this.pageType 		= pageType
+		this.initParams		= initParams
 		this.eventMethod	= eventMethod
 	}
 	
 	override Bool matchSegments(Str?[] segments) {
-		if (segments.size > eventMethod.params.size)
+		if (segments.size < initParams.size)
 			return false
-		match := eventMethod.params.all |Param param, i->Bool| {
+		initSegs := segments[0..<initParams.size]
+		if (!matchesParams(initParams, initSegs))
+			return false
+		eventSegs := segments[initParams.size..-1]
+		return matchesMethod(eventMethod, eventSegs)
+	}
+
+	// TODO: afBedSheet-1.3.2, kill this matchesMethod()
+	static Bool matchesMethod(Method method, Str?[] segments) {
+		if (segments.size > method.params.size)
+			return false
+		return method.params.all |Param param, i->Bool| {
 			if (i >= segments.size)
 				return param.hasDefault
 			return (segments[i] == null) ? param.type.isNullable : true
 		}
-		return match
+	}
+
+	// TODO: afBedSheet-1.3.2, kill this matchesParams()
+	static Bool matchesParams(Type[] params, Str?[] segments) {
+		if (segments.size > params.size)
+			return false
+		return params.all |Type param, i->Bool| {
+			if (i >= segments.size)
+				return false
+			return (segments[i] == null) ? param.isNullable : true
+		}
 	}
 
 	override Obj? createResponse(Str?[] segments) {
-		// segments is RO and (internally) needs to be a Str, so can't just append pageType to the start of segments.
-		MethodCall(Pages#callPageEvent, [pageType, [,], eventMethod, segments])
+		initSegs  := segments[0..<initParams.size]
+		eventSegs := segments[initParams.size..-1]
+		return MethodCall(Pages#callPageEvent, [pageType, initSegs, eventMethod, eventSegs])
 	}
 }
 

@@ -4,7 +4,7 @@ using afBedSheet
 
 @PageUri { uri=`/pageEvents` }
 const mixin T_PageEvents : Page {
-	@Inject			abstract Pages pages
+	@Inject	abstract Pages pages
 	
 	@PageEvent
 	Text plainEvent() {
@@ -13,14 +13,24 @@ const mixin T_PageEvents : Page {
 
 	@PageEvent
 	Text ctxEvent(Str name, Int iq) {
-		return Text.fromPlain("Ctx Event: name=$name, iq=$iq")
+		return Text.fromPlain("Event Ctx: name=$name, iq=$iq")
 	}
 }
 
 
-@PageUri { uri=`/pageEventsWithContext` }
-const mixin T_PageEventsWithContext : Page {
+@PageUri { uri=`/pageCtxEvents` }
+const mixin T_PageCtxEvents : Page {
 	@Inject			abstract Pages	pages	
 	@PageContext	abstract Str?	name
-	@PageContext	abstract Int? 	age
+	@PageContext	abstract Int? 	iq
+	
+	@PageEvent
+	Text plainEvent() {
+		return Text.fromPlain("Plain Event Fired!\nPage Ctx: name=$name, iq=$iq")
+	}
+
+	@PageEvent
+	Text ctxEvent(Str name2, Int iq2) {
+		return Text.fromPlain("Page Ctx: name=$name, iq=$iq\nEvent Ctx: name=$name2, iq=$iq2")
+	}
 }
