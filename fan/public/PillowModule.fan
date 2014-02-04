@@ -44,11 +44,17 @@ class PillowModule {
 
 		pages.pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType)
-			serverUri	:= pageMeta.serverRegex
+			serverUri	:= pageMeta.serverGlob
 			initTypes	:= pageMeta.contextTypes
 			
 			// allow the file system to trump pillow pages
 			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: FileHandlerEnd"])
+			
+			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
+				eventUri := serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
+				qname	 := "${pageType.qname}/${eventMethod.name}"
+				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, eventMethod)), ["after: FileHandlerEnd"])
+			}
 		}
 
 		// TODO: should we? redirect welcome pages to directory
@@ -106,8 +112,35 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 
 	override Obj? createResponse(Str?[] segments) {
-		// segments is RO and (internally) needs to be a Str, so we create a new list
+		// segments is RO and (internally) needs to be a Str, so can't just append pageType to the start of segments.
 		MethodCall(Pages#renderPageToText, [pageType, segments])
+	}
+}
+
+** Copied from 'afBedSheet.MethodCallFactory'
+internal const class EventCallerFactory : RouteResponseFactory {
+	const Type 		pageType
+	const Method 	eventMethod
+	
+	new make(Type pageType, Method eventMethod) {
+		this.pageType 		= pageType
+		this.eventMethod	= eventMethod
+	}
+	
+	override Bool matchSegments(Str?[] segments) {
+		if (segments.size > eventMethod.params.size)
+			return false
+		match := eventMethod.params.all |Param param, i->Bool| {
+			if (i >= segments.size)
+				return param.hasDefault
+			return (segments[i] == null) ? param.type.isNullable : true
+		}
+		return match
+	}
+
+	override Obj? createResponse(Str?[] segments) {
+		// segments is RO and (internally) needs to be a Str, so can't just append pageType to the start of segments.
+		MethodCall(Pages#callPageEvent, [pageType, [,], eventMethod, segments])
 	}
 }
 

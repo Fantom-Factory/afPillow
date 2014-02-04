@@ -1,5 +1,6 @@
 using afIoc
 
+// TODO: Kill me, inject a mixin fronted PageMeta instead. Mixin 'cos the backing threaded model chnages.
 ** (Service) - Returns details about the page that is currently being rendered.
 const mixin RenderingPageMeta {
 	

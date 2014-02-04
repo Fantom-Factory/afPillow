@@ -20,25 +20,32 @@ internal const class PillowPrinter {
 			details += exPrinter.libraryDetailsToStr(libName) |Type component->Bool| { !component.fits(Page#) }
 		}
 		
-		log.info(details)		
+		log.info(details)
 	}
 
 	Str pageDetailsToStr(Str libName) {
 		buf		 := StrBuf()
-		comTypes := efanExtra.componentTypes(libName).findAll { it.fits(Page#) }
+		pageTypes := efanExtra.componentTypes(libName).findAll { it.fits(Page#) }
 		
-		if (comTypes.isEmpty)
+		if (pageTypes.isEmpty)
 			return ""
 
-		maxName	 := (Int) comTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
-		buf.add("\nefan Library: '${libName}' has ${comTypes.size} pages:\n\n")
+		maxName	 := (Int) pageTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
+		buf.add("\nefan Library: '${libName}' has ${pageTypes.size} pages:\n\n")
 
-		comTypes.each |comType| {
-			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.pageMeta(comType).serverRegex
+		pageTypes.each |pageType| {
+			pageMeta 	:= pages.pageMeta(pageType)
+			serverGlob	:= pageMeta.serverGlob
+			line := pageType.name.toDisplayName.padl(maxName) + " : " + serverGlob
 			buf.add("  ${line}\n")
+			
+			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
+				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				line = ("-(" + eventMethod.name + ")").padl(maxName) + " : " + eventGlob
+				buf.add("  ${line}\n")
+			}
 		}
+		
 		return buf.toStr
 	}
-	
-	
 }
