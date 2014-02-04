@@ -3,7 +3,8 @@ using afEfanXtra
 using afBedSheet
 
 @PageUri { uri=`/pageEvents` }
-const mixin T_PageEvents : Page {
+@Page
+const mixin T_PageEvents : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
 	
 	@PageEvent
@@ -19,7 +20,8 @@ const mixin T_PageEvents : Page {
 
 
 @PageUri { uri=`/pageCtxEvents` }
-const mixin T_PageCtxEvents : Page {
+@Page
+const mixin T_PageCtxEvents : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str?		name
 	@PageContext	abstract Int? 		iq

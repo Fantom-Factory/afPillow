@@ -38,7 +38,7 @@ internal const class PagesImpl : Pages {
 		pages := Utils.makeMap(Str#, Type#)
 
 		efanXtra.libraries.each |libName| {
-			efanXtra.componentTypes(libName).findAll { (it != Page#) && it.fits(Page#) }.each {
+			efanXtra.componentTypes(libName).findAll { it.hasFacet(Page#) }.each {
 				pages[clientUriResolver.clientUri(it).toStr] = it 
 			}
 		}
@@ -67,10 +67,6 @@ internal const class PagesImpl : Pages {
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
 		return efanLibraries.library(pageType).callMethod(pageType, initArgs) |->Obj?| {
-//			types := (Type?[]) args.map { it?.typeof }
-//			if (!ReflectUtils.paramTypesFitMethodSignature(types, method))
-//				throw EfanErr(ErrMsgs.metaTypesDoNotFitMethod(null, method, types))
-	
 			return eventMethod.callOn(page, eventArgs)
 		}
 	}

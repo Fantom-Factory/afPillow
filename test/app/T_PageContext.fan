@@ -3,7 +3,8 @@ using afEfanXtra
 
 @PageUri { uri=`/pageContextStr` }
 @EfanTemplate { uri=`fan://afEfanXtra/res/viaRenderMethod.efan`}
-const mixin T_PageContext : Page {
+@Page
+const mixin T_PageContext : EfanComponent {
 	@Inject			abstract Pages 	pages
 	@PageContext	abstract Str 	context
 	
@@ -23,7 +24,8 @@ const mixin T_PageContext : Page {
 
 @PageUri { uri=`/pageContextStrMulti` }
 @EfanTemplate { uri=`fan://afEfanXtra/res/viaRenderMethod.efan`}
-const mixin T_PageContextMulti : Page {
+@Page
+const mixin T_PageContextMulti : EfanComponent {
 	@Inject			abstract Pages	pages	
 	@PageContext	abstract Str?	name
 	@PageContext	abstract Int?	age

@@ -1,7 +1,8 @@
 using afEfanXtra
 
 @NoDoc
-const mixin InitSigRoute : Page {
+@Page
+const mixin InitSigRoute : EfanComponent  {
 	
 	abstract Int x
 	abstract Str y

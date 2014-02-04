@@ -1,16 +1,21 @@
 using afIoc
+using afEfanXtra
 
 @NoDoc
-const mixin Basic 		: Page { }
+@Page
+const mixin Basic 		: EfanComponent { }
 
 @NoDoc
-const mixin BasicNested : Page { }
+@Page
+const mixin BasicNested : EfanComponent { }
 
 @NoDoc
 @PageUri { uri=`/facetRemapped` }
-const mixin FacetPage 	: Page { }
+@Page
+const mixin FacetPage 	: EfanComponent { }
 
 @NoDoc
-const mixin WelcomepagePage : Page {
+@Page
+const mixin WelcomepagePage : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
 }
