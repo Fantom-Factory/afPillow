@@ -34,7 +34,7 @@ internal const class PillowPrinter {
 		buf.add("\nefan Library: '${libName}' has ${comTypes.size} pages:\n\n")
 
 		comTypes.each |comType| {
-			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.serverUri(comType).toStr 
+			line := comType.name.toDisplayName.padl(maxName) + " : " + pages.pageMeta(comType).serverRegex
 			buf.add("  ${line}\n")
 		}
 		return buf.toStr
