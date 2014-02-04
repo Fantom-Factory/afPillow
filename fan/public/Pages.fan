@@ -1,6 +1,7 @@
 using afIoc::Inject
 using afIoc::Registry
 using afEfanXtra::EfanXtra
+using afEfanXtra::EfanLibraries
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
 
@@ -14,7 +15,11 @@ const mixin Pages {
 	
 	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
 	@NoDoc
-	abstract Text renderPageToText(Type pageType, Obj?[] context)
+	abstract Text renderPageToText(Type pageType, Obj?[] pageContext)
+
+	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
+	@NoDoc
+	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
 	
 }
 
@@ -24,6 +29,7 @@ internal const class PagesImpl : Pages {
 	@Inject	private const Registry				registry
 	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const ClientUriResolver		clientUriResolver
+	@Inject	private const EfanLibraries 		efanLibraries
 			private const Str:Type				pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
@@ -54,7 +60,19 @@ internal const class PagesImpl : Pages {
 		return Text.fromMimeType(pageStr, meta.contentType)
 	}
 
-
+	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
+		meta	:= pageMeta(eventMethod.parent)
+		args 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
+		page 	:= efanXtra.component(pageType)
+		
+		return efanLibraries.library(pageType).callMethod(pageType, pageContext) |->Obj?| {
+//			types := (Type?[]) args.map { it?.typeof }
+//			if (!ReflectUtils.paramTypesFitMethodSignature(types, method))
+//				throw EfanErr(ErrMsgs.metaTypesDoNotFitMethod(null, method, types))
+	
+			return eventMethod.callOn(page, args)
+		}
+	}
 	
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
 

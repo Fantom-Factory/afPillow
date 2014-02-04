@@ -7,7 +7,37 @@ using afBedSheet::ValueEncoders
 using afBedSheet::HttpRequest
 using concurrent::Actor
 
-const class PageMeta {
+const mixin PageMeta {
+	
+	** Returns a URI that can be used to render the given page and context.
+	abstract Uri clientUri(Obj?[]? pageContext := null)
+	
+	** Returns the 'Content-Type' produced by this page.
+	abstract MimeType contentType()
+	
+	** Returns 'true' if the given page type is a welcome page.
+	abstract Bool isWelcomePage()
+
+	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
+	** 
+	** Note that 'pageContext' items converted their appropriate type () via BedSheet's 'ValueEncoder' service.
+	abstract Str render(Obj?[]? pageContext := null) 
+	
+	** Returns a URI that can be used to call the given event
+	abstract Uri eventUri(Str eventName, Obj?[]? eventContext := null)
+	
+	@NoDoc
+	abstract internal Uri serverGlob()
+	
+	@NoDoc
+	abstract internal Uri eventGlob(Method eventMethod)
+	
+	@NoDoc
+	abstract internal Type[] contextTypes()
+
+}
+
+internal const class PageMetaImpl : PageMeta {
 	
 	@Config { id="afPillow.welcomePage" }
 	@Inject private const Str 					welcomePage
@@ -15,7 +45,6 @@ const class PageMeta {
 	@Inject	private const ClientUriResolver		clientUriResolver
 	@Inject	private const HttpRequest			httpRequest
 	@Inject	private const ComponentMeta			componentMeta
-	// TODO: afBedSheet-1.3.2, valueEnc sig change
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const EfanXtra				efanXtra
 
@@ -26,8 +55,7 @@ const class PageMeta {
 		this.pageType = pageType
 	}
 	
-	** Returns a URI that can be used to render the given page and context.
-	Uri clientUri(Obj[]? context := null) {
+	override Uri clientUri(Obj?[]? context := null) {
 		clientUri := clientUriResolver.clientUri(pageType)
 
 		// add extra WebMod paths - but only if we're part of a web request!
@@ -37,14 +65,13 @@ const class PageMeta {
 		// convert welcome pages
 		if (isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
-		
+
 		// append context
 		if (context != null) {
 			contextTypes := contextTypes
 			if (contextTypes.size != context.size)
 				throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, contextTypes, context))
-			args := context.map { valueEncoders.toClient(Str#, it) ?: "" }.join("/")
-			clientUri = clientUri.plusSlash + args.toUri			
+			clientUri = clientUri.plusSlash + ctxToUri(context)
 		}
 
 		// if rendering the given page, append PageContext params
@@ -52,37 +79,42 @@ const class PageMeta {
 		if (context == null && renderingType == pageType) {
 			page 	:= RenderingPageMetaImpl.peek.page
 			fields	:= pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
-			args	:= fields.map { it.get(page) }.map { valueEncoders.toClient(Str#, it) ?: "" }.join("/")
-			clientUri = clientUri.plusSlash + args.toUri
+			args	:= fields.map { it.get(page) }
+			clientUri = clientUri.plusSlash + ctxToUri(args)
 		}
 
 		return clientUri
 	}
 	
-	** Returns the 'Content-Type' produced by this page.
-	MimeType contentType() {
+	override MimeType contentType() {
 		contentTypeResolver.contentType(pageType)
 	}
 	
-	** Returns 'true' if the given page type is a welcome page.
-	Bool isWelcomePage() {
+	override Bool isWelcomePage() {
 		clientUri := clientUriResolver.clientUri(pageType)
 		return isWelcomeUri(clientUri)
 	}
 	
-	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
-	** 
-	** Note that 'pageContext' items converted their appropriate type () via BedSheet's 'ValueEncoder' service.
-	Str render(Obj[]? pageContext) {
+	override Str render(Obj?[]? pageContext := null) {
 		page := (Page) efanXtra.component(pageType)
 		return RenderingPageMetaImpl.pushRenderingPage(page, pageType) |->Str| {
 			return efanXtra.render(pageType, pageContext)
 		}
 	}
 	
+	override Uri eventUri(Str eventName, Obj?[]? eventContext := null) {
+		eventMethod	:= pageType.methods.find { it.hasFacet(PageEvent#) || it.name.equalsIgnoreCase(eventName) } ?: throw PillowErr("Page ${pageType.qname} does not have an event method called '${eventName}'")
+		eventUri := clientUri.plusSlash + `${eventName}`
+		if (eventContext != null)
+			eventUri = eventUri.plusSlash + ctxToUri(eventContext)
+		return eventUri
+	}
+
+
+
 	// ---- Internal Methods -------------------------------------------------------------------------------------------	
 
-	internal Uri serverRegex() {
+	override Uri serverGlob() {
 		clientStr 	:= clientUriResolver.clientUri(pageType).toStr
 		noOfParams 	:= contextTypes.size
 		noOfParams.times { clientStr += "/*" }
@@ -92,7 +124,14 @@ const class PageMeta {
 		return clientUri
 	}
 
-	internal Type[] contextTypes() {
+	override Uri eventGlob(Method eventMethod) {
+		eventStr	:= eventMethod.name
+		noOfParams 	:= eventMethod.params.size
+		noOfParams.times { eventStr += "/*" }
+		return eventStr.toUri
+	}
+
+	override Type[] contextTypes() {
 		fields 	 := pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
 		initMeth := componentMeta.findMethod(pageType, InitRender#)
 		
@@ -125,5 +164,10 @@ const class PageMeta {
 	
 	private Bool isWelcomeUri(Uri clientUri) {
 		return clientUri.name.equalsIgnoreCase(welcomePage)
+	}
+	
+	Uri ctxToUri(Obj?[] context) {
+		// TODO: afBedSheet-1.3.2, valueEnc sig change
+		context.map { valueEncoders.toClient(Str#, it) ?: "" }.join("/").toUri
 	}
 }
