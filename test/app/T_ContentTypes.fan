@@ -1,8 +1,7 @@
 using afEfanXtra
 
 @NoDoc
-@PageContentType { contentType=MimeType("wot/ever") }
-@Page { uri=`/contentTypeExplicit` }
+@Page { uri=`/contentTypeExplicit`; contentType=MimeType("wot/ever") }
 const mixin T_ContentTypeExplicit : EfanComponent { }
 
 @NoDoc
