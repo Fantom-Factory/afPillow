@@ -51,7 +51,7 @@ class PillowModule {
 			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: FileHandlerEnd"])
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventUri := serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventUri := serverUri.plusSlash + pageMeta.eventMeta(eventMethod.name).eventGlob
 				qname	 := "${pageType.qname}/${eventMethod.name}"
 				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod)), ["after: FileHandlerEnd"])
 			}

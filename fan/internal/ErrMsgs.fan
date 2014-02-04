@@ -20,4 +20,8 @@ internal const class ErrMsgs {
 	static Str invalidNumberOfInitArgs(Type pageType, Type[] initTypes, Obj[] context) {
 		"Page ${pageType.qname} requires ${initTypes.size} init parameter(s) but ${context.size} were given: " + context.map { it.toStr }
 	}
+
+	static Str eventNotFound(Type pageType, Str eventName) {
+		"Page ${pageType.qname} does not have an event method called '${eventName}'"
+	}
 }
