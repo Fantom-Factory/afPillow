@@ -16,7 +16,7 @@ const mixin Page : EfanComponent {
 	** <a href="<% pages[MyPage#].clientUri %>"> My Awesome Page </a>
 	** <pre  
 	Uri clientUri() {
-		_af_pages.clientUri(typeof)
+		_af_pages.pageMeta(typeof).clientUri
 	}
 	
 }

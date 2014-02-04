@@ -42,9 +42,10 @@ class PillowModule {
 	@Contribute { serviceId="Routes" }
 	internal static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
 
-		pages.pageTypes.each |pageType| {		
-			serverUri	:= pages.serverUri(pageType)
-			initTypes	:= pages.initTypes(pageType)
+		pages.pageTypes.each |pageType| {
+			pageMeta 	:= pages.pageMeta(pageType)
+			serverUri	:= pageMeta.serverRegex
+			initTypes	:= pageMeta.contextTypes
 			
 			// allow the file system to trump pillow pages
 			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: FileHandlerEnd"])

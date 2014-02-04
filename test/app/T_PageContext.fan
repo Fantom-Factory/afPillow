@@ -10,13 +10,13 @@ const mixin T_PageContext : Page {
 	Str render() {
 		if (context == "err") {
 			try {
-				return pages.clientUri(T_PageContext#, ["Muhaha", `/blah`]).toStr
+				return pages.pageMeta(T_PageContext#).clientUri(["Muhaha", `/blah`]).toStr
 			} catch (Err e) {
 				return e.msg
 			}
 		}
 		return
-		"context=${context}\nclientUri=" + pages.clientUri(T_PageContext#) + "\nclientUri=" + pages.clientUri(T_PageContext#, ["Dude"])
+		"context=${context}\nclientUri=" + pages.pageMeta(T_PageContext#).clientUri + "\nclientUri=" + pages.pageMeta(T_PageContext#).clientUri(["Dude"])
 	}
 }
 
@@ -31,15 +31,15 @@ const mixin T_PageContextMulti : Page {
 	Str render() {
 		if (name == "err") {
 			try {
-				return pages.clientUri(T_PageContextMulti#, ["Muhaha"]).toStr
+				return pages.pageMeta(T_PageContextMulti#).clientUri(["Muhaha"]).toStr
 			} catch (Err e) {
 				return e.msg
 			}
 		}
 		return 
 		"context=${name}/${age}
-		 clientUri=${pages.clientUri(T_PageContextMulti#)}
-		 singleUri=" + pages.clientUri(T_PageContext#, ["Dude"]) + "\n" +
-		 "clientUri=" + pages.clientUri(T_PageContextMulti#, ["Dude", 666])
+		 clientUri=${pages.pageMeta(T_PageContextMulti#).clientUri}
+		 singleUri=" + pages.pageMeta(T_PageContext#).clientUri(["Dude"]) + "\n" +
+		 "clientUri=" + pages.pageMeta(T_PageContextMulti#).clientUri(["Dude", 666])
 	}
 }
