@@ -83,19 +83,20 @@ internal const class PagesImpl : Pages {
 		if (context != null) {
 			initTypes := initTypes(pageType)
 			if (initTypes.size != context.size)
-				throw Err("Dude!")	// TODO: better err msg
-			args := context.map { valueEncoders.toValue(Str#, it) }.join("/")
+				throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, initTypes, context))
+			args := context.map { valueEncoders.toClient(Str#, it) ?: "" }.join("/")
 			clientUri = clientUri.plusSlash + args.toUri			
 		}
 
-		// if rendering, append PageContext params
-		page := RenderingPageMetaImpl.peek?.page
-		if (context == null && page != null) {
+		// if rendering the given page, append PageContext params
+		renderingType := RenderingPageMetaImpl.peek?.type
+		if (context == null && renderingType == pageType) {
+			page 	:= RenderingPageMetaImpl.peek.page
 			fields	:= pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
-			args	:= fields.map { it.get(page) }.map { valueEncoders.toValue(Str#, it) }.join("/")
+			args	:= fields.map { it.get(page) }.map { valueEncoders.toClient(Str#, it) ?: "" }.join("/")
 			clientUri = clientUri.plusSlash + args.toUri
 		}
-		
+
 		return clientUri
 	}
 	
@@ -120,10 +121,13 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Uri serverUri(Type pageType) {
-		clientUri := clientUri(pageType).toStr
-		noOfParams := initTypes(pageType).size
-		noOfParams.times { clientUri += "/*" }
-		return `${clientUri}`
+		clientStr 	:= clientUriResolver.clientUri(pageType).toStr
+		noOfParams 	:= initTypes(pageType).size
+		noOfParams.times { clientStr += "/*" }
+		clientUri	:= clientStr.toUri
+		if (isWelcomeUri(clientUri))
+			clientUri = clientUri.parent
+		return clientUri
 	}
 	
 	// move to PageMeta

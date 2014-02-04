@@ -16,4 +16,8 @@ internal const class ErrMsgs {
 	static Str renderingPageMetaNotRendering() {
 		"Pillow is NOT currently rendering a page."
 	}
+
+	static Str invalidNumberOfInitArgs(Type pageType, Type[] initTypes, Obj[] context) {
+		"Page ${pageType.qname} requires ${initTypes.size} init parameter(s) but ${context.size} were given: " + context.map { it.toStr }
+	}
 }

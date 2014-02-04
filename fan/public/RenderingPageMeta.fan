@@ -36,7 +36,8 @@ internal const class RenderingPageMetaImpl : RenderingPageMeta {
 	}
 }
 
-internal class RenderingPageMetaState {
-	Page? page
-	Type? type
+internal const class RenderingPageMetaState {
+	const Page page
+	const Type type
+	new make(|This|in) { in(this) }
 }
