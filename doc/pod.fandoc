@@ -1,12 +1,16 @@
 Overview [#overview]
 ********************
+'Pillow' is a web framework that maps URIs to Pillow Pages, letting them react to RESTful events.
+
+'Pillow'...
+ - Is a [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` framework
+ - Extends [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components
+ - Plays great with [Slim]`http://www.fantomfactory.org/pods/afSlim`
+ - Runs on [IoC]`http://www.fantomfactory.org/pods/afIoc`
+
 'Pillow' - Something for your web app to get its teeth into!
 
-'Pillow' is a library for integrating [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components with the
-[BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` web framework.
-It automatically routes web requests to pages and returns the rendered response.
 
- - Integrates efanXtra components
 
 Install [#install]
 ******************
@@ -101,6 +105,22 @@ Examples:
   `/admin/secret` --> AdminSecret.fan
 
 Or you can use the [@Page]`Page` facet to define an explicit URI.
+
+
+
+Welcome Pages [#welcomePages]
+*****************************
+'Pillow' supports the routing of welcome pages, also known as directory pages.
+
+If 'Pillow' recieves a directory uri (a uri that ends in /slash/) then it renders a
+[welcome page]`PillowConfigIds.welcomePage`, which defaults to 'Index'.
+Examples:
+
+  `/`        --> Index.fan
+  `/admin/`  --> AdminIndex.fan
+
+More can be read about directory URLs in the article:
+[Should Your URLs Point to the Directory or the Index Page?]`http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml`
 
 
 
@@ -199,22 +219,6 @@ Use the 'PageMeta.eventUri(name, context)' to create full event URIs that can be
 
 
 
-Welcome Pages [#welcomePages]
-*****************************
-'Pillow' supports the routing of welcome pages, also known as directory pages.
-
-If 'Pillow' recieves a directory uri (a uri that ends in /slash/) then it renders a
-[welcome page]`PillowConfigIds.welcomePage`, which defaults to 'Index'.
-Examples:
-
-  `/`        --> Index.fan
-  `/admin/`  --> AdminIndex.fan
-
-More can be read about directory URLs in the article:
-[Should Your URLs Point to the Directory or the Index Page?]`http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml`
-
-
-
 Content Type [#contentType]
 ***************************
 Page template files should use a double extension in their name, for example,
@@ -235,8 +239,12 @@ Release Notes [#releaseNotes]
 *****************************
 v0.0.10 [#v0.0.10]
 ------------------
- - New: 'PageMeta' object
- -
+ - New: Added '@PageEvent' methods allowing URIs to be mapped to page methods.
+ - New: Added '@PageContext' fields that can replace '@InitRender' methods.
+ - New: Added the 'PageMeta' class to wrap up, um, page meta data! Oh, and attached an instance to the rendering pages. (Deleted 'RenderPageMeta'.)
+ - New: Added 'PageMetaResponseProcessor' that renders Pillow pages when 'PageMeta' instances are returned as [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response objects.
+ - New: Added 'template' uri to '@Page'
+ - Chg: 'Page' is now a facet, incorporating fields from '@PageUri' and '@PageContentType' (which have now been deleted).
 
 v0.0.8 [#v0.0.8]
 ----------------
