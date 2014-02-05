@@ -170,8 +170,7 @@ internal const class PageMetaImpl : PageMeta {
 	}
 
 	override Uri ctxToUri(Obj?[] context) {
-		// TODO: afBedSheet-1.3.2, valueEnc sig change
-		context.map { valueEncoders.toClient(Str#, it) ?: "" }.join("/").toUri
+		context.map { valueEncoders.toClient(it.typeof, it) ?: "" }.join("/").toUri
 	}
 
 	// ---- Private Methods --------------------------------------------------------------------------------------------	

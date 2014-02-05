@@ -111,17 +111,6 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	override Bool matchSegments(Str?[] segments) {
 		matchesParams(initParams, segments)
 	}
-
-	// TODO: afBedSheet-1.3.2, kill this matchesParams()
-	static Bool matchesParams(Type[] params, Str?[] segments) {
-		if (segments.size > params.size)
-			return false
-		return params.all |Type param, i->Bool| {
-			if (i >= segments.size)
-				return false
-			return (segments[i] == null) ? param.isNullable : true
-		}
-	}
 	
 	override Obj? createResponse(Str?[] segments) {
 		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
@@ -129,7 +118,6 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 }
 
-** Copied from 'afBedSheet.MethodCallFactory'
 internal const class EventCallerFactory : RouteResponseFactory {
 	const Type 		pageType
 	const Type[]	initParams
@@ -149,28 +137,6 @@ internal const class EventCallerFactory : RouteResponseFactory {
 			return false
 		eventSegs := segments[initParams.size..-1]
 		return matchesMethod(eventMethod, eventSegs)
-	}
-
-	// TODO: afBedSheet-1.3.2, kill this matchesMethod()
-	static Bool matchesMethod(Method method, Str?[] segments) {
-		if (segments.size > method.params.size)
-			return false
-		return method.params.all |Param param, i->Bool| {
-			if (i >= segments.size)
-				return param.hasDefault
-			return (segments[i] == null) ? param.type.isNullable : true
-		}
-	}
-
-	// TODO: afBedSheet-1.3.2, kill this matchesParams()
-	static Bool matchesParams(Type[] params, Str?[] segments) {
-		if (segments.size > params.size)
-			return false
-		return params.all |Type param, i->Bool| {
-			if (i >= segments.size)
-				return false
-			return (segments[i] == null) ? param.isNullable : true
-		}
 	}
 
 	override Obj? createResponse(Str?[] segments) {

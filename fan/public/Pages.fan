@@ -79,8 +79,10 @@ internal const class PagesImpl : Pages {
 		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
-		return efanLibraries.library(pageType).callMethod(pageType, initArgs) |->Obj?| {
-			return eventMethod.callOn(page, eventArgs)
+		return PageMeta.push(pageMeta) |->Obj?| {
+			return efanLibraries.library(pageType).callMethod(pageType, initArgs) |->Obj?| {
+				return eventMethod.callOn(page, eventArgs)
+			}
 		}
 	}
 	

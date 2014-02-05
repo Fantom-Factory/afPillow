@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("0.0.9")
+		version = Version("0.0.10")
 
 		meta	= [	
 			"org.name"		: "Alien-Factory",
@@ -30,8 +30,8 @@ class Build : BuildPod {
 			
 			"afIoc 1.5.2+", 
 			"afIocConfig 1.0.2+", 
-			"afBedSheet 1.3.0+", 
-			"afEfanXtra 1.0.8+", 
+			"afBedSheet 1.3.2+", 
+			"afEfanXtra 1.0.10+", 
 			"afPlastic 1.0.10+",
 
 			"afButter 0+",
