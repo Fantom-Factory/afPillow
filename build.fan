@@ -14,7 +14,7 @@ class Build : BuildPod {
 			"proj.uri"		: "http://www.fantomfactory.org/pods/afPillow",
 			"vcs.uri"		: "https://bitbucket.org/AlienFactory/afpillow",
 			"license.name"	: "BSD 2-Clause License",	
-			"repo.private"	: "false",
+			"repo.private"	: "true",
 			
 			"afIoc.module"	: "afPillow::PillowModule"
 		]
@@ -34,8 +34,8 @@ class Build : BuildPod {
 			"afEfanXtra 1.0.10+", 
 			"afPlastic 1.0.10+",
 
-			"afButter 0+",
-			"afBounce 0+"
+			"afButter 0.0.4+",
+			"afBounce 0.0.6+"
 		]
 
 		srcDirs = [`test/unit-tests/`, `test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
@@ -49,7 +49,7 @@ class Build : BuildPod {
 	override Void compile() {
 		// exclude test code when building the pod
 		srcDirs = srcDirs.exclude { it.toStr.startsWith("test/") }
-		resDirs = resDirs.exclude { it.toStr.startsWith("res/test/") }
+		resDirs = resDirs.exclude { it.toStr.startsWith("test/") }
 		
 		super.compile
 		
