@@ -51,12 +51,13 @@ class PillowModule {
 			initTypes	:= pageMeta.contextTypes
 			
 			// allow the file system to trump pillow pages
-			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes)), ["after: PillowStart", "before: PillowEnd"])
+			config.addOrdered(pageType.qname, Route(serverUri, PageRenderFactory(pageType, initTypes), pageMeta.httpMethod), ["after: PillowStart", "before: PillowEnd"])
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventUri := serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
-				qname	 := "${pageType.qname}/${eventMethod.name}"
-				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod)), ["after: PillowStart", "before: PillowEnd"])
+				pageEvent	:= (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])	// Stoopid F4 	
+				eventUri 	:= serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
+				qname	 	:= "${pageType.qname}/${eventMethod.name}"
+				config.addOrdered(qname, Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod), ["after: PillowStart", "before: PillowEnd"])
 			}
 		}
 

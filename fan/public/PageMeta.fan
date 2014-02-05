@@ -40,6 +40,8 @@ const mixin PageMeta {
 	** Returns a new 'PageMeta' with the given page context.
 	abstract PageMeta withContext(Obj?[]? pageContext)
 	
+	abstract Str httpMethod()
+	
 	@NoDoc
 	abstract Uri serverGlob()
 	
@@ -128,6 +130,11 @@ internal const class PageMetaImpl : PageMeta {
 	override PageMeta withContext(Obj?[]? pageContext) {
 		registry.autobuild(PageMeta#, [pageType, pageContext, true])
 	}
+	
+	override Str httpMethod() {
+		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
+		return page.httpMethod
+	}
 
 	// ---- Internal Methods -------------------------------------------------------------------------------------------	
 
@@ -206,6 +213,10 @@ internal const class PageMetaProxy : PageMeta {
 
 	override PageMeta withContext(Obj?[]? pageContext) {
 		PageMeta.peek(true).withContext(pageContext)
+	}
+	
+	override Str httpMethod() {
+		PageMeta.peek(true).httpMethod
 	}
 	
 	override Uri serverGlob() {

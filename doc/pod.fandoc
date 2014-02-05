@@ -243,6 +243,7 @@ v0.0.10 [#v0.0.10]
  - New: Added '@PageContext' fields that can replace '@InitRender' methods.
  - New: Added the 'PageMeta' class to wrap up, um, page meta data! Oh, and attached an instance to the rendering pages. (Deleted 'RenderPageMeta'.)
  - New: Added 'PageMetaResponseProcessor' that renders Pillow pages when 'PageMeta' instances are returned as [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response objects.
+ - New: Added 'httpMethod' field to '@Page' and '@PageEvent'
  - New: Added 'template' uri to '@Page'
  - Chg: 'Page' is now a facet, incorporating fields from '@PageUri' and '@PageContentType' (which have now been deleted).
 
