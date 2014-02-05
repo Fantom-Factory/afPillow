@@ -33,4 +33,9 @@ facet class Page {
 	** const mixin Matrix : EfanComponent { ... }
 	** <pre
 	const MimeType? contentType
+	
+	** The HTTP method the Page should respond to.
+	** 
+	** Defaults to 'GET'
+	const Str httpMethod	:= "GET"
 }
