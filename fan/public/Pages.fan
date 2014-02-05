@@ -5,19 +5,29 @@ using afEfanXtra::EfanLibraries
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
 
-** (Service) - Methods for discovering and rendering pages.
+** (Service) - Methods for discovering Pillow pages.
 const mixin Pages {
-
-	** Returns all page types.
+	
+	** Returns all Pillow page types.
 	abstract Type[] pageTypes()
 	
+	** Create 'PageMeta' for the given page type and context. 
+	** 
+	** (Note: 'pageContext' are the arguments to the '@InitRender' method, if any.) 
 	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext)
 	
 	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
+	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
+	** 
+	** Note that 'pageContext' items converted their appropriate type via BedSheet's 'ValueEncoder' service.
 	@NoDoc
-	abstract Text renderPageToText(Type pageType, Obj?[] pageContext)
+	abstract Text renderPage(Type pageType, Obj?[] pageContext)
+
+	@NoDoc
+	abstract Text renderPageMeta(PageMeta pageMeta)
 
 	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
+	** Executes the page event in the given page context.
 	@NoDoc
 	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
 	
@@ -34,9 +44,7 @@ internal const class PagesImpl : Pages {
 
 	new make(|This| in) {
 		in(this) 
-
 		pages := Utils.makeMap(Str#, Type#)
-
 		efanXtra.libraries.each |libName| {
 			efanXtra.componentTypes(libName).findAll { it.hasFacet(Page#) }.each {
 				pages[clientUriResolver.clientUri(it).toStr] = it 
@@ -53,11 +61,16 @@ internal const class PagesImpl : Pages {
 		registry.autobuild(PageMeta#, [pageType, pageContext])
 	}
 
-	override Text renderPageToText(Type pageType, Obj?[] pageContext) {
-		meta	:= pageMeta(pageType, pageContext)
-		args 	:= convertArgs(pageContext, meta.contextTypes)
-		pageStr := meta.render(args)
-		return Text.fromMimeType(pageStr, meta.contentType)
+	override Text renderPage(Type pageType, Obj?[] pageContext) {
+		renderPageMeta(pageMeta(pageType, pageContext))
+	}
+
+	override Text renderPageMeta(PageMeta pageMeta) {
+		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
+		pageStr	 := PageMeta.push(pageMeta) |->Str| {
+			return efanXtra.render(pageMeta.pageType, pageArgs)
+		}
+		return Text.fromMimeType(pageStr, pageMeta.contentType)
 	}
 
 	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {

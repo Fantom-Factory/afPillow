@@ -4,8 +4,11 @@ using afEfanXtra
 @NoDoc
 @Page { uri=`/pageContextStr`; template=`fan://afEfanXtra/res/viaRenderMethod.efan`}
 const mixin T_PageContext : EfanComponent {
-	@Inject			abstract Pages 	pages
-	@PageContext	abstract Str 	context
+	@Inject	abstract Pages 		pages
+	@Inject	abstract PageMeta 	pageMeta
+
+	@PageContext	
+			abstract Str 		context
 	
 	Str render() {
 		if (context == "err") {
@@ -16,7 +19,7 @@ const mixin T_PageContext : EfanComponent {
 			}
 		}
 		return
-		"context=${context}\nclientUri=" + pages.pageMeta(T_PageContext#, null).pageUri + "\nclientUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri
+		"context=${context}\nclientUri=" + pageMeta.pageUri + "\nclientUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri
 	}
 }
 
@@ -24,7 +27,9 @@ const mixin T_PageContext : EfanComponent {
 @NoDoc
 @Page { uri=`/pageContextStrMulti`; template=`fan://afEfanXtra/res/viaRenderMethod.efan`}
 const mixin T_PageContextMulti : EfanComponent {
-	@Inject			abstract Pages	pages	
+	@Inject	abstract Pages		pages	
+	@Inject	abstract PageMeta 	pageMeta
+	
 	@PageContext	abstract Str?	name
 	@PageContext	abstract Int?	age
 
@@ -38,7 +43,7 @@ const mixin T_PageContextMulti : EfanComponent {
 		}
 		return 
 		"context=${name}/${age}
-		 clientUri=${pages.pageMeta(T_PageContextMulti#, null).pageUri}
+		 clientUri=${pageMeta.pageUri}
 		 singleUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri + "\n" +
 		 "clientUri=" + pages.pageMeta(T_PageContextMulti#, ["Dude", 666]).pageUri
 	}
