@@ -14,7 +14,7 @@ class PillowModule {
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
 		binder.bind(ClientUriResolver#)
-		binder.bind(PageMeta#, PageMetaPeekABoo#)
+		binder.bind(PageMeta#, PageMetaProxy#).withoutProxy	// we supply our own proxy!
 
 //		binder.bindImpl(Routes#).withId("PillowRoutes")
 	}
@@ -40,7 +40,7 @@ class PillowModule {
 
 //	@Contribute { serviceId="PillowRoutes" }
 	@Contribute { serviceId="Routes" }
-	internal static Void contributeRoutes(OrderedConfig config, Pages pages, ComponentMeta componentMeta) {
+	internal static Void contributeRoutes(OrderedConfig config, Pages pages, Registry registry) {
 
 		config.addPlaceholder("PillowStart", ["after: FileHandlerEnd"])
 		config.addPlaceholder("PillowEnd", 	 ["after: PillowStart"])
@@ -68,6 +68,11 @@ class PillowModule {
 //		}
 	}
 
+	@Contribute { serviceType=ResponseProcessors# }
+	static Void contributeResponseProcessors(MappedConfig config) {
+		config[PageMeta#] = config.autobuild(PageMetaResponseProcessor#)
+	}
+	
 	@Contribute { serviceType=EfanTemplateFinders# }
 	internal static Void contributeEfanTemplateFinders(OrderedConfig config) {
 		config.addOrdered("FindByPageFacetValue", FindEfanByPageFacetValue())
@@ -119,7 +124,7 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	
 	override Obj? createResponse(Str?[] segments) {
 		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
-		MethodCall(Pages#renderPageToText, [pageType, segments])
+		MethodCall(Pages#renderPage, [pageType, segments])
 	}
 }
 

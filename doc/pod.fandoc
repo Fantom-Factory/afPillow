@@ -6,7 +6,7 @@ Overview [#overview]
 [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` web framework.
 It automatically routes web requests to pages and returns the rendered response.
 
-
+ - Integrates efanXtra components
 
 Install [#install]
 ******************
@@ -30,43 +30,36 @@ Hello Mum! I'm <%= age %> years old!
 Example.fan:
 pre>
 using afIoc
+using afBedSheet
 using afEfanXtra
 using afPillow
 
-
-
 // ---- The only class you need! ----
 
-const mixin Example : Page {
-  abstract Int age
+@Page
+const mixin Example : EfanComponent {
 
-  @InitRender
-  Void initRender(Int age) {
-    this.age = age
-  }
+    @PageContext
+    abstract Int age
 }
 
-
-
-// ---- Standard BedSheet Support Classes ----
+// ---- Standard Main Class ----
 
 class Main {
-  Int main() {
-    afBedSheet::Main().main([AppModule#.qname, "8069"])
-  }
+    Int main() {
+        afBedSheet::Main().main([AppModule#.qname, "8069"])
+    }
 }
 
-// SubModule only needed when running from a script
+// ---- Support class, needed when running from a script ----
+
 @SubModule { modules=[EfanXtraModule#, PillowModule#] }
 class AppModule {
-
-   // Contribution needed when running from a script
-   @Contribute { serviceType=EfanTemplateDirectories# }
-   static Void contributeEfanDirs(OrderedConfig config) {
-
-      // Look for Example.efan in the same dir as this file
-      config.add(`./`)
-   }
+    @Contribute { serviceType=EfanTemplateDirectories# }
+    static Void contributeEfanDirs(OrderedConfig config) {
+        // Look for Example.efan in the same dir as this file
+        config.add(`./`)
+    }
 }
 <pre
 
@@ -86,46 +79,123 @@ Then point your browser at `http://localhost:8069/example/42`:
 
 Usage [#usage]
 **************
-To create a web page, define a 'const mixin' that extends [Page]`Page`. Example:
+To create a web page, define an 'EfanComponent' that is annotated with the [Page]`Page` facet. Example:
 
 pre>
-  using afPillow
+  using afPillow::Page
+  using afEfanXtra::EfanComponent
 
-  const mixin Admin : Page {
+  @Page
+  const mixin Admin : EfanComponent {
     ...
   }
 <pre
 
 [Pages]`Page` are [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components and behave in exactly the same way.
 
-'Pillow' will automatically route uris with your page name, to your page.
+'Pillow' will automatically route URLs with your page name, to your page.
 Camel casing class names results in a '/' delimiter.
 Examples:
 
   `/admin`        --> Admin.fan
   `/admin/secret` --> AdminSecret.fan
 
-Or you can use the [@PageUri]`PageUri` facet to define an explicit URI.
+Or you can use the [@Page]`Page` facet to define an explicit URI.
 
-As seen in the [Quick Start]`#quickStart` example, requests are automatically mapped to the '@InitRender' methods of your Pages,
-with uri segments mapped to '@InitRender' parameters. If the '@InitRender' method returns a BedSheet response, page rendering
-is aborted and the response object is processed instead. Example:
+
+
+Page Contexts [#pageContexts]
+*****************************
+As seen in the [Quick Start]`#quickStart` example, parts of the request path are automatically mapped to '@PageContext' fields.
+In our exmaple, the '42' in 'http://localhost:8069/example/42' is mapped to the 'age' page context field.
+
+Declaring page context fields is actually shorthard for assigning fields manually from the '@InitRender' method.
+The [Quick Start]`#quickStart` example could be re-written long hand as:
 
 pre>
-using afBedSheet
-using afPillow
+@Page
+const mixin Example : EfanComponent {
+    abstract Int age
 
-const mixin Example : Page {
-
-  @InitRender
-  Obj? initRender(Int age) {
-    if (age > 69)
-      return Redirect.movedTemporarily(`/too-old`)
-
-    return null
-  }
+    @InitRender
+    Void initRender(Int age) {
+        this.age = age
+    }
 }
 <pre
+
+Note that a Pillow Page may choose to have *either* an '@InitRender' method or '@PageContext' fields, not both.
+Also note that page context objects need to be immutable ('const' classes).
+
+
+
+Page Meta [#pageMeta]
+*********************
+The `PageMeta` class holds information about the Pillow Page currently being rendered.
+Obviously, using 'PageMeta' in a page class, returns information about itself! Which is quite handy.
+
+Arguably the most useful method is 'pageUri()' which returns a URI that can be used, by a client,
+to render the page complete with the current page context.
+You can create new PageMeta instances with different page context by using the 'withContext()' method.
+Using our example again:
+
+pre>
+@Page
+const mixin Example : EfanComponent {
+    @Inject PageMeta pageMeta
+
+    @PageContext
+    abstract Int age
+
+    Str renderLinkToSelf() {
+        return "<a href='${pageMeta.pageUri}'>Link to 42</a>"
+    }
+
+    Str renderLinkTo69() {
+        page69 := pageMeta.withContext([69]).pageUri
+        return "<a href='${page69}'>Link to 69</a>"
+    }
+}
+<pre
+
+'PageMeta' instances are [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response objects and may be returned from request handlers.
+The handler then renders the Pillow page.
+Use the 'pageMeta()' method in the `Pages` service to create PageMeta objects for arbituary pages.
+
+
+
+Page Events [#pageEvents]
+*************************
+Page events allow pages to respond to RESTful actions by mapping URIs to page event methods.
+Page event methods are called in the context of the page they are defined.
+Denote page events with the '@PageEvent' facet.
+
+Lets change our example so that the page context is a 'Str' and introduce an event called 'loves':
+
+pre>
+@Page
+const mixin Example : EfanComponent {
+    @Inject PageMeta pageMeta
+
+    @PageContext
+    abstract Str name
+
+    @PageEvent
+    Obj loves(Str obj) {
+        echo("${name} loves ${obj}!")
+        return pageMeta
+    }
+}
+<pre
+
+We can call the event using the URI 'http://localhost:8069/example/Emma/loves/sausage'.
+
+'/example/Emma' would render the page, but should a link to '/example/Emma/loves/sausage' be clicked, then the page event 'loves' is called.
+
+Page events may return any standard [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response object.
+Above we return the 'pageMeta' to re-render the page with a page context of 'Emma'.
+
+Use the 'PageMeta.eventUri(name, context)' to create full event URIs that can be used by clients.
 
 
 
@@ -140,7 +210,7 @@ Examples:
   `/`        --> Index.fan
   `/admin/`  --> AdminIndex.fan
 
-More can be read about directory urls in the article:
+More can be read about directory URLs in the article:
 [Should Your URLs Point to the Directory or the Index Page?]`http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml`
 
 
@@ -157,15 +227,16 @@ that is sent in the HTTP response header. In our example, the 'Content-Type' wou
 
 If a double extension is not used, or not know, then the default content type, as defined by the config value, is used.
 
-Use the [@PageContentType]`PageContentType` facet to explicitly set the content type.
+Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 
 
 Release Notes [#releaseNotes]
 *****************************
 v0.0.10 [#v0.0.10]
-----------------
- - Chg: Renamed 'PageRenderMeta' -> 'RenderingPageMeta'.
+------------------
+ - New: 'PageMeta' object
+ -
 
 v0.0.8 [#v0.0.8]
 ----------------

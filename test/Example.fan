@@ -1,22 +1,18 @@
 using afIoc
+using afBedSheet
 using afEfanXtra
 using afPillow
 
-
-
 // ---- The only class you need! ----
 
-const mixin Example : Page {
-  abstract Int age
+@Page
+const mixin Example : EfanComponent {
 
-  Void initRender(Int age) {
-    this.age = age
-  }
+    @PageContext
+    abstract Int age
 }
 
-
-
-// ---- Standard BedSheet Support Classes ----
+// ---- Standard Main Class ----
 
 class Main {
     Int main() {
@@ -24,14 +20,13 @@ class Main {
     }
 }
 
-// SubModule only needed when launching from a script
+// ---- Support class, needed when running from a script ----
+
 @SubModule { modules=[EfanXtraModule#, PillowModule#] }
 class AppModule {
-
-   @Contribute { serviceType=EfanTemplateDirectories# }
-   static Void contributeEfanDirs(OrderedConfig config) {
-
-      // look for Example.efan in the same dir as this file
-      config.add(`./`)
-   }
+    @Contribute { serviceType=EfanTemplateDirectories# }
+    static Void contributeEfanDirs(OrderedConfig config) {
+        // Look for Example.efan in the same dir as this file
+        config.add(`./`)
+    }
 }

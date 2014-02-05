@@ -1,4 +1,5 @@
 using afIoc::Inject
+using afIoc::Registry
 using afIocConfig::Config
 using afEfanXtra::EfanXtra
 using afEfanXtra::ComponentMeta
@@ -7,28 +8,37 @@ using afBedSheet::ValueEncoders
 using afBedSheet::HttpRequest
 using concurrent::Actor
 
-** (Service) - Returns details about the page that is currently being rendered.
+** (Service) - Returns details about the Pillow page currently being rendered.
+** 
+** 'PageMeta' objects may also be created by the `Pages` service.
 const mixin PageMeta {
 	
 	** Returns the page that this Meta object wraps.
 	abstract Type pageType()
+
+	** Returns the context used to initialise this page.
+	abstract Obj?[] pageContext()
+
+	** Returns a URI that can be used to render the given page. 
+	** The URI takes into account:
+	**  - Any welcome URI -> home page conversions
+	**  - The context used to render this page
+	**  - Any parent 'WebMods'
+	abstract Uri pageUri()
 	
 	** Returns the 'Content-Type' produced by this page.
+	** 
+	** Returns `PillowConfigIds#defaultContextType` if it can not be determined.
 	abstract MimeType contentType()
 	
-	** Returns 'true' if the given page type is a welcome page.
+	** Returns 'true' if the page is a welcome page.
 	abstract Bool isWelcomePage()
-
-	** Returns a URI that can be used to render the given page and context.
-	abstract Uri pageUri()
 
 	** Returns a URI for a given event - use to create client side URIs to call the event.
 	abstract Uri eventUri(Str eventName, Obj?[]? eventContext)
 
-	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
-	** 
-	** Note that 'pageContext' items converted their appropriate type () via BedSheet's 'ValueEncoder' service.
-	abstract Str render(Obj?[]? pageContext) 
+	** Returns a new 'PageMeta' with the given page context.
+	abstract PageMeta withContext(Obj?[]? pageContext)
 	
 	@NoDoc
 	abstract Uri serverGlob()
@@ -66,14 +76,36 @@ internal const class PageMetaImpl : PageMeta {
 	@Inject	private const ComponentMeta			componentMeta
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const EfanXtra				efanXtra
+	@Inject	private const Registry				registry
 
-	override const Type pageType
-	override const Uri 	pageUri
+	override const Type		pageType
+	override const Obj?[]	pageContext
 	
 	internal new make(Type pageType, Obj?[]? pageContext, |This|in) {
-		this.pageType 	= pageType
+		this.pageType 		= pageType
+		this.pageContext	= pageContext ?: Obj?#.emptyList
 		in(this)
-		this.pageUri	= clientUri(pageContext)
+	}
+
+	override Uri pageUri() {
+		clientUri := clientUriResolver.clientUri(pageType)
+
+		// add extra WebMod paths - but only if we're part of a web request!
+		if (Actor.locals["web.req"] != null && httpRequest.modBase != `/`)
+			clientUri = httpRequest.modBase + clientUri.toStr[1..-1].toUri
+
+		// convert welcome pages
+		if (isWelcomeUri(clientUri))
+			clientUri = clientUri.parent
+
+		// append page context
+		// 'checked' because some server operations don't care about the URI, they just want the glob  
+		contextTypes := contextTypes
+		if (contextTypes.size != pageContext.size)
+			throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, contextTypes, pageContext))
+		clientUri = clientUri.plusSlash + ctxToUri(pageContext)
+
+		return clientUri
 	}
 	
 	override MimeType contentType() {
@@ -85,18 +117,16 @@ internal const class PageMetaImpl : PageMeta {
 		return isWelcomeUri(clientUri)
 	}
 	
-	override Str render(Obj?[]? pageContext) {
-		return PageMeta.push(this) |->Str| {
-			return efanXtra.render(pageType, pageContext)
-		}
-	}
-	
 	override Uri eventUri(Str eventName, Obj?[]? eventContext) {
 		eventMethod(eventName)		
 		eventUri 	:= pageUri.plusSlash + `${eventName}`
 		if (eventContext != null)
 			eventUri = eventUri.plusSlash + ctxToUri(eventContext)
 		return eventUri
+	}
+	
+	override PageMeta withContext(Obj?[]? pageContext) {
+		registry.autobuild(PageMeta#, [pageType, pageContext, true])
 	}
 
 	// ---- Internal Methods -------------------------------------------------------------------------------------------	
@@ -139,37 +169,6 @@ internal const class PageMetaImpl : PageMeta {
 
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
 
-	private Uri clientUri(Obj?[]? context) {
-		clientUri := clientUriResolver.clientUri(pageType)
-
-		// add extra WebMod paths - but only if we're part of a web request!
-		if (Actor.locals["web.req"] != null && httpRequest.modBase != `/`)
-			clientUri = httpRequest.modBase + clientUri.toStr[1..-1].toUri
-
-		// convert welcome pages
-		if (isWelcomeUri(clientUri))
-			clientUri = clientUri.parent
-
-		// append context
-		if (context != null) {
-			contextTypes := contextTypes
-			if (contextTypes.size != context.size)
-				throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, contextTypes, context))
-			clientUri = clientUri.plusSlash + ctxToUri(context)
-		}
-
-		// if rendering the given page, append PageContext params
-		renderingType := PageMeta.peek(false)?.pageType
-		if (context == null && renderingType == pageType) {
-			page 	:= efanXtra.component(pageType)
-			fields	:= pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
-			args	:= fields.map { it.get(page) }
-			clientUri = clientUri.plusSlash + ctxToUri(args)
-		}
-
-		return clientUri
-	}
-	
 	private Bool isWelcomeUri(Uri clientUri) {
 		return clientUri.name.equalsIgnoreCase(welcomePage)
 	}
@@ -179,7 +178,7 @@ internal const class PageMetaImpl : PageMeta {
 	}
 }
 
-internal const class PageMetaPeekABoo : PageMeta {
+internal const class PageMetaProxy : PageMeta {
 	
 	override Type pageType() {
 		PageMeta.peek(true).pageType
@@ -189,6 +188,10 @@ internal const class PageMetaPeekABoo : PageMeta {
 		PageMeta.peek(true).pageUri
 	}
 	
+	override Obj?[] pageContext() {
+		PageMeta.peek(true).pageContext
+	}
+
 	override MimeType contentType() {
 		PageMeta.peek(true).contentType
 	}
@@ -197,12 +200,12 @@ internal const class PageMetaPeekABoo : PageMeta {
 		PageMeta.peek(true).isWelcomePage
 	}
 
-	override Str render(Obj?[]? pageContext) {
-		PageMeta.peek(true).render(pageContext)
-	}
-	
 	override Uri eventUri(Str eventName, Obj?[]? eventContext) {
 		PageMeta.peek(true).eventUri(eventName, eventContext)
+	}
+
+	override PageMeta withContext(Obj?[]? pageContext) {
+		PageMeta.peek(true).withContext(pageContext)
 	}
 	
 	override Uri serverGlob() {

@@ -1,13 +1,14 @@
 using afIoc::Inject
+using afIoc::Registry
 using afEfanXtra::EfanXtra
 using afEfanXtra::EfanXtraPrinter
 
 internal const class PillowPrinter {
 	private const static Log log := Utils.getLog(PillowPrinter#)
 
+	@Inject private	const Pages				pages
 	@Inject private	const EfanXtra 			efanExtra
 	@Inject private	const EfanXtraPrinter	exPrinter
-	@Inject private	const Pages				pages
 
 	new make(|This| in) { in(this) }
 	
