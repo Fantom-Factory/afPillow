@@ -70,8 +70,11 @@ const mixin PageMeta {
 
 internal const class PageMetaImpl : PageMeta {
 	
-	@Config { id="afPillow.welcomePage" }
-	@Inject private const Str 					welcomePage
+	@Config { id="afPillow.welcomePageName" }
+	@Inject private const Str 					welcomePageName
+	@Config { id="afPillow.welcomePageStrategy" }
+	@Inject private const WelcomePageStrategy	welcomePageStrategy
+	
 	@Inject	private const ContentTypeResolver	contentTypeResolver
 	@Inject	private const PageUriResolver		pageUriResolver
 	@Inject	private const HttpRequest			httpRequest
@@ -97,15 +100,15 @@ internal const class PageMetaImpl : PageMeta {
 			clientUri = httpRequest.modBase + clientUri.toStr[1..-1].toUri
 
 		// convert welcome pages
-		if (isWelcomeUri(clientUri))
+		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
 
 		// append page context
-		// 'checked' because some server operations don't care about the URI, they just want the glob  
 		contextTypes := contextTypes
 		if (contextTypes.size != pageContext.size)
 			throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, contextTypes, pageContext))
-		clientUri = clientUri.plusSlash + ctxToUri(pageContext)
+		if (!contextTypes.isEmpty)
+			clientUri = clientUri.plusSlash + ctxToUri(pageContext)
 
 		return clientUri
 	}
@@ -143,7 +146,7 @@ internal const class PageMetaImpl : PageMeta {
 		noOfParams 	:= contextTypes.size
 		noOfParams.times { clientStr += "/*" }
 		clientUri	:= clientStr.toUri
-		if (isWelcomeUri(clientUri))
+		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
 		return clientUri
 	}
@@ -176,7 +179,7 @@ internal const class PageMetaImpl : PageMeta {
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
 
 	private Bool isWelcomeUri(Uri clientUri) {
-		return clientUri.name.equalsIgnoreCase(welcomePage)
+		return clientUri.name.equalsIgnoreCase(welcomePageName)
 	}
 	
 	private Method eventMethod(Str eventName) {

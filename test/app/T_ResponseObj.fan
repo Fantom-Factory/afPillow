@@ -9,7 +9,7 @@ const mixin T_ResponseObj : EfanComponent {
 	
 	@InitRender
 	Void init() {
-		throw ReProcessErr(pages.pageMeta(WelcomepagePage#, null))
+		throw ReProcessErr(pages.pageMeta(WelcomePage#, null))
 	}
 	
 	Str render() { "" }

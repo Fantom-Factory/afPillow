@@ -7,7 +7,6 @@ internal class TestDisableRouting : PillowTest {
 
 	override Void setup() {
 		server := BedServer(T_AppModule#).addModule(T_AppModule02#).startup
-		server.injectIntoFields(this)
 		client = server.makeClient
 	}
 

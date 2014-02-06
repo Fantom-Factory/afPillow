@@ -237,6 +237,12 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.0 [#v1.0.0]
+----------------
+ - Chg: 'PageUriResolver' and 'ContentTypeResolver' are now configurable.
+ - Chg: Renamed ConfigId 'welcomePage' -> 'welcomePageName'.
+ - Bug: Page URIs with no page context could be a directory URI.
+
 v0.0.10 [#v0.0.10]
 ------------------
  - New: Added '@PageEvent' methods allowing URIs to be mapped to page methods.

@@ -2,11 +2,9 @@
 For 1.0.0
 =========
 
-Option to turn off auto routing (for fantex)
+Pillow header in dev
 
 Update welcome page to index.html -> index.*, e.g. capture extensions
-
-add welcome page / redirect strategy -> see EfanXtraConfigIds 
 
 redirects are important - there should only be the ONE url for any given page. multiple page for the same context
 http://moz.com/learn/seo/duplicate-content
@@ -20,8 +18,6 @@ seems like the ServerGlob is being generated wrongly
 For Future
 ==========
 
-Add service for adding client uri finders / matchers
-
 Add optional extension to routes, e.g. .html
 
-Maybe cache uri, contentType, etc in a PageMeta service, so we only calculate this stuff the once
+Maybe cache uri, contentType, etc in a PageMetaSrc service, so we only calculate this stuff the once
