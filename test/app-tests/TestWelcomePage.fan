@@ -10,7 +10,7 @@ internal class TestWelcomePage : PillowTest {
 //	}
 
 	Void testWelcomePageRendersCorrectClientUri() {
-		res := client.get(`/`)
+		res := client.get(`/dude`)
 		verifyEq(res.statusCode, 200)
 		verifyEq(res.asStr, "WelcomePage ClientUri: /")
 	}

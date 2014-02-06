@@ -73,7 +73,7 @@ internal const class PageMetaImpl : PageMeta {
 	@Config { id="afPillow.welcomePage" }
 	@Inject private const Str 					welcomePage
 	@Inject	private const ContentTypeResolver	contentTypeResolver
-	@Inject	private const ClientUriResolver		clientUriResolver
+	@Inject	private const PageUriResolver		pageUriResolver
 	@Inject	private const HttpRequest			httpRequest
 	@Inject	private const ComponentMeta			componentMeta
 	@Inject	private const ValueEncoders			valueEncoders
@@ -90,7 +90,7 @@ internal const class PageMetaImpl : PageMeta {
 	}
 
 	override Uri pageUri() {
-		clientUri := clientUriResolver.clientUri(pageType)
+		clientUri := pageUriResolver.pageUri(pageType)
 
 		// add extra WebMod paths - but only if we're part of a web request!
 		if (Actor.locals["web.req"] != null && httpRequest.modBase != `/`)
@@ -115,7 +115,7 @@ internal const class PageMetaImpl : PageMeta {
 	}
 	
 	override Bool isWelcomePage() {
-		clientUri := clientUriResolver.clientUri(pageType)
+		clientUri := pageUriResolver.pageUri(pageType)
 		return isWelcomeUri(clientUri)
 	}
 	
@@ -139,7 +139,7 @@ internal const class PageMetaImpl : PageMeta {
 	// ---- Internal Methods -------------------------------------------------------------------------------------------	
 
 	override Uri serverGlob() {
-		clientStr 	:= clientUriResolver.clientUri(pageType).toStr
+		clientStr 	:= pageUriResolver.pageUri(pageType).toStr
 		noOfParams 	:= contextTypes.size
 		noOfParams.times { clientStr += "/*" }
 		clientUri	:= clientStr.toUri

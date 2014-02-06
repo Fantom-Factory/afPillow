@@ -17,4 +17,7 @@ const mixin FacetPage 	: EfanComponent { }
 @Page
 const mixin WelcomepagePage : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
+	
+	@PageContext
+	abstract Str? name
 }

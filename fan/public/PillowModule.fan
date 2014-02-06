@@ -13,7 +13,7 @@ class PillowModule {
 		binder.bind(Pages#)
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
-		binder.bind(ClientUriResolver#)
+		binder.bind(PageUriResolver#)
 		binder.bind(PageMeta#, PageMetaProxy#).withoutProxy	// we supply our own proxy!
 
 //		binder.bindImpl(Routes#).withId("PillowRoutes")
@@ -40,10 +40,14 @@ class PillowModule {
 
 //	@Contribute { serviceId="PillowRoutes" }
 	@Contribute { serviceId="Routes" }
-	internal static Void contributeRoutes(OrderedConfig config, Pages pages, Registry registry) {
-
+	internal static Void contributeRoutes(OrderedConfig config, Pages pages, IocConfigSource icoConfigSrc) {
+		enableRouting := (Bool) icoConfigSrc.get(PillowConfigIds.enableRouting, Bool#)
+		
 		config.addPlaceholder("PillowStart", ["after: FileHandlerEnd"])
 		config.addPlaceholder("PillowEnd", 	 ["after: PillowStart"])
+
+		// Keep the placeholders
+		if (!enableRouting)	return
 		
 		pages.pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
@@ -69,6 +73,18 @@ class PillowModule {
 //		}
 	}
 
+	@Contribute { serviceType=PageUriResolver# } 
+	static Void contributePageUriResolvers(OrderedConfig config) {
+		config.add(ResolvePageUriFromPageFacet())
+		config.add(ResolvePageUriFromTypeName())
+	}
+	
+	@Contribute { serviceType=ContentTypeResolver# } 
+	static Void contributeContentTypeResolvers(OrderedConfig config) {
+		config.add(ResolveContentTypeFromPageFacet())
+		config.add(config.autobuild(ResolveContentTypeFromTemplateExtension#))
+	}
+	
 	@Contribute { serviceType=ResponseProcessors# }
 	static Void contributeResponseProcessors(MappedConfig config) {
 		config[PageMeta#] = config.autobuild(PageMetaResponseProcessor#)
@@ -89,6 +105,7 @@ class PillowModule {
 	internal static Void contributeFactoryDefaults(MappedConfig config) {
 		config[PillowConfigIds.welcomePage]			= "index"
 		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
+		config[PillowConfigIds.enableRouting]		= true
 	}
 
 	@Contribute { serviceType=RegistryStartup# }
