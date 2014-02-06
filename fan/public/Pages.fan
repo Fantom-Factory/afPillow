@@ -1,9 +1,11 @@
 using afIoc::Inject
 using afIoc::Registry
+using afIocEnv::IocEnv
 using afEfanXtra::EfanXtra
 using afEfanXtra::EfanLibraries
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
+using afBedSheet::HttpResponse
 
 ** (Service) - Methods for discovering Pillow pages and returning `PageMeta` instances.
 const mixin Pages {
@@ -38,6 +40,8 @@ internal const class PagesImpl : Pages {
 	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const PageUriResolver		pageUriResolver
 	@Inject	private const EfanLibraries 		efanLibraries
+	@Inject	private const IocEnv				iocEnv
+	@Inject	private const HttpResponse			httpRes
 			private const Str:Type				pages	// use Str as key for case insensitivity
 
 	new make(|This| in) {
@@ -64,6 +68,9 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Text renderPageMeta(PageMeta pageMeta) {
+		if (!iocEnv.isProd)
+			httpRes.headers["X-Pillow-Rendered-Page"] = pageMeta.pageType.qname
+		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 		pageStr	 := PageMeta.push(pageMeta) |->Str| {
 			return efanXtra.render(pageMeta.pageType, pageArgs)
@@ -72,6 +79,9 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Obj callPageEvent(Type pageType, Str?[] pageContext, Method eventMethod, Str?[] eventContext) {
+		if (!iocEnv.isProd) 
+			httpRes.headers["X-Pillow-Called-Event"] = eventMethod.qname
+
 		page 		:= efanXtra.component(pageType)
 		pageMeta	:= pageMeta(pageType, pageContext)
 		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)

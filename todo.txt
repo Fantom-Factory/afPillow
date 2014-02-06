@@ -2,11 +2,18 @@
 For 1.0.0
 =========
 
-Pillow header in dev
+Pillow header in dev --> fandoc
 
-Add optional extension to page routes, e.g. .html
+
 
 For Future
 ==========
 
 Maybe cache uri, contentType, etc in a PageMetaSrc service, so we only calculate this stuff once
+
+
+
+Naa, Bad Idea
+=============
+Append page suffix, e.g. ".html" - but then what of page contexts and events URIs? `/index.html/ctx/event/ctx`
+
