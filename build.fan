@@ -29,6 +29,7 @@ class Build : BuildPod {
 			"web 1.0",
 			
 			"afIoc 1.5.2+", 
+			"afIocEnv 1.0.0+", 
 			"afIocConfig 1.0.2+", 
 			"afBedSheet 1.3.2+", 
 			"afEfanXtra 1.0.10+", 
