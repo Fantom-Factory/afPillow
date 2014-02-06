@@ -1,6 +1,7 @@
 
 ** Defines a strategy for handling the interaction between welcome page and directory URIs. The redirect options are
-** useful for diverting legacy traffic to your new pages.
+** useful for diverting legacy traffic to your new pages. 
+** Note that to prevent conflicting URIs, only pages with no context and no events are redirected.
 ** 
 ** To change the strategy set the application default in your 'AppModule'. Example:
 ** 

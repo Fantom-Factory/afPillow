@@ -142,12 +142,11 @@ internal const class PageMetaImpl : PageMeta {
 	// ---- Internal Methods -------------------------------------------------------------------------------------------	
 
 	override Uri serverGlob() {
-		clientStr 	:= pageUriResolver.pageUri(pageType).toStr
-		noOfParams 	:= contextTypes.size
-		noOfParams.times { clientStr += "/*" }
-		clientUri	:= clientStr.toUri
+		clientUri 	:= pageUriResolver.pageUri(pageType)
 		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
+		noOfParams 	:= contextTypes.size
+		noOfParams.times { clientUri = clientUri.plusSlash + `*` }
 		return clientUri
 	}
 

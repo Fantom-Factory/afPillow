@@ -110,10 +110,10 @@ Or you can use the [@Page]`Page` facet to define an explicit URI.
 
 Welcome Pages [#welcomePages]
 *****************************
-'Pillow' supports the routing of welcome pages, also known as directory pages.
+'Pillow' supports the routing of welcome pages, also known as directory pages, through the `WelcomePageStrategy`.
 
-If 'Pillow' recieves a directory uri (a uri that ends in /slash/) then it renders a
-[welcome page]`PillowConfigIds.welcomePage`, which defaults to 'Index'.
+When switched on, whenever a request is made for a directory URI (one that ends with a /slash/) then 'Pillow' will render the
+directory's [welcome page]`PillowConfigIds.welcomePage`, which defaults to a page named 'Index'.
 Examples:
 
   `/`        --> Index.fan
@@ -121,6 +121,10 @@ Examples:
 
 More can be read about directory URLs in the article:
 [Should Your URLs Point to the Directory or the Index Page?]`http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml`
+
+The [welcome page strategy]`WelcomePageStrategy` also supports redirects, where requests for legacy pages
+(like '/index.html') are redirected to the directory URI. Redirects are preferred over serving up the same page for multiple
+URIs to avoid [duplicate content]`http://moz.com/learn/seo/duplicate-content`.
 
 
 
@@ -239,6 +243,7 @@ Release Notes [#releaseNotes]
 *****************************
 v1.0.0 [#v1.0.0]
 ----------------
+ - New: Implemented 'WelcomePageStrategy'.
  - Chg: 'PageUriResolver' and 'ContentTypeResolver' are now configurable.
  - Chg: Renamed ConfigId 'welcomePage' -> 'welcomePageName'.
  - Bug: Page URIs with no page context could be a directory URI.
