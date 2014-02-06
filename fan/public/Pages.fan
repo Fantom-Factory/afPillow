@@ -5,7 +5,7 @@ using afEfanXtra::EfanLibraries
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
 
-** (Service) - Methods for discovering Pillow pages.
+** (Service) - Methods for discovering Pillow pages and returning `PageMeta` instances.
 const mixin Pages {
 	
 	** Returns all Pillow page types.

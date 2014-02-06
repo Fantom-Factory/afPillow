@@ -9,32 +9,32 @@
 **  
 ** class AppModule {
 ** 
-**   @Contribute { serviceType=ApplicationDefaults# } 
-**   static Void configureAppDefaults(MappedConfig config) {
-**     config[PillowConfigIds.welcomePage] = "start"
-**   }
+**     @Contribute { serviceType=ApplicationDefaults# } 
+**     static Void configureAppDefaults(MappedConfig config) {
+**         config[PillowConfigIds.welcomePage] = "home"
+**     }
 ** }
 ** <pre 
 const mixin PillowConfigIds {
  
-	** The component name of directory welcome pages.
+	** The component name (Str) of directory welcome pages.
+	** 
 	** Defaults to "index".
-	static const Str welcomePage			:=	"afPillow.welcomePage"
+	static const Str welcomePageName		:=	"afPillow.welcomePageName"
 
 	** The default 'Content-Type' to serve pages up as, if it can not be determined.
+	** 
 	** Defaults to 'MimeType("text/plain")'
 	static const Str defaultContentType		:=	"afPillow.defaultContentType"
 
 	** Set to 'false' to disable the automatic routing of request URLs to Pillow page rendering.
+	** 
 	** Defaults to 'true'.
 	static const Str enableRouting			:=	"afPillow.enableRouting"
 
-	** TODO: needs to be an enum
-	** - off (component only)
-	** - off & redirectDirectoryToWelcomePage
-	** - on
-	** - on & redirectWelcomePageToDirectory
-	** Note this affects how clientUri's are reported by Pages 
-//	static const Str redirectStrategy	:=	"afEfan.redirectStrategy"
+	** Set the welcome page strategy which defines the interaction between welcome page URIs and directory URIs.
+	** 
+	** Defaults to 'onWithRedirects'
+	static const Str welcomePageStrategy	:=	"afPillow.welcomePageStrategy"
 
 }

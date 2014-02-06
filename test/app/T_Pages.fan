@@ -14,10 +14,7 @@ const mixin BasicNested : EfanComponent { }
 const mixin FacetPage 	: EfanComponent { }
 
 @NoDoc
-@Page
-const mixin WelcomepagePage : EfanComponent {
+@Page { uri=`/welcome` }
+const mixin WelcomePage : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
-	
-	@PageContext
-	abstract Str? name
 }
