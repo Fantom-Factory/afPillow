@@ -20,6 +20,11 @@ facet class Page {
 	**  - if fully qualified, the template is resolved, e.g. 'fan://acmePod/templates/Notice.efan' 
 	**  - if relative, the template is assumed to be on the file system, e.g. 'etc/templates/Notice.efan' 
 	**  - if absolute, the template is assumed to be a pod resource, e.g. '/templates/Notice.efan'
+	** 
+	** > *ALIEN-AID:* Use a value of 'fan://afEfanXtra/res/viaRenderMethod.efan' and don't create a 
+	** > template file at all! 
+	**
+	** > Instead, just declare the method 'Str render() {...}' and return whatever you want!
 	const Uri? template
 	
 	** Use to set an explicit 'Content-Type' the page should be served with. 

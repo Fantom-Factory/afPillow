@@ -7,28 +7,33 @@ internal class TestWelcomePageStrategy : PillowTest {
 
 	Void testOff() {
 		start(T_AppModule03#)
-		verifyEq(client.get(`/start`).statusCode, 200) 
-		verifyEq(client.get(`/`		).statusCode, 404) 
+		verifyEq(client.get(`/start`	 ).statusCode, 200) 
+		verifyEq(client.get(`/`			 ).statusCode, 404) 
+		verifyEq(client.get(`/start.html`).statusCode, 404) 
 	}
 
 	Void testOffWithRedirects() {
 		start(T_AppModule04#)
-		verifyEq(client.get(`/start`).statusCode, 200)
-		verifyEq(client.get(`/`		).statusCode, 307) 
+		verifyEq(client.get(`/start`	 ).statusCode, 200)
+		verifyEq(client.get(`/`			 ).statusCode, 301)  // 308 in Fantom-1.0.66
 		verifyEq(client.lastResponse.headers.location, `/start`)
+		verifyEq(client.get(`/start.html`).statusCode, 404) 
 	}
 
 	Void testOn() {
 		start(T_AppModule05#)
-		verifyEq(client.get(`/start`).statusCode, 404) 
-		verifyEq(client.get(`/`		).statusCode, 200) 
+		verifyEq(client.get(`/start`	 ).statusCode, 404) 
+		verifyEq(client.get(`/`			 ).statusCode, 200) 
+		verifyEq(client.get(`/start.html`).statusCode, 404) 
 	}
 	
 	Void testOnWithRedirects() {
 		start(T_AppModule06#)
-		verifyEq(client.get(`/start`).statusCode, 307) 
+		verifyEq(client.get(`/start`	 ).statusCode, 301) // 308 in Fantom-1.0.66
 		verifyEq(client.lastResponse.headers.location, `/`)
-		verifyEq(client.get(`/`		).statusCode, 200) 
+		verifyEq(client.get(`/`			 ).statusCode, 200) 
+		verifyEq(client.get(`/start.html`).statusCode, 301) 
+		verifyEq(client.lastResponse.headers.location, `/`)
 	}
 	
 	override Void setup() {	}
