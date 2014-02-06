@@ -16,20 +16,18 @@ const mixin Pages {
 	** (Note: 'pageContext' are the arguments to the '@InitRender' method, if any.) 
 	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext)
 	
-	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
 	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
 	** 
 	** Note that 'pageContext' items converted their appropriate type via BedSheet's 'ValueEncoder' service.
 	@NoDoc
-	abstract Text renderPage(Type pageType, Obj?[] pageContext)
+	abstract Text renderPage(Type pageType, Str?[] pageContext)
 
 	@NoDoc
 	abstract Text renderPageMeta(PageMeta pageMeta)
 
-	// TODO: afBedSheet-1.3.2, rename Obj?[] to Str?[]
 	** Executes the page event in the given page context.
 	@NoDoc
-	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
+	abstract Obj callPageEvent(Type pageType, Str?[] pageContext, Method eventMethod, Str?[] eventContext)
 	
 }
 
@@ -38,7 +36,7 @@ internal const class PagesImpl : Pages {
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const Registry				registry
 	@Inject	private const EfanXtra				efanXtra
-	@Inject	private const ClientUriResolver		clientUriResolver
+	@Inject	private const PageUriResolver		pageUriResolver
 	@Inject	private const EfanLibraries 		efanLibraries
 			private const Str:Type				pages	// use Str as key for case insensitivity
 
@@ -47,7 +45,7 @@ internal const class PagesImpl : Pages {
 		pages := Utils.makeMap(Str#, Type#)
 		efanXtra.libraries.each |libName| {
 			efanXtra.componentTypes(libName).findAll { it.hasFacet(Page#) }.each {
-				pages[clientUriResolver.clientUri(it).toStr] = it 
+				pages[pageUriResolver.pageUri(it).toStr] = it 
 			}
 		}
 		this.pages = pages
@@ -61,7 +59,7 @@ internal const class PagesImpl : Pages {
 		registry.autobuild(PageMeta#, [pageType, pageContext])
 	}
 
-	override Text renderPage(Type pageType, Obj?[] pageContext) {
+	override Text renderPage(Type pageType, Str?[] pageContext) {
 		renderPageMeta(pageMeta(pageType, pageContext))
 	}
 
@@ -73,7 +71,7 @@ internal const class PagesImpl : Pages {
 		return Text.fromMimeType(pageStr, pageMeta.contentType)
 	}
 
-	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
+	override Obj callPageEvent(Type pageType, Str?[] pageContext, Method eventMethod, Str?[] eventContext) {
 		page 		:= efanXtra.component(pageType)
 		pageMeta	:= pageMeta(pageType, pageContext)
 		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)

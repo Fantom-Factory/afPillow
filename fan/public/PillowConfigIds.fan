@@ -25,6 +25,10 @@ const mixin PillowConfigIds {
 	** Defaults to 'MimeType("text/plain")'
 	static const Str defaultContentType		:=	"afPillow.defaultContentType"
 
+	** Set to 'false' to disable the automatic routing of request URLs to Pillow page rendering.
+	** Defaults to 'true'.
+	static const Str enableRouting			:=	"afPillow.enableRouting"
+
 	** TODO: needs to be an enum
 	** - off (component only)
 	** - off & redirectDirectoryToWelcomePage
