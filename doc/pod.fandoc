@@ -113,7 +113,7 @@ Welcome Pages [#welcomePages]
 'Pillow' supports the routing of welcome pages, also known as directory pages, through the `WelcomePageStrategy`.
 
 When switched on, whenever a request is made for a directory URI (one that ends with a /slash/) then 'Pillow' will render the
-directory's [welcome page]`PillowConfigIds.welcomePage`, which defaults to a page named 'Index'.
+directory's [welcome page]`PillowConfigIds.welcomePageName`, which defaults to a page named 'Index'.
 Examples:
 
   `/`        --> Index.fan

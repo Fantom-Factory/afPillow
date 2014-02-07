@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("0.0.11")
+		version = Version("1.0.1")
 
 		meta	= [	
 			"org.name"		: "Alien-Factory",
