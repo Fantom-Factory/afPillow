@@ -25,7 +25,7 @@ internal class TestWelcomePage : PillowTest {
 		res = client.get(`/welcome2`)
 		verifyEq(res.asStr, "pageUri:/welcome2 ctx:welcome2")
 
-		// I have no say over the page ordering in the resulting Routes - I wanted the XXX pillow page to appear before
+		// I have no say over the page ordering in the resulting Routes - I wanted the XX pillow page to appear before
 		// welcome2 to make a failing test. The idea is that welcome pages with ctx (e.g. `/*`) are after normal page 
 		// URIs (e.g. `/mypage`) so they act as a sweeper and don't interfere with normal pages. 
 //		res = client.get(`/xxx`)
