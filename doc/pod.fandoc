@@ -244,6 +244,7 @@ Release Notes [#releaseNotes]
 v1.0.0 [#v1.0.0]
 ----------------
  - New: Implemented 'WelcomePageStrategy'.
+ - New: Added helpful http response headers for testing.
  - Chg: 'PageUriResolver' and 'ContentTypeResolver' are now configurable.
  - Chg: Renamed ConfigId 'welcomePage' -> 'welcomePageName'.
  - Bug: Page URIs with no page context could be a directory URI.
