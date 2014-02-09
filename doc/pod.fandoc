@@ -1,6 +1,6 @@
 Overview [#overview]
 ********************
-'Pillow' is a web framework that maps URIs to Pillow Pages, letting them react to RESTful events.
+'Pillow' is a web framework that maps HTTP request URIs to Pillow Pages, letting them react to RESTful events.
 
 'Pillow'...
  - Is a [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` framework
@@ -20,7 +20,7 @@ Install 'afPillow' with the [Fantom Respository Manager]`http://fantom.org/doc/d
 
 To use in a [Fantom]`http://fantom.org/` project, add a dependency to its 'build.fan':
 
-  depends = ["sys 1.0", ..., "afPillow 0+"]
+  depends = ["sys 1.0", ..., "afPillow 1+"]
 
 
 
@@ -241,6 +241,10 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.2 [#v1.0.2]
+----------------
+ - Chg: Page context values may now be immutable / non-const objects.
+
 v1.0.0 [#v1.0.0]
 ----------------
  - New: Implemented 'WelcomePageStrategy'.

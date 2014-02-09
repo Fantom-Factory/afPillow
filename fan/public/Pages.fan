@@ -5,6 +5,7 @@ using afEfanXtra::EfanXtra
 using afEfanXtra::EfanLibraries
 using afBedSheet::Text
 using afBedSheet::ValueEncoders
+using afBedSheet::HttpRequest
 using afBedSheet::HttpResponse
 
 ** (Service) - Methods for discovering Pillow pages and returning `PageMeta` instances.
@@ -34,33 +35,35 @@ const mixin Pages {
 }
 
 internal const class PagesImpl : Pages {
+	
+	@Inject	private const ValueEncoders		valueEncoders
+	@Inject	private const EfanXtra			efanXtra
+	@Inject	private const EfanLibraries 	efanLibraries
+	@Inject	private const IocEnv			iocEnv
+	@Inject	private const HttpResponse		httpRes
+	@Inject	private const HttpRequest		httpRequest
+		private const Type:PageMetaState	pageCache 
 
-	@Inject	private const ValueEncoders			valueEncoders
-	@Inject	private const Registry				registry
-	@Inject	private const EfanXtra				efanXtra
-	@Inject	private const PageUriResolver		pageUriResolver
-	@Inject	private const EfanLibraries 		efanLibraries
-	@Inject	private const IocEnv				iocEnv
-	@Inject	private const HttpResponse			httpRes
-			private const Str:Type				pages	// use Str as key for case insensitivity
-
-	new make(|This| in) {
-		in(this) 
-		pages := Utils.makeMap(Str#, Type#)
+	new make(PageMetaStateFactory metaFactory, |This| in) {
+		in(this)
+		cache := Utils.makeMap(Type#, PageMeta#)
 		efanXtra.libraries.each |libName| {
 			efanXtra.componentTypes(libName).findAll { it.hasFacet(Page#) }.each {
-				pages[pageUriResolver.pageUri(it).toStr] = it 
+				cache[it] =  metaFactory.toPageMetaState(it)
 			}
 		}
-		this.pages = pages
+		this.pageCache = cache
 	}
 	
 	override Type[] pageTypes() {
-		pages.vals
+		pageCache.keys.sort
 	}
 	
 	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext) {
-		registry.autobuild(PageMeta#, [pageType, pageContext])
+		PageMeta(pageCache[pageType], pageContext) {
+			it.httpRequest 	 = this.httpRequest
+			it.valueEncoders = this.valueEncoders
+		}
 	}
 
 	override Text renderPage(Type pageType, Str?[] pageContext) {
@@ -111,3 +114,17 @@ internal const class PagesImpl : Pages {
 		return argsOut
 	}
 }
+
+
+internal const class PageMetaState {
+	const Type 		pageType
+	const Uri 		pageBaseUri
+	const MimeType 	contentType
+	const Bool 		isWelcomePage
+	const Str 		httpMethod
+	const Uri 		serverGlob
+	const Type[]	contextTypes
+
+	new make(|This|in) { in(this) }
+}
+
