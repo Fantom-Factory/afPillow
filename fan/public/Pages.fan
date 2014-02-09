@@ -22,15 +22,15 @@ const mixin Pages {
 	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
 	** 
 	** Note that 'pageContext' items converted their appropriate type via BedSheet's 'ValueEncoder' service.
-	@NoDoc
-	abstract Text renderPage(Type pageType, Str?[] pageContext)
+	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
+	abstract Text renderPage(Type pageType, Obj?[] pageContext)
 
 	@NoDoc
 	abstract Text renderPageMeta(PageMeta pageMeta)
 
 	** Executes the page event in the given page context.
-	@NoDoc
-	abstract Obj callPageEvent(Type pageType, Str?[] pageContext, Method eventMethod, Str?[] eventContext)
+	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
+	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
 	
 }
 
@@ -66,7 +66,7 @@ internal const class PagesImpl : Pages {
 		}
 	}
 
-	override Text renderPage(Type pageType, Str?[] pageContext) {
+	override Text renderPage(Type pageType, Obj?[] pageContext) {
 		renderPageMeta(pageMeta(pageType, pageContext))
 	}
 
@@ -81,7 +81,7 @@ internal const class PagesImpl : Pages {
 		return Text.fromMimeType(pageStr, pageMeta.contentType)
 	}
 
-	override Obj callPageEvent(Type pageType, Str?[] pageContext, Method eventMethod, Str?[] eventContext) {
+	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
 		if (!iocEnv.isProd) 
 			httpRes.headers["X-Pillow-Called-Event"] = eventMethod.qname
 
