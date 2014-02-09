@@ -1,7 +1,14 @@
 # Pillow
 
-`Pillow` is a [Fantom](http://fantom.org/) library for integrating [efanXtra](http://repo.status302.com/doc/afBedSheet) components with the [afBedSheet](http://repo.status302.com/doc/afBedSheet) web framework. 
-It automatically routes web requests to pages and returns the rendered response.
+`Pillow` is a [Fantom](http://fantom.org/) web framework that maps HTTP request URIs to Pillow Pages, letting them react to RESTful events.
+
+`Pillow`...
+ - Is a [BedSheet](http://www.fantomfactory.org/pods/afBedSheet) framework
+ - Extends [efanXtra](http://www.fantomfactory.org/pods/afEfanXtra) components
+ - Plays great with [Slim](http://www.fantomfactory.org/pods/afSlim)
+ - Runs on [IoC](http://www.fantomfactory.org/pods/afIoc)
+
+`Pillow` - Something for your web app to get its teeth into!
 
 
 ## Install
@@ -10,11 +17,9 @@ Install `Pillow` with the [Fantom Respository Manager](http://fantom.org/doc/doc
 
     C:\> fanr install -r http://repo.status302.com/fanr/ afPillow
 
-Or download the pod from [Status302](http://repo.status302.com/browse/afPillow) and copy it to `%FAN_HOME%/lib/fan/`.
-
 To use in a [Fantom](http://fantom.org/) project, add a dependency to its `build.fan`:
 
-    depends = ["sys 1.0", ..., "afPillow 0+"]
+    depends = ["sys 1.0", ..., "afPillow 1+"]
   
   
 ## Quick Start
@@ -27,6 +32,7 @@ Example.efan:
 Example.fan:
 
     using afIoc
+    using afBedSheet
     using afEfanXtra
     using afPillow
     
@@ -34,18 +40,15 @@ Example.fan:
     
     // ---- The only class you need! ----
     
-    const mixin Example : Page {
+    @Page
+    const mixin Example : EfanComponent {
+      @PageContext
       abstract Int age
-    
-      @InitRender
-      Void initRender(Int age) {
-        this.age = age
-      }
     }
     
     
     
-    // ---- Standard BedSheet Support Classes ----
+    // ---- Standard Main Class ----
     
     class Main {
       Int main() {
@@ -53,14 +56,11 @@ Example.fan:
       }
     }
     
-    // SubModule only needed when running from a script
+    // ---- Support class, needed when running from a script ----
     @SubModule { modules=[EfanXtraModule#, PillowModule#] }
-    class AppModule {
-    
-       // Contribution needed when running from a script
+    class AppModule {    
        @Contribute { serviceType=EfanTemplateDirectories# }
-       static Void contributeEfanDirs(OrderedConfig config) {
-    
+       static Void contributeEfanDirs(OrderedConfig config) {    
           // Look for Example.efan in the same dir as this file
           config.add(`./`)
        }

@@ -14,23 +14,28 @@ class PillowModule {
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
 		binder.bind(PageUriResolver#)
-		binder.bind(PageMeta#, PageMetaProxy#).withoutProxy	// we supply our own proxy!
+		binder.bind(PageMetaStateFactory#)
+	}
+
+	@Build { scope=ServiceScope.perThread }
+	static PageMeta buildPageMeta() {
+		PageMeta.peek(true)
 	}
 	
 	@Contribute { serviceType=EfanLibraries# }
-	internal static Void contributeEfanLibraries(MappedConfig config, BedSheetMetaData meta) {
+	static Void contributeEfanLibraries(MappedConfig config, BedSheetMetaData meta) {
 		if (meta.appPod != null)
 			config["app"] = meta.appPod
 	}
 
 	@Contribute { serviceType=ComponentCompiler# }
-	internal static Void contributeComponentCompilerCallbacks(OrderedConfig config) {
+	static Void contributeComponentCompilerCallbacks(OrderedConfig config) {
 		pageCompiler := (PageCompiler) config.autobuild(PageCompiler#)
 		config.add(pageCompiler.callback)
 	}
 
 	@Contribute { serviceId="Routes" }
-	internal static Void contributeRoutes(OrderedConfig config, Pages pages, IocConfigSource icoConfigSrc) {
+	static Void contributeRoutes(OrderedConfig config, Pages pages, IocConfigSource icoConfigSrc) {
 		routeFactory := (PillowRouteFactory) config.autobuild(PillowRouteFactory#)
 		routeFactory.addPillowRoutes(config)
 	}

@@ -1,12 +1,11 @@
 
-For 1.0.2
+For 1.0.4
 =========
 
 
 
 For Future
 ==========
-Maybe cache uri, contentType, etc in a PageMetaSrc service, so we only calculate this stuff once
 
 
 
