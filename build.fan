@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.3")
+		version = Version("1.0.2.1")
 
 		meta	= [	
 			"org.name"		: "Alien-Factory",
@@ -14,7 +14,7 @@ class Build : BuildPod {
 			"proj.uri"		: "http://www.fantomfactory.org/pods/afPillow",
 			"vcs.uri"		: "https://bitbucket.org/AlienFactory/afpillow",
 			"license.name"	: "The MIT Licence",	
-			"repo.private"	: "true",
+			"repo.private"	: "false",
 			
 			"afIoc.module"	: "afPillow::PillowModule"
 		]
