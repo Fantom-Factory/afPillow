@@ -17,13 +17,17 @@ const mixin Pages {
 	** Create 'PageMeta' for the given page type and context. 
 	** 
 	** (Note: 'pageContext' are the arguments to the '@InitRender' method, if any.) 
-	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext)
+	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null)
+	
+	** An alias for 'pageMeta()'.
+	@Operator
+	abstract PageMeta get(Type pageType, Obj?[]? pageContext := null)
 	
 	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
 	** 
 	** Note that 'pageContext' items converted their appropriate type via BedSheet's 'ValueEncoder' service.
 	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
-	abstract Text renderPage(Type pageType, Obj?[] pageContext)
+	abstract Text renderPage(Type pageType, Obj?[]? pageContext := null)
 
 	@NoDoc
 	abstract Text renderPageMeta(PageMeta pageMeta)
@@ -59,14 +63,18 @@ internal const class PagesImpl : Pages {
 		pageCache.keys.sort
 	}
 	
-	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext) {
+	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
 		PageMeta(pageCache[pageType], pageContext) {
 			it.httpRequest 	 = this.httpRequest
 			it.valueEncoders = this.valueEncoders
 		}
 	}
 
-	override Text renderPage(Type pageType, Obj?[] pageContext) {
+	override PageMeta get(Type pageType, Obj?[]? pageContext := null) {
+		pageMeta(pageType, pageContext)
+	}
+	
+	override Text renderPage(Type pageType, Obj?[]? pageContext := null) {
 		renderPageMeta(pageMeta(pageType, pageContext))
 	}
 

@@ -241,6 +241,12 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.4 [#v1.0.4]
+----------------
+ - Chg: Page context may be nullable on 'Pages.pageMeta()'.
+ - Chg: Added 'Pages.get()' operator for easy 'PageMeta' access.
+ - Chg: Contributed 'Pillow Pages' section to BedSheet's Err and Not Found pages.
+
 v1.0.2 [#v1.0.2]
 ----------------
  - Chg: Page context values may now be immutable / non-const objects.

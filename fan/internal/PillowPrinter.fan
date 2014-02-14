@@ -2,6 +2,7 @@ using afIoc::Inject
 using afIoc::Registry
 using afEfanXtra::EfanXtra
 using afEfanXtra::EfanXtraPrinter
+using web::WebOutStream
 
 internal const class PillowPrinter {
 	@Inject private	const Log				log
@@ -48,4 +49,44 @@ internal const class PillowPrinter {
 		
 		return buf.toStr
 	}
+
+	Void printPillowPages(WebOutStream out) {
+		title(out, "Pillow Pages")
+
+		map := [:] { ordered=true }
+		pages.pageTypes.rw.sort.each |pageType| {
+			pageMeta 	:= pages.pageMeta(pageType, null)
+			serverGlob	:= pageMeta.serverGlob
+			
+			map[pageType.name.toDisplayName] = pageMeta.httpMethod + " - " + serverGlob
+			
+			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
+				eventMeth := (PageEvent) Type#.method("facet").callOn(eventMethod, [PageEvent#])
+				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				map["(${eventMethod.name})^"] = eventMeth.httpMethod + " - " + eventGlob 			
+			}
+		}
+
+		prettyPrintMap(out, map, false)
+	}
+	
+	private Void title(WebOutStream out, Str title) {
+		out.h2("id=\"${title.fromDisplayName}\"").w(title).h2End
+	}
+	
+	private Void prettyPrintMap(WebOutStream out, Str:Obj? map, Bool sort, Str? cssClass := null) {
+		if (sort) {
+			newMap := Str:Obj?[:] { ordered = true } 
+			map.keys.sort.each |k| { newMap[k] = map[k] }
+			map = newMap
+		}
+		out.table(cssClass == null ? null : "class=\"${cssClass}\"")
+		map.each |v, k| { w(out, k, v) } 
+		out.tableEnd
+	}
+
+	private Void w(WebOutStream out, Str key, Obj? val) {
+		out.tr.td.writeXml(key).tdEnd.td.writeXml(val?.toStr ?: "null").tdEnd.trEnd
+	}
+
 }
