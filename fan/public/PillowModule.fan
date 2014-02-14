@@ -3,6 +3,7 @@ using afIocConfig
 using afBedSheet
 using afEfanXtra
 using afPlastic
+using web
 
 ** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.
 ** 
@@ -10,7 +11,7 @@ using afPlastic
 class PillowModule {
 
 	static Void bind(ServiceBinder binder) {
-		binder.bind(Pages#)
+		binder.bind(Pages#).withoutProxy	// default method values
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
 		binder.bind(PageUriResolver#)
@@ -76,11 +77,19 @@ class PillowModule {
 		config[PillowConfigIds.welcomePageStrategy]	= WelcomePageStrategy.onWithRedirects
 	}
 
+	@Contribute { serviceType=ErrPrinterHtml# }
+	internal static Void contributeErrPrinterHtml(OrderedConfig config, PillowPrinter printer) {
+		config.addOrdered("PillowPages",	|WebOutStream out, Err? err| { printer.printPillowPages(out) }, ["after: IocConfig", "before: Routes"])
+	}
+
+	@Contribute { serviceType=NotFoundPrinterHtml# }
+	internal static Void contributeNotFoundPrinterHtml(OrderedConfig config, PillowPrinter printer) {
+		config.addOrdered("PillowPages",	|WebOutStream out| { printer.printPillowPages(out) }, ["after: RouteCode", "before: BedSheetRoutes"])
+	}
+
 	@Contribute { serviceType=RegistryStartup# }
-	internal static Void contributeRegistryStartup(OrderedConfig conf, PillowPrinter efanPrinter) {
-		conf.add |->| {
-			efanPrinter.logLibraries
-		}
+	internal static Void contributeRegistryStartup(OrderedConfig conf, PillowPrinter pillowPrinter) {
+		conf.add |->| { pillowPrinter.logLibraries }
 	}	
 }
 

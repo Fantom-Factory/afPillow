@@ -81,7 +81,7 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 	
 	override Str toStr() {
-		"Pillow Page ${pageType.name}" + (initParams.isEmpty ? "" : initParams.toStr)
+		"Pillow Page ${pageType.qname}" + (initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")")
 	}
 }
 
@@ -113,6 +113,7 @@ internal const class EventCallerFactory : RouteResponseFactory {
 	}
 	
 	override Str toStr() {
-		"Pillow Event ${pageType.name}" + (initParams.isEmpty ? "" : initParams.toStr) + ":${eventMethod.name}"
+		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
+		return "Pillow Event ${pageType.qname}${params}:${eventMethod.name}"
 	}
 }
