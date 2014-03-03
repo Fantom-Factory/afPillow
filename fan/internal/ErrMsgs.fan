@@ -28,4 +28,8 @@ internal const class ErrMsgs {
 	static Str couldNotFindPageUri(Type pageType) {
 		"Could not find a page URI for ${pageType.qname}"
 	}
+
+	static Str couldNotFindPage(Type pageType) {
+		"Could not find page of Type ${pageType.qname}"
+	}
 }

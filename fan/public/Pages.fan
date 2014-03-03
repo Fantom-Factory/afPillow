@@ -1,5 +1,6 @@
 using afIoc::Inject
 using afIoc::Registry
+using afIoc::NotFoundErr
 using afIocEnv::IocEnv
 using afEfanXtra::EfanXtra
 using afEfanXtra::EfanLibraries
@@ -64,7 +65,8 @@ internal const class PagesImpl : Pages {
 	}
 	
 	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
-		PageMeta(pageCache[pageType], pageContext) {
+		pageState := pageCache[pageType] ?: throw NotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
+		return PageMeta(pageState, pageContext) {
 			it.httpRequest 	 = this.httpRequest
 			it.valueEncoders = this.valueEncoders
 		}

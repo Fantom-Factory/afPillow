@@ -241,6 +241,10 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.6 [#v1.0.6]
+----------------
+ - Chg: 'Pages.pageMeta()' and 'Pages.get()' now throw a 'NotFoundErr' if the given page type could not be found.
+
 v1.0.4 [#v1.0.4]
 ----------------
  - Chg: Page context may be nullable on 'Pages.pageMeta()'.
