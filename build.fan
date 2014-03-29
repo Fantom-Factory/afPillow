@@ -40,7 +40,7 @@ class Build : BuildPod {
 			"afBounce 0.0.6+"
 		]
 
-		srcDirs = [`test/unit-tests/`, `test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
+		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
 		resDirs = [`doc/`, `test/app/`]
 
 		docApi = true
