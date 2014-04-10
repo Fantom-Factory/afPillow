@@ -1,0 +1,10 @@
+
+'Pillow' is a web framework that maps URIs to Pillow pages ( [efanXtra]`afEfanXtra` components), letting them react to RESTful events.
+
+'Pillow'...
+ - Is a [BedSheet]`afBedSheet` framework
+ - Extends [efanXtra]`afEfanXtra` components
+ - Plays great with [Slim]`afSlim`
+ - Runs on [IoC]`afIoc`
+
+'Pillow' - Something for your web app to get its teeth into!
