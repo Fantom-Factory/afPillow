@@ -61,9 +61,12 @@ internal const class PillowPrinter {
 			map[pageType.name.toDisplayName] = pageMeta.httpMethod + " - " + serverGlob
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventMeth := (PageEvent) Type#.method("facet").callOn(eventMethod, [PageEvent#])
+				// FIXME!! + test
+				// TODO: research why event in abstract class only appears once!?
+				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
+//				eventMeth := (PageEvent) Type#.method("facet").callOn(eventMethod, [PageEvent#])
 				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
-				map["(${eventMethod.name})^"] = eventMeth.httpMethod + " - " + eventGlob 			
+				map["(${eventMethod.name})^"] = pageEvent.httpMethod + " - " + eventGlob 			
 			}
 		}
 
