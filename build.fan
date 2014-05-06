@@ -16,6 +16,7 @@ class Build : BuildPod {
 			"license.name"	: "The MIT Licence",	
 			"repo.private"	: "true",
 			
+			"tags"			: "templating, web",
 			"afIoc.module"	: "afPillow::PillowModule"
 		]
 
@@ -28,20 +29,20 @@ class Build : BuildPod {
 			"concurrent 1.0",
 			"web 1.0",
 			
-			"afIoc 1.5.4+",
+			"afIoc 1.6.0+",
 			"afIocConfig 1.0.4+",
-			"afIocEnv 1.0.2.1+",
+			"afIocEnv 1.0.4+",
 
-			"afBedSheet 1.3.4+",
-			"afEfanXtra 1.0.12.2+",
+			"afBedSheet 1.3.6+",
+			"afEfanXtra 1.0.14+",
 			"afPlastic 1.0.10+",
 
-			"afButter 0.0.4+",
-			"afBounce 0.0.6+"
+			"afBounce 1.0.0+",
+			"afButter 0.0.6+"
 		]
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
-		resDirs = [`doc/`, `test/app/`]
+		resDirs = [`licence.txt`, `doc/`, `test/app/`]
 
 		docApi = true
 		docSrc = true
@@ -49,10 +50,7 @@ class Build : BuildPod {
 	
 	@Target { help = "Compile to pod file and associated natives" }
 	override Void compile() {
-		// exclude test code when building the pod
-		srcDirs = srcDirs.exclude { it.toStr.startsWith("test/") }
-		resDirs = resDirs.exclude { it.toStr.startsWith("test/") }
-		
+		// see "stripTest" in `/etc/build/config.props` to exclude test src & res dirs
 		super.compile
 		
 		// copy src to %FAN_HOME% for F4 debugging
