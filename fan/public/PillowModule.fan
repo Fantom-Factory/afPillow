@@ -8,6 +8,7 @@ using web
 ** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.
 ** 
 ** This class is public so it may be referenced explicitly in tests.
+@NoDoc
 class PillowModule {
 
 	static Void bind(ServiceBinder binder) {
@@ -84,7 +85,7 @@ class PillowModule {
 
 	@Contribute { serviceType=NotFoundPrinterHtml# }
 	internal static Void contributeNotFoundPrinterHtml(OrderedConfig config, PillowPrinter printer) {
-		config.addOrdered("PillowPages",	|WebOutStream out| { printer.printPillowPages(out) }, ["after: RouteCode", "before: BedSheetRoutes"])
+		config.addOrdered("PillowPages",	|WebOutStream out| { printer.printPillowPages(out) }, ["after: RouteCode", "before: Routes"])
 	}
 
 	@Contribute { serviceType=RegistryStartup# }
