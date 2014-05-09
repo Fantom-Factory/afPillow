@@ -1,7 +1,7 @@
 
 For 1.0.8
 =========
-
+  make BedSheet ReProcessErr take a non-const obj
 
 
 For Future
