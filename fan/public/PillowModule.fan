@@ -5,18 +5,18 @@ using afEfanXtra
 using afPlastic
 using web
 
-** The [afIoc]`http://repo.status302.com/doc/afIoc/#overview` module class.
+** The [IoC]`http://www.fantomfactory.org/pods/afIoc` module class.
 ** 
-** This class is public so it may be referenced explicitly in tests.
+** This class is public so it may be referenced explicitly in test code.
 @NoDoc
-class PillowModule {
+const class PillowModule {
 
 	static Void bind(ServiceBinder binder) {
 		binder.bind(Pages#).withoutProxy	// default method values
-		binder.bind(PillowPrinter#)
-		binder.bind(ContentTypeResolver#)
-		binder.bind(PageUriResolver#)
-		binder.bind(PageMetaStateFactory#)
+		binder.bind(PillowPrinter#)			.withoutProxy
+		binder.bind(ContentTypeResolver#)	.withoutProxy
+		binder.bind(PageUriResolver#)		.withoutProxy
+		binder.bind(PageMetaStateFactory#)	.withoutProxy
 	}
 
 	@Build { scope=ServiceScope.perThread }
@@ -59,9 +59,9 @@ class PillowModule {
 		config[PageMeta#] = config.autobuild(PageMetaResponseProcessor#)
 	}
 	
-	@Contribute { serviceType=EfanTemplateFinders# }
-	static Void contributeEfanTemplateFinders(OrderedConfig config) {
-		config.addOrdered("FindByPageFacetValue", FindEfanByPageFacetValue())
+	@Contribute { serviceType=TemplateFinders# }
+	static Void contributeTemplateFinders(OrderedConfig config) {
+		config.addOrdered("FindByPageFacetValue", config.autobuild(FindEfanByPageFacetValue#))
 	}
 
 	@Contribute { serviceType=ApplicationDefaults# }

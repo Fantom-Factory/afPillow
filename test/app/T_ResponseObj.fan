@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@Page { uri=`/responseObj`; template=`fan://afEfanXtra/res/viaRenderMethod.efan` }
+@Page { uri=`/responseObj` }
 @NoDoc
 const mixin T_ResponseObj : EfanComponent {
 	@Inject	abstract Pages pages
@@ -12,5 +12,5 @@ const mixin T_ResponseObj : EfanComponent {
 		throw ReProcessErr(pages.pageMeta(WelcomePage#, null))
 	}
 	
-	Str render() { "" }
+	override Str renderTemplate() { "" }
 }

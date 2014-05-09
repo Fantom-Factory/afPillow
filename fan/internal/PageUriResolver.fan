@@ -1,6 +1,5 @@
 using afIoc::Inject
 using afIocConfig::Config
-using afEfanXtra::EfanTemplateFinders
 
 @NoDoc
 const mixin PageUriResolver {

@@ -49,20 +49,20 @@ internal class T_AppModule12 {
 }
 
 @NoDoc
-@Page { uri=`/headerRender`; template=`fan://afEfanXtra/res/viaRenderMethod.efan` }
+@Page { uri=`/headerRender` }
 const mixin T_HeaderRender : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str		context	
-	Str render() { "pageUri:${pageMeta.pageUri} ctx:${context}" }
+	override Str renderTemplate() { "pageUri:${pageMeta.pageUri} ctx:${context}" }
 }
 
 @NoDoc
-@Page { uri=`/headerEvent`; template=`fan://afEfanXtra/res/viaRenderMethod.efan` }
+@Page { uri=`/headerEvent` }
 const mixin T_HeaderEvent : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageEvent
 	Obj event(Str ctx) { Text.fromPlain("event pageUri:${pageMeta.pageUri} ctx:${ctx}") }
-	Str render() { "wotever" }
+	override Str renderTemplate() { "wotever" }
 }
 
 
