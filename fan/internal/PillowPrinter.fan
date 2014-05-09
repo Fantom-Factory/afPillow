@@ -1,13 +1,11 @@
-using afIoc::Inject
-using afIoc::Registry
-using afEfanXtra::EfanXtra
-using afEfanXtra::EfanXtraPrinter
+using afIoc
+using afEfanXtra
 using web::WebOutStream
 
 internal const class PillowPrinter {
 	@Inject private	const Log				log
 	@Inject private	const Pages				pages
-	@Inject private	const EfanXtra 			efanExtra
+	@Inject private	const EfanXtra			efanXtra
 	@Inject private	const EfanXtraPrinter	exPrinter
 
 	new make(|This| in) { in(this) }
@@ -15,24 +13,24 @@ internal const class PillowPrinter {
 	Void logLibraries() {
 		
 		details := "\n"
-		efanExtra.libraries.each |libName| {
+		efanXtra.libraries.each |lib| {
 			// log the components, filtering out pages
-			details += pageDetailsToStr(libName)
-			details += exPrinter.libraryDetailsToStr(libName) |Type component->Bool| { !component.hasFacet(Page#) }
+			details += pageDetailsToStr(lib)
+			details += exPrinter.libraryDetailsToStr(lib) |Type component->Bool| { !component.hasFacet(Page#) }
 		}
 		
 		log.info(details)
 	}
 
-	Str pageDetailsToStr(Str libName) {
+	Str pageDetailsToStr(EfanLibrary lib) {
 		buf		 := StrBuf()
-		pageTypes := efanExtra.componentTypes(libName).findAll { it.hasFacet(Page#) }
+		pageTypes := lib.componentTypes.findAll { it.hasFacet(Page#) }
 		
 		if (pageTypes.isEmpty)
 			return ""
 
 		maxName	 := (Int) pageTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
-		buf.add("\nefan Library: '${libName}' has ${pageTypes.size} pages:\n\n")
+		buf.add("\nefan Library: '${lib.name}' has ${pageTypes.size} pages:\n\n")
 
 		pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)

@@ -15,7 +15,7 @@ internal class TestWelcomePageStrategy : PillowTest {
 	Void testOffWithRedirects() {
 		start(T_AppModule04#)
 		verifyEq(client.get(`/start`	 ).statusCode, 200)
-		verifyEq(client.get(`/`			 ).statusCode, 301)  // 308 in Fantom-1.0.66
+		verifyEq(client.get(`/`			 ).statusCode, 308)
 		verifyEq(client.lastResponse.headers.location, `/start`)
 		verifyEq(client.get(`/start.html`).statusCode, 404) 
 	}
@@ -29,10 +29,10 @@ internal class TestWelcomePageStrategy : PillowTest {
 	
 	Void testOnWithRedirects() {
 		start(T_AppModule06#)
-		verifyEq(client.get(`/start`	 ).statusCode, 301) // 308 in Fantom-1.0.66
+		verifyEq(client.get(`/start`	 ).statusCode, 308)
 		verifyEq(client.lastResponse.headers.location, `/`)
 		verifyEq(client.get(`/`			 ).statusCode, 200) 
-		verifyEq(client.get(`/start.html`).statusCode, 301) 
+		verifyEq(client.get(`/start.html`).statusCode, 308) 
 		verifyEq(client.lastResponse.headers.location, `/`)
 	}
 	

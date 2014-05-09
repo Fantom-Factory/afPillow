@@ -1,6 +1,6 @@
 using afIoc::Inject
 using afIocConfig::Config
-using afEfanXtra::EfanTemplateFinders
+using afEfanXtra::TemplateFinders
 
 @NoDoc
 const mixin ContentTypeResolver {
@@ -34,17 +34,18 @@ internal const class ResolveContentTypeFromPageFacet : ContentTypeResolver {
 
 ** Look for content type from the extension
 internal const class ResolveContentTypeFromTemplateExtension : ContentTypeResolver {
-	@Inject private const EfanTemplateFinders templatefinder
+	@Inject private const TemplateFinders templatefinder
 
 	new make(|This| in) { in(this)	} 
 
 	override MimeType? contentType(Type pageType) {
-		file	:= templatefinder.findTemplate(pageType)
-		efan 	:= file.ext ?: ""
-		name 	:= file.name[0..<-(efan.size+1)]
+		tsrc	:= templatefinder.getOrFindTemplate(pageType)
+		efan 	:= tsrc.location.ext ?: ""
+		name 	:= tsrc.location.name[0..<-(efan.size+1)]
 		ext		:= name.toUri.ext?.lower
 		eType 	:= ext != null ? MimeType.forExt(ext) : null
 		
+		// TODO: Fantom-1.0.67 - see http://fantom.org/sidewalk/topic/2277#c14506 
 		// hmmm... what if...!?
 		if (ext == "xhtml")
 			return  MimeType("application/xhtml+xml; charset=utf-8")

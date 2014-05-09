@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@Page { uri=`/pageMethod`; template=`fan://afEfanXtra/res/viaRenderMethod.efan`; httpMethod="POST" }
+@Page { uri=`/pageMethod`; httpMethod="POST" }
 @NoDoc
 const mixin T_PageMethod : EfanComponent {
 	
@@ -11,5 +11,5 @@ const mixin T_PageMethod : EfanComponent {
 		return Text.fromPlain("POST Event Rendered")
 	}
 	
-	Str render() { "POST Rendered" }
+	override Str renderTemplate() { "POST Rendered" }
 }

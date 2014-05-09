@@ -3,24 +3,30 @@ Overview [#overview]
 'Pillow' is a web framework that maps HTTP request URIs to Pillow Pages, letting them react to RESTful events.
 
 'Pillow'...
- - Is a [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` framework
- - Extends [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components
- - Plays great with [Slim]`http://www.fantomfactory.org/pods/afSlim`
- - Runs on [IoC]`http://www.fantomfactory.org/pods/afIoc`
+ - Is a [BedSheet]`pod:afBedSheet` framework
+ - Extends [efanXtra]`pod:afEfanXtra` components
+ - Plays great with [Slim]`pod:afSlim`
+ - Runs on [IoC]`pod:afIoc`
 
 'Pillow' - Something for your web app to get its teeth into!
 
 
 
-Install [#install]
+Install [#Install]
 ******************
-Install 'afPillow' with the [Fantom Respository Manager]`http://fantom.org/doc/docFanr/Tool.html#install`:
+Install '@{project.name}' with the Fantom Repository Manager ( [fanr]`docFanr::Tool.install` ):
 
-  C:\> fanr install -r http://repo.status302.com/fanr/ afPillow
+  C:\> fanr install -r http://repo.status302.com/fanr/ @{pod.name}
 
-To use in a [Fantom]`http://fantom.org/` project, add a dependency to its 'build.fan':
+To use in a [Fantom]`http://fantom.org/` project, add a dependency to 'build.fan':
 
-  depends = ["sys 1.0", ..., "afPillow 1+"]
+  depends = ["sys 1.0", ..., "@{pod.name} @{pod.version}+"]
+
+
+
+Documentation [#documentation]
+******************************
+Full API & fandocs are available on the [Status302 repository]`http://repo.status302.com/doc/@{pod.name}/#overview`.
 
 
 
@@ -28,11 +34,15 @@ Quick Start [#quickStart]
 *************************
 Example.efan:
 pre>
+syntax: jsp
+
 Hello Mum! I'm <%= age %> years old!
 <pre
 
 Example.fan:
 pre>
+syntax: fantom
+
 using afIoc
 using afBedSheet
 using afEfanXtra
@@ -69,13 +79,15 @@ class AppModule {
 
 Run the **Example.fan** script from the command line:
 pre>
+syntax: bash
+
 C:\> fan Example.fan
 
 Efan Library: 'app' has 1 page(s):
   Example : /example
 <pre
 
-Then point your browser at `http://localhost:8069/example/42`:
+Then point your browser at 'http://localhost:8069/example/42'
 
   Hello Mum! I'm 42 years old!
 
@@ -86,16 +98,18 @@ Usage [#usage]
 To create a web page, define an 'EfanComponent' that is annotated with the [Page]`Page` facet. Example:
 
 pre>
-  using afPillow::Page
-  using afEfanXtra::EfanComponent
+syntax: fantom
 
-  @Page
-  const mixin Admin : EfanComponent {
+using afPillow::Page
+using afEfanXtra::EfanComponent
+
+@Page
+const mixin Admin : EfanComponent {
     ...
-  }
+}
 <pre
 
-[Pages]`Page` are [efanXtra]`http://www.fantomfactory.org/pods/afEfanXtra` components and behave in exactly the same way.
+[Pages]`Page` are [efanXtra]`pod:afEfanXtra` components and behave in exactly the same way.
 
 'Pillow' will automatically route URLs with your page name, to your page.
 Camel casing class names results in a '/' delimiter.
@@ -104,7 +118,7 @@ Examples:
   `/admin`        --> Admin.fan
   `/admin/secret` --> AdminSecret.fan
 
-Or you can use the [@Page]`Page` facet to define an explicit URI.
+Or you can use the [@Page]`Page` facet to define an explicit URL.
 
 
 
@@ -113,7 +127,7 @@ Welcome Pages [#welcomePages]
 'Pillow' supports the routing of welcome pages, also known as directory pages, through the `WelcomePageStrategy`.
 
 When switched on, whenever a request is made for a directory URI (one that ends with a /slash/) then 'Pillow' will render the
-directory's [welcome page]`PillowConfigIds.welcomePageName`, which defaults to a page named 'Index'.
+directory's [welcome page]`PillowConfigIds#welcomePageName`, which defaults to a page named 'Index'.
 Examples:
 
   `/`        --> Index.fan
@@ -137,6 +151,8 @@ Declaring page context fields is actually shorthard for assigning fields manuall
 The [Quick Start]`#quickStart` example could be re-written long hand as:
 
 pre>
+syntax: fantom
+
 @Page
 const mixin Example : EfanComponent {
     abstract Int age
@@ -164,6 +180,8 @@ You can create new PageMeta instances with different page context by using the '
 Using our example again:
 
 pre>
+syntax: fantom
+
 @Page
 const mixin Example : EfanComponent {
     @Inject PageMeta pageMeta
@@ -172,7 +190,7 @@ const mixin Example : EfanComponent {
     abstract Int age
 
     Str renderLinkToSelf() {
-        return "<a href='${pageMeta.pageUri}'>Link to 42</a>"
+        return "<a href='${pageMeta.pageUri}'>Link to ${age}</a>"
     }
 
     Str renderLinkTo69() {
@@ -182,7 +200,7 @@ const mixin Example : EfanComponent {
 }
 <pre
 
-'PageMeta' instances are [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response objects and may be returned from request handlers.
+'PageMeta' instances are [BedSheet]`pod:afBedSheet` response objects and may be returned from request handlers.
 The handler then renders the Pillow page.
 Use the 'pageMeta()' method in the `Pages` service to create PageMeta objects for arbituary pages.
 
@@ -197,6 +215,8 @@ Denote page events with the '@PageEvent' facet.
 Lets change our example so that the page context is a 'Str' and introduce an event called 'loves':
 
 pre>
+syntax: fantom
+
 @Page
 const mixin Example : EfanComponent {
     @Inject PageMeta pageMeta
@@ -216,7 +236,7 @@ We can call the event using the URI 'http://localhost:8069/example/Emma/loves/sa
 
 '/example/Emma' would render the page, but should a link to '/example/Emma/loves/sausage' be clicked, then the page event 'loves' is called.
 
-Page events may return any standard [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response object.
+Page events may return any standard [BedSheet]`pod:afBedSheet` response object.
 Above we return the 'pageMeta' to re-render the page with a page context of 'Emma'.
 
 Use the 'PageMeta.eventUri(name, context)' to create full event URIs that can be used by clients.
@@ -229,9 +249,9 @@ Page template files should use a double extension in their name, for example,
 
   IndexPage.xhtml.slim
 
-The outer extension denotes the type of templating to use, [Slim]`http://www.fantomfactory.org/pods/afSlim` in our example.
+The outer extension denotes the type of templating to use, [Slim]`pod:afSlim` in our example.
 The innter extension is used to find the [Content-Type]`http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17`
-that is sent in the HTTP response header. In our example, the 'Content-Type' would be set to ' application/xhtml+xml'.
+that is sent in the HTTP response header. In our example, the 'Content-Type' would be set to 'application/xhtml+xml'.
 
 If a double extension is not used, or not know, then the default content type, as defined by the config value, is used.
 
@@ -241,6 +261,10 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.8 [#v1.0.8]
+----------------
+ - Chg: Updated to use [efanXtra 1.1.0]`pod:afEfanXtra`.
+
 v1.0.6 [#v1.0.6]
 ----------------
  - Chg: 'Pages.pageMeta()' and 'Pages.get()' now throw a 'NotFoundErr' if the given page type could not be found.

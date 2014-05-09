@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 
 @NoDoc
-@Page { uri=`/pageContextStr`; template=`fan://afEfanXtra/res/viaRenderMethod.efan`}
+@Page { uri=`/pageContextStr` }
 const mixin T_PageContext : EfanComponent {
 	@Inject	abstract Pages 		pages
 	@Inject	abstract PageMeta 	pageMeta
@@ -10,7 +10,7 @@ const mixin T_PageContext : EfanComponent {
 	@PageContext	
 			abstract Str 		context
 	
-	Str render() {
+	override Str renderTemplate() {
 		if (context == "err") {
 			try {
 				return pages.pageMeta(T_PageContext#, ["Muhaha", `/blah`]).pageUri.toStr
@@ -25,7 +25,7 @@ const mixin T_PageContext : EfanComponent {
 
 
 @NoDoc
-@Page { uri=`/pageContextStrMulti`; template=`fan://afEfanXtra/res/viaRenderMethod.efan`}
+@Page { uri=`/pageContextStrMulti` }
 const mixin T_PageContextMulti : EfanComponent {
 	@Inject	abstract Pages		pages	
 	@Inject	abstract PageMeta 	pageMeta
@@ -33,7 +33,7 @@ const mixin T_PageContextMulti : EfanComponent {
 	@PageContext	abstract Str?	name
 	@PageContext	abstract Int?	age
 
-	Str render() {
+	override Str renderTemplate() {
 		if (name == "err") {
 			try {
 				return pages.pageMeta(T_PageContextMulti#, ["Muhaha"]).pageUri.toStr

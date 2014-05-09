@@ -42,8 +42,7 @@ const mixin Pages {
 internal const class PagesImpl : Pages {
 	
 	@Inject	private const ValueEncoders		valueEncoders
-	@Inject	private const EfanXtra			efanXtra
-	@Inject	private const EfanLibraries 	efanLibraries
+	@Inject	private const EfanXtra 			efanXtra
 	@Inject	private const IocEnv			iocEnv
 	@Inject	private const HttpResponse		httpRes
 	@Inject	private const HttpRequest		httpRequest
@@ -52,8 +51,8 @@ internal const class PagesImpl : Pages {
 	new make(PageMetaStateFactory metaFactory, |This| in) {
 		in(this)
 		cache := Utils.makeMap(Type#, PageMeta#)
-		efanXtra.libraries.each |libName| {
-			efanXtra.componentTypes(libName).findAll { it.hasFacet(Page#) }.each {
+		efanXtra.libraries.each |lib| {
+			lib.componentTypes.findAll { it.hasFacet(Page#) }.each {
 				cache[it] =  metaFactory.toPageMetaState(it)
 			}
 		}
@@ -86,7 +85,7 @@ internal const class PagesImpl : Pages {
 		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 		pageStr	 := PageMeta.push(pageMeta) |->Str| {
-			return efanXtra.render(pageMeta.pageType, pageArgs)
+			return efanXtra.component(pageMeta.pageType).render(pageArgs)
 		}
 		return Text.fromMimeType(pageStr, pageMeta.contentType)
 	}
@@ -101,7 +100,7 @@ internal const class PagesImpl : Pages {
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
 		return PageMeta.push(pageMeta) |->Obj?| {
-			return efanLibraries.library(pageType).callMethod(pageType, initArgs) |->Obj?| {
+			return efanXtra.callMethod(pageType, initArgs) |->Obj?| {
 				return eventMethod.callOn(page, eventArgs)
 			}
 		}
