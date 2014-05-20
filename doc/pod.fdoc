@@ -184,7 +184,7 @@ syntax: fantom
 
 @Page
 const mixin Example : EfanComponent {
-    @Inject PageMeta pageMeta
+    @Inject abstract PageMeta pageMeta
 
     @PageContext
     abstract Int age
@@ -219,7 +219,7 @@ syntax: fantom
 
 @Page
 const mixin Example : EfanComponent {
-    @Inject PageMeta pageMeta
+    @Inject abstract PageMeta pageMeta
 
     @PageContext
     abstract Str name
