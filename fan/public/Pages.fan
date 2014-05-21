@@ -1,29 +1,24 @@
-using afIoc::Inject
-using afIoc::Registry
-using afIoc::NotFoundErr
-using afIocEnv::IocEnv
-using afEfanXtra::EfanXtra
-using afEfanXtra::EfanLibraries
-using afBedSheet::Text
-using afBedSheet::ValueEncoders
-using afBedSheet::HttpRequest
-using afBedSheet::HttpResponse
+using afIoc
+using afIocEnv
+using afEfanXtra
+using afBedSheet
+using afConcurrent
 
 ** (Service) - Methods for discovering Pillow pages and returning `PageMeta` instances.
 const mixin Pages {
-	
+
 	** Returns all Pillow page types.
 	abstract Type[] pageTypes()
-	
+
 	** Create 'PageMeta' for the given page type and context. 
 	** 
 	** (Note: 'pageContext' are the arguments to the '@InitRender' method, if any.) 
 	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null)
-	
+
 	** An alias for 'pageMeta()'.
 	@Operator
 	abstract PageMeta get(Type pageType, Obj?[]? pageContext := null)
-	
+
 	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
 	** 
 	** Note that 'pageContext' items converted their appropriate type via BedSheet's 'ValueEncoder' service.
@@ -36,19 +31,23 @@ const mixin Pages {
 	** Executes the page event in the given page context.
 	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
 	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
-	
+
 }
 
 internal const class PagesImpl : Pages {
 	
-	@Inject	private const ValueEncoders		valueEncoders
-	@Inject	private const EfanXtra 			efanXtra
-	@Inject	private const IocEnv			iocEnv
-	@Inject	private const HttpResponse		httpRes
-	@Inject	private const HttpRequest		httpRequest
-		private const Type:PageMetaState	pageCache 
+	@Inject	private const ValueEncoders			valueEncoders
+	@Inject	private const EfanXtra 				efanXtra
+	@Inject	private const IocEnv				iocEnv
+	@Inject	private const HttpResponse			httpRes
+	@Inject	private const HttpRequest			httpRequest
+	@Inject	private const ComponentCtxMgr		comCtxMgr
+	
+		private const Type:PageMetaState		pageCache 
+		private const LocalRef					eventPageState 
+		private const LocalRef					eventPageType 
 
-	new make(PageMetaStateFactory metaFactory, |This| in) {
+	new make(PageMetaStateFactory metaFactory, ThreadLocalManager threadLocalMgr, |This| in) {
 		in(this)
 		cache := Utils.makeMap(Type#, PageMeta#)
 		efanXtra.libraries.each |lib| {
@@ -57,6 +56,8 @@ internal const class PagesImpl : Pages {
 			}
 		}
 		this.pageCache = cache
+		this.eventPageType  = threadLocalMgr.createRef("afPillow.pageType")
+		this.eventPageState = threadLocalMgr.createRef("afPillow.pageState")
 	}
 	
 	override Type[] pageTypes() {
@@ -81,10 +82,12 @@ internal const class PagesImpl : Pages {
 
 	override Text renderPageMeta(PageMeta pageMeta) {
 		if (!iocEnv.isProd)
-			httpRes.headers["X-Pillow-Rendered-Page"] = pageMeta.pageType.qname
+			httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
 		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 		pageStr	 := PageMeta.push(pageMeta) |->Str| {
+			if (pageMeta.pageType == eventPageType.val)
+				comCtxMgr.inject(eventPageState.val)
 			return efanXtra.component(pageMeta.pageType).render(pageArgs)
 		}
 		return Text.fromMimeType(pageStr, pageMeta.contentType)
@@ -92,7 +95,7 @@ internal const class PagesImpl : Pages {
 
 	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
 		if (!iocEnv.isProd) 
-			httpRes.headers["X-Pillow-Called-Event"] = eventMethod.qname
+			httpRes.headers["X-Pillow-calledEvent"] = eventMethod.qname
 
 		page 		:= efanXtra.component(pageType)
 		pageMeta	:= pageMeta(pageType, pageContext)
@@ -101,7 +104,10 @@ internal const class PagesImpl : Pages {
 		
 		return PageMeta.push(pageMeta) |->Obj?| {
 			return efanXtra.callMethod(pageType, initArgs) |->Obj?| {
-				return eventMethod.callOn(page, eventArgs)
+				eventValue := eventMethod.callOn(page, eventArgs)
+				eventPageState.val = comCtxMgr.peek
+				eventPageType.val  = pageMeta.pageType
+				return eventValue
 			}
 		} ?: pageMeta
 	}

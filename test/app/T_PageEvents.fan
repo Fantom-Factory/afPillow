@@ -30,6 +30,9 @@ const mixin T_PageCtxEvents : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str?		name
 	@PageContext	abstract Int? 		iq
+
+					abstract Str?		ctxName
+					abstract Int? 		ctxIq
 	
 	@PageEvent
 	Text plainEvent() {
@@ -39,5 +42,11 @@ const mixin T_PageCtxEvents : EfanComponent {
 	@PageEvent
 	Text ctxEvent(Str name2, Int iq2) {
 		return Text.fromPlain("Page Ctx: name=$name, iq=$iq\nEvent Ctx: name=$name2, iq=$iq2")
+	}
+	
+	@PageEvent
+	Void setVars(Str name2, Int iq2) {
+		this.ctxName = name2
+		this.ctxIq = iq2
 	}
 }

@@ -9,7 +9,7 @@ facet class Page {
 	** using afEfanXtra
 	** using afPillow
 	** 
-	** @Page { uri=`/matrix_explained.html` }
+	** @Page { url=`/matrix_explained.html` }
 	** const mixin Matrix : EfanComponent { ... }
 	** <pre
 	const Uri? url
