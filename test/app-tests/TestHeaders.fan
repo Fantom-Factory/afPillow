@@ -49,7 +49,7 @@ internal class T_AppModule12 {
 }
 
 @NoDoc
-@Page { uri=`/headerRender` }
+@Page { url=`/headerRender` }
 const mixin T_HeaderRender : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str		context	
@@ -57,7 +57,7 @@ const mixin T_HeaderRender : EfanComponent {
 }
 
 @NoDoc
-@Page { uri=`/headerEvent` }
+@Page { url=`/headerEvent` }
 const mixin T_HeaderEvent : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageEvent

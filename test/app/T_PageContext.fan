@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 
 @NoDoc
-@Page { uri=`/pageContextStr` }
+@Page { url=`/pageContextStr` }
 const mixin T_PageContext : EfanComponent {
 	@Inject	abstract Pages 		pages
 	@Inject	abstract PageMeta 	pageMeta
@@ -25,7 +25,7 @@ const mixin T_PageContext : EfanComponent {
 
 
 @NoDoc
-@Page { uri=`/pageContextStrMulti` }
+@Page { url=`/pageContextStrMulti` }
 const mixin T_PageContextMulti : EfanComponent {
 	@Inject	abstract Pages		pages	
 	@Inject	abstract PageMeta 	pageMeta

@@ -1,18 +1,18 @@
 using afEfanXtra
 
 @NoDoc
-@Page { uri=`/contentTypeExplicit`; contentType=MimeType("wot/ever") }
+@Page { url=`/contentTypeExplicit`; contentType=MimeType("wot/ever") }
 const mixin T_ContentTypeExplicit : EfanComponent { }
 
 @NoDoc
-@Page { uri=`/contentTypeXhtml` }
+@Page { url=`/contentTypeXhtml` }
 const mixin T_ContentTypeXhtml : EfanComponent { }
 
 @NoDoc
-@Page { uri=`/contentTypeHtml` }
+@Page { url=`/contentTypeHtml` }
 const mixin T_ContentTypeHtml : EfanComponent { }
 
 @NoDoc
-@Page { uri=`/contentTypeDefault` }
+@Page { url=`/contentTypeDefault` }
 const mixin T_ContentTypeDefault : EfanComponent { }
 

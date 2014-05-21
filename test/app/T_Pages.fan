@@ -11,17 +11,17 @@ const mixin Basic 		: EfanComponent { }
 const mixin BasicNested : EfanComponent { }
 
 @NoDoc
-@Page { uri=`/facetRemapped` }
+@Page { url=`/facetRemapped` }
 const mixin FacetPage 	: EfanComponent { }
 
 @NoDoc
-@Page { uri=`/welcome` }
+@Page { url=`/welcome` }
 const mixin WelcomePage : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
 }
 
 @NoDoc
-@Page { uri=`/welcome2` }
+@Page { url=`/welcome2` }
 const mixin Welcome2Page : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str		context	
@@ -29,7 +29,7 @@ const mixin Welcome2Page : EfanComponent {
 }
 
 @NoDoc
-@Page { uri=`/welcome3` }
+@Page { url=`/welcome3` }
 const mixin Welcome3Page : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageEvent

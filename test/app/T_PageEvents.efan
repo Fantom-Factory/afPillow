@@ -1,7 +1,9 @@
 <html>
 <body>
 
-	<a id="plainEvent" href="<%= pageMeta.eventUri("plainEvent", null) %>">Plain Event</a>
+	<a id="plainEvent" href="<%= pageMeta.eventUri("plainEvent") %>">Plain Event</a>
+
+	<a id="defaultReturnValue" href="<%= pageMeta.eventUri("defaultReturnValue") %>">Plain Event</a>
 
 	<a id="ctxEvent" href="<%= pageMeta.eventUri("ctxEvent", ["Emma", 69]) %>">Event with Context</a>
 

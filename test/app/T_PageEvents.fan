@@ -2,10 +2,15 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@Page { uri=`/pageEvents` }
+@Page { url=`/pageEvents` }
 @NoDoc
 const mixin T_PageEvents : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
+	
+	@PageEvent
+	Void defaultReturnValue() {
+		// should render this page --> "Default Page"
+	}
 	
 	@PageEvent
 	Text plainEvent() {
@@ -19,7 +24,7 @@ const mixin T_PageEvents : EfanComponent {
 }
 
 
-@Page { uri=`/pageCtxEvents` }
+@Page { url=`/pageCtxEvents` }
 @NoDoc
 const mixin T_PageCtxEvents : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta

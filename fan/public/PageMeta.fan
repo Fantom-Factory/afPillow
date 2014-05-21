@@ -64,7 +64,7 @@ class PageMeta {
 	}
 
 	** Returns a URI for a given event - use to create client side URIs to call the event.
-	Uri eventUri(Str eventName, Obj?[]? eventContext) {
+	Uri eventUri(Str eventName, Obj?[]? eventContext := null) {
 		eventMethod(eventName)		
 		eventUri 	:= pageUri.plusSlash + `${eventName}`
 		if (eventContext != null)
