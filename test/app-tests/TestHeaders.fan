@@ -11,20 +11,20 @@ internal class TestHeaders : PillowTest {
 		start(T_AppModule11#)
 
 		client.get(`/headerRender/ctx`)
-		verifyEq(client.lastResponse.headers.getFirst("X-Pillow-Rendered-Page"), T_HeaderRender#.qname)
+		verifyEq(client.lastResponse.headers.getFirst("X-Pillow-renderedPage"), T_HeaderRender#.qname)
 
 		client.get(`/headerEvent/event/ctx`)
-		verifyEq(client.lastResponse.headers.getFirst("X-Pillow-Called-Event"), T_HeaderEvent#event.qname)
+		verifyEq(client.lastResponse.headers.getFirst("X-Pillow-calledEvent"), T_HeaderEvent#event.qname)
 	}
 
 	Void testHeadersInProd() {
 		start(T_AppModule12#)
 
 		client.get(`/headerRender/ctx`)
-		verifyNull(client.lastResponse.headers.getFirst("X-Pillow-Rendered-Page"))
+		verifyNull(client.lastResponse.headers.getFirst("X-Pillow-renderedPage"))
 
 		client.get(`/headerEvent/event/ctx`)
-		verifyNull(client.lastResponse.headers.getFirst("X-Pillow-Rendered-Page"))
+		verifyNull(client.lastResponse.headers.getFirst("X-Pillow-calledEvent"))
 	}
 
 	override Void setup() {	}

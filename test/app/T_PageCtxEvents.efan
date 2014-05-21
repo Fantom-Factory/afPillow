@@ -7,5 +7,9 @@
 
 	<!-- create invalid link -->
 
+	<p id="ctxName"><%= ctxName %></p>
+
+	<p id="ctxIq"><%= ctxIq %></p>
+
 </body>
 </html>
