@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@Page { uri=`/pageMethod`; httpMethod="POST" }
+@Page { url=`/pageMethod`; httpMethod="POST" }
 @NoDoc
 const mixin T_PageMethod : EfanComponent {
 	

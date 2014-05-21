@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@Page { uri=`/responseObj` }
+@Page { url=`/responseObj` }
 @NoDoc
 const mixin T_ResponseObj : EfanComponent {
 	@Inject	abstract Pages pages

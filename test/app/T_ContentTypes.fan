@@ -1,7 +1,7 @@
 using afEfanXtra
 
 @NoDoc
-@Page { uri=`/start` }
+@Page { url=`/start` }
 const mixin T_StartPage : EfanComponent { 
 	override Str renderTemplate() { "Are you startin'?" }
 }

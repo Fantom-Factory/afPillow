@@ -103,7 +103,7 @@ internal const class PagesImpl : Pages {
 			return efanXtra.callMethod(pageType, initArgs) |->Obj?| {
 				return eventMethod.callOn(page, eventArgs)
 			}
-		}
+		} ?: pageMeta
 	}
 	
 	// ---- Private Methods --------------------------------------------------------------------------------------------	

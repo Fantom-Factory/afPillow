@@ -22,14 +22,14 @@ internal const class PageUriResolverImpl : PageUriResolver {
 internal const class ResolvePageUriFromPageFacet : PageUriResolver {
 	override Uri? pageUri(Type pageType) {
 		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
-		uri	 := page.uri
-		if (uri == null)
+		url	 := page.url ?: page.uri
+		if (url == null)
 			return null
-	    if (uri.scheme != null || uri.host != null || uri.port!= null )
-			throw PillowErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, uri))
-	    if (!uri.isPathAbs)
-			throw PillowErr(ErrMsgs.pageRouteShouldStartWithSlash(pageType, uri))
-		return uri		
+	    if (url.scheme != null || url.host != null || url.port!= null )
+			throw PillowErr(ErrMsgs.pageRouteShouldBePathOnly(pageType, url))
+	    if (!url.isPathAbs)
+			throw PillowErr(ErrMsgs.pageRouteShouldStartWithSlash(pageType, url))
+		return url
 	}
 }
 

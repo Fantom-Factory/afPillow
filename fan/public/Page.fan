@@ -3,7 +3,7 @@
 @FacetMeta { inherited = true }
 facet class Page {
 	
-	** Use to map the page to a specific URI. Page URIs should start with a leading /slash/. Example:
+	** Use to map the page to a specific URL. Page URLs should start with a leading /slash/. Example:
 	** 
 	** pre>
 	** using afEfanXtra
@@ -12,6 +12,9 @@ facet class Page {
 	** @Page { uri=`/matrix_explained.html` }
 	** const mixin Matrix : EfanComponent { ... }
 	** <pre
+	const Uri? url
+
+	@NoDoc @Deprecated { msg="Use url instead" }
 	const Uri? uri
 	
 	** By default, 'pillow' looks for a template with the same name as the page class.

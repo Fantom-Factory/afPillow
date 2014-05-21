@@ -11,6 +11,15 @@ internal class TestPageEvents : PillowTest {
 		verifyEq(res.asStr, "Plain Event Fired!")
 	}
 
+	Void testVoidReturnValueRendersSamePage() {
+		client.get(`/pageEvents`)
+		plainEvent := Link("#defaultReturnValue")
+		verifyEq(plainEvent.href, "/pageEvents/defaultReturnValue")
+
+		res := plainEvent.click
+		verifyEq(res.headers["X-Pillow-Rendered-Page"], T_PageEvents#.qname)
+	}
+
 	Void testPageEventWithCtx() {
 		client.get(`/pageEvents`)
 		event := Link("#ctxEvent")
