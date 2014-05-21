@@ -261,6 +261,11 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.10 [#v1.0.10]
+------------------
+ - Chg: Page events render the containing page by default.
+ - Chg: Renamed '@Page.uri' -> '@Page.url'
+
 v1.0.8 [#v1.0.8]
 ----------------
  - Chg: Updated to use [efanXtra 1.1.0]`pod:afEfanXtra`.
