@@ -41,13 +41,11 @@ internal const class PagesImpl : Pages {
 	@Inject	private const IocEnv				iocEnv
 	@Inject	private const HttpResponse			httpRes
 	@Inject	private const HttpRequest			httpRequest
-	@Inject	private const ComponentCtxMgr		comCtxMgr
-	
-		private const Type:PageMetaState		pageCache 
-		private const LocalRef					eventPageState 
-		private const LocalRef					eventPageType 
+	@Inject	private const ComponentRenderer		componentRenderer
+	@Inject private const ComponentMeta			componentMeta
+			private const Type:PageMetaState	pageCache 
 
-	new make(PageMetaStateFactory metaFactory, ThreadLocalManager threadLocalMgr, |This| in) {
+	new make(PageMetaStateFactory metaFactory, |This| in) {
 		in(this)
 		cache := Utils.makeMap(Type#, PageMeta#)
 		efanXtra.libraries.each |lib| {
@@ -56,8 +54,6 @@ internal const class PagesImpl : Pages {
 			}
 		}
 		this.pageCache = cache
-		this.eventPageType  = threadLocalMgr.createRef("afPillow.pageType")
-		this.eventPageState = threadLocalMgr.createRef("afPillow.pageState")
 	}
 	
 	override Type[] pageTypes() {
@@ -86,8 +82,6 @@ internal const class PagesImpl : Pages {
 		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 		pageStr	 := PageMeta.push(pageMeta) |->Str| {
-			if (pageMeta.pageType == eventPageType.val)
-				comCtxMgr.inject(eventPageState.val)
 			return efanXtra.component(pageMeta.pageType).render(pageArgs)
 		}
 		return Text.fromMimeType(pageStr, pageMeta.contentType)
@@ -102,18 +96,36 @@ internal const class PagesImpl : Pages {
 		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
-		return PageMeta.push(pageMeta) |->Obj?| {
-			return efanXtra.callMethod(pageType, initArgs) |->Obj?| {
+		return PageMeta.push(pageMeta) |->Obj| {
+			return componentRenderer.runInCtx(page) |->Obj| {
+				// TODO: what if InitRender returns false?
+				componentMeta.callMethod(InitRender#, page, initArgs)
+				
 				eventValue := eventMethod.callOn(page, eventArgs)
-				eventPageState.val = comCtxMgr.peek
-				eventPageType.val  = pageMeta.pageType
-				return eventValue
+				if (eventValue != null)
+					return eventValue
+				if (!iocEnv.isProd)
+					httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
+				
+				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
+				componentRenderer.doRenderLoop(page)
+				return Text.fromMimeType(componentRenderer.renderResult, pageMeta.contentType)
 			}
-		} ?: pageMeta
+		}
 	}
 	
 	// ---- Private Methods --------------------------------------------------------------------------------------------	
 
+	private Text doPageRender(PageMeta pageMeta) {
+		if (!iocEnv.isProd)
+			httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
+		
+		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
+		pageStr	 := efanXtra.component(pageMeta.pageType).render(pageArgs)
+		
+		return Text.fromMimeType(pageStr, pageMeta.contentType)
+	}
+	
 	** Convert the Str from Routes into real arg objs
 	private Obj[] convertArgs(Str?[] argsIn, Type[] convertTo) {
 		argsOut := argsIn.map |arg, i -> Obj?| {
