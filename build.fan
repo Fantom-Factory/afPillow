@@ -32,6 +32,7 @@ class Build : BuildPod {
 			"afEfanXtra 1.1.0+",
 			"afPlastic 1.0.10+",
 
+			// TODO: remove these during real build
 			"afBounce 1.0.0+",
 			"afButter 0.0.6+"
 		]
