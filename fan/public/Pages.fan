@@ -61,7 +61,7 @@ internal const class PagesImpl : Pages {
 	}
 	
 	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
-		pageState := pageCache[pageType] ?: throw NotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
+		pageState := pageCache[pageType] ?: throw PageNotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
 		return PageMeta(pageState, pageContext) {
 			it.httpRequest 	 = this.httpRequest
 			it.valueEncoders = this.valueEncoders
