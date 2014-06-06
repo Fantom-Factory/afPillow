@@ -23,17 +23,17 @@ To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan
 
 ## Documentation 
 
-Full API & fandocs are available on the [Status302 repository](http://repo.status302.com/doc/afPillow/#overview).
+Full API & fandocs are available on the [Status302 repository](http://repo.status302.com/doc/afPillow/).
 
 ## Quick Start 
 
-Example.efan:
+1). Create a text file called `Example.efan`:
 
 ```
 Hello Mum! I'm <%= age %> years old!
 ```
 
-Example.fan:
+2). Create a text file called `Example.fan`:
 
 ```
 using afIoc
@@ -62,15 +62,15 @@ class Main {
 
 @SubModule { modules=[EfanXtraModule#, PillowModule#] }
 class AppModule {
-    @Contribute { serviceType=EfanTemplateDirectories# }
+    @Contribute { serviceType=TemplateDirectories# }
     static Void contributeEfanDirs(OrderedConfig config) {
-        // Look for Example.efan in the same dir as this file
+        // Look for Example.efan in the same dir as this fantom file
         config.add(`./`)
     }
 }
 ```
 
-Run the **Example.fan** script from the command line:
+3). Run `Example.fan` as a Fantom script from the command line:
 
 ```
 C:\> fan Example.fan
@@ -79,7 +79,7 @@ Efan Library: 'app' has 1 page(s):
   Example : /example
 ```
 
-Then point your browser at `http://localhost:8069/example/42`
+4). Point your browser at `http://localhost:8069/example/42`
 
     Hello Mum! I'm 42 years old!
 
@@ -139,11 +139,50 @@ const mixin Example : EfanComponent {
 
 Note that a Pillow Page may choose to have *either* an `@InitRender` method or `@PageContext` fields, not both. Also note that page context objects need to be immutable ('const' classes).
 
+## Page Events 
+
+Page events allow pages to respond to RESTful actions by mapping URIs to page event methods. Page event methods are called in the context of the page they are defined. Denote page events with the `@PageEvent` facet.
+
+Lets change our example so that the page context is a `Str` and introduce an event called `loves`:
+
+```
+@Page
+const mixin Example : EfanComponent {
+
+    @PageContext
+    abstract Str name
+
+    @PageEvent
+    Void loves(Str meat) {
+        echo("${name} loves ${meat}!")
+    }
+}
+```
+
+Event URIs follow the pattern:
+
+    <page name> / <page context(s)> / <event name> / <event context(s)>
+
+So we can call the `loves` event with the URI `http://localhost:8069/example/Emma/loves/sausage`, which is broken down as:
+
+```
+example --> 'Example#' page type
+Emma    --> 'name' field
+loves   --> 'loves()' method
+sausage --> 'meat' argument
+```
+
+Use `PageMeta.eventUri(name, context)` to generate event URIs that can be used in templates.
+
+Event methods are invoked before anything is rendered. The default action, should the event method be `Void` or return `null`, is to re-render the containing page.
+
+Event methods may return any [BedSheet](http://www.fantomfactory.org/pods/afBedSheet) response object.
+
 ## Page Meta 
 
 The [PageMeta](http://repo.status302.com/doc/afPillow/PageMeta.html) class holds information about the Pillow Page currently being rendered. Obviously, using `PageMeta` in a page class, returns information about itself! Which is quite handy.
 
-Arguably the most useful method is `pageUri()` which returns a URI that can be used, by a client, to render the page complete with the current page context. You can create new PageMeta instances with different page context by using the `withContext()` method. Using our example again:
+Arguably the most useful method is `pageUri()` which returns a URI that can be used, by a client, to render the page complete with the current page context. You can create new PageMeta instances with different page contexts by using the `withContext()` method. Using our example again:
 
 ```
 @Page
@@ -164,37 +203,9 @@ const mixin Example : EfanComponent {
 }
 ```
 
-`PageMeta` instances are [BedSheet](http://www.fantomfactory.org/pods/afBedSheet) response objects and may be returned from request handlers. The handler then renders the Pillow page. Use the `pageMeta()` method in the [Pages](http://repo.status302.com/doc/afPillow/Pages.html) service to create PageMeta objects for arbituary pages.
+`PageMeta` instances are [BedSheet](http://www.fantomfactory.org/pods/afBedSheet) response objects and may be returned from route handlers. The Pillow `PageMeta` handler will then render the Pillow page.
 
-## Page Events 
-
-Page events allow pages to respond to RESTful actions by mapping URIs to page event methods. Page event methods are called in the context of the page they are defined. Denote page events with the `@PageEvent` facet.
-
-Lets change our example so that the page context is a `Str` and introduce an event called `loves`:
-
-```
-@Page
-const mixin Example : EfanComponent {
-    @Inject abstract PageMeta pageMeta
-
-    @PageContext
-    abstract Str name
-
-    @PageEvent
-    Obj loves(Str obj) {
-        echo("${name} loves ${obj}!")
-        return pageMeta
-    }
-}
-```
-
-We can call the event using the URI `http://localhost:8069/example/Emma/loves/sausage`.
-
-`/example/Emma` would render the page, but should a link to `/example/Emma/loves/sausage` be clicked, then the page event `loves` is called.
-
-Page events may return any standard [BedSheet](http://www.fantomfactory.org/pods/afBedSheet) response object. Above we return the `pageMeta` to re-render the page with a page context of `Emma`.
-
-Use the `PageMeta.eventUri(name, context)` to create full event URIs that can be used by clients.
+Use the [Pages](http://repo.status302.com/doc/afPillow/Pages.html) service to create `PageMeta` instances for any Pillow page.
 
 ## Content Type 
 
