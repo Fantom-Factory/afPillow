@@ -5,13 +5,13 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.8")
+		version = Version("1.0.9")
 
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",			
 			"tags"			: "templating, web",
-			"repo.private"	: "false"
+			"repo.private"	: "true"
 		]
 
 		index = [	
@@ -51,6 +51,7 @@ class Build : BuildPod {
 		// remove test pods from final build
 		testPods := "afBounce afButter".split
 		depends = depends.exclude { testPods.contains(it.split.first) }
+		super.compile
 	}
 }
 
