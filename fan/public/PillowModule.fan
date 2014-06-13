@@ -91,7 +91,15 @@ const class PillowModule {
 	@Contribute { serviceType=RegistryStartup# }
 	internal static Void contributeRegistryStartup(OrderedConfig conf, PillowPrinter pillowPrinter) {
 		conf.add |->| { pillowPrinter.logLibraries }
-	}	
+	}
+	
+	@Contribute { serviceType=StackFrameFilter# }
+	static Void contributeStackFrameFilter(OrderedConfig config) {
+		// remove boring Alien-Factory stack frames
+		config.add("^afEfan::.*\$")
+		config.add("^afEfanXtra::.*\$")
+		config.add("^afPillow::.*\$")
+	}
 }
 
 
