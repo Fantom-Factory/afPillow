@@ -24,7 +24,7 @@ class Build : BuildPod {
 			"web 1.0",
 		
 			// ---- core ------------------------
-			"afBeanUtils 0.0.2+",
+			"afBeanUtils 0.0.4+",
 			"afConcurrent 1.0.4+",
 			"afIoc 1.6.2+",
 			"afIocConfig 1.0.6+",
@@ -42,9 +42,6 @@ class Build : BuildPod {
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
 		resDirs = [`test/app/`]
-
-		docApi = true
-		docSrc = true
 	}
 	
 	override Void compile() {
