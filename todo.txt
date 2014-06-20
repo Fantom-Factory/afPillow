@@ -1,13 +1,7 @@
 
-For 1.0.10
+For 1.0.12
 ==========
-Move banner and service printing into reg startup methods - so they can easily be removed.
-	
-	@Contribute { serviceType=RegistryStartup# }
-	internal static Void contributeRegistryStartup(OrderedConfig config) {
-		config.remove("IocBanner")
-		config.remove("IocServices")
-	}
+
 
 
 For Future
