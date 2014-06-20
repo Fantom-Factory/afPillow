@@ -11,7 +11,6 @@ internal const class PillowPrinter {
 	new make(|This| in) { in(this) }
 	
 	Void logLibraries() {
-		
 		details := "\n"
 		efanXtra.libraries.each |lib| {
 			// log the components, filtering out pages

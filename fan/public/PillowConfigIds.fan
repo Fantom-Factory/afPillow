@@ -15,7 +15,7 @@
 **     }
 ** }
 ** <pre 
-const mixin PillowConfigIds {
+const class PillowConfigIds {
  
 	** The component name (Str) of directory welcome pages.
 	** 

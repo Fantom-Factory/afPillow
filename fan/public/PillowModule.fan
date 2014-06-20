@@ -64,12 +64,6 @@ const class PillowModule {
 		config.addOrdered("FindByPageFacetValue", config.autobuild(FindEfanByPageFacetValue#))
 	}
 
-	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
-		// we'll do our own logging thanks!
-		config[EfanXtraConfigIds.supressStartupLogging]	= true
-	}
-
 	@Contribute { serviceType=FactoryDefaults# }
 	static Void contributeFactoryDefaults(MappedConfig config) {
 		config[PillowConfigIds.welcomePageName]		= "index"
@@ -90,7 +84,8 @@ const class PillowModule {
 
 	@Contribute { serviceType=RegistryStartup# }
 	internal static Void contributeRegistryStartup(OrderedConfig conf, PillowPrinter pillowPrinter) {
-		conf.add |->| { pillowPrinter.logLibraries }
+		conf.remove  ("afEfanXtra.logLibraries")
+		conf.addOrdered("afPillow.logLibraries") |->| { pillowPrinter.logLibraries }
 	}
 	
 	@Contribute { serviceType=StackFrameFilter# }
