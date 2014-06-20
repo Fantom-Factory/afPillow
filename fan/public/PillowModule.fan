@@ -12,11 +12,11 @@ using web
 const class PillowModule {
 
 	static Void bind(ServiceBinder binder) {
-		binder.bind(Pages#).withoutProxy	// default method values
-		binder.bind(PillowPrinter#)			.withoutProxy
-		binder.bind(ContentTypeResolver#)	.withoutProxy
-		binder.bind(PageUriResolver#)		.withoutProxy
-		binder.bind(PageMetaStateFactory#)	.withoutProxy
+		binder.bind(Pages#)
+		binder.bind(PillowPrinter#)
+		binder.bind(ContentTypeResolver#)
+		binder.bind(PageUriResolver#)
+		binder.bind(PageMetaStateFactory#)
 	}
 
 	@Build { scope=ServiceScope.perThread }
