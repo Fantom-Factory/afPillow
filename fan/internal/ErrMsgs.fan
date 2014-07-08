@@ -25,8 +25,8 @@ internal const class ErrMsgs {
 		"Page ${pageType.qname} does not have an event method called '${eventName}'"
 	}
 
-	static Str couldNotFindPageUri(Type pageType) {
-		"Could not find a page URI for ${pageType.qname}"
+	static Str couldNotFindPageUrl(Type pageType) {
+		"Could not find a page URL for ${pageType.qname}"
 	}
 
 	static Str couldNotFindPage(Type pageType) {

@@ -25,7 +25,7 @@ const mixin WelcomePage : EfanComponent {
 const mixin Welcome2Page : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str		context	
-	override Str renderTemplate() { "pageUri:${pageMeta.pageUri} ctx:${context}" }
+	override Str renderTemplate() { "pageUrl:${pageMeta.pageUrl} ctx:${context}" }
 }
 
 @NoDoc
@@ -33,7 +33,7 @@ const mixin Welcome2Page : EfanComponent {
 const mixin Welcome3Page : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageEvent
-	Obj xxx(Str ctx) { Text.fromPlain("xxx pageUri:${pageMeta.pageUri} ctx:${ctx}") }
+	Obj xxx(Str ctx) { Text.fromPlain("xxx pageUrl:${pageMeta.pageUrl} ctx:${ctx}") }
 	override Str renderTemplate() { "wotever" }
 }
 

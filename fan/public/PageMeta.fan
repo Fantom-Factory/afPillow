@@ -29,12 +29,17 @@ class PageMeta {
 		pageCtx
 	}
 
+	@NoDoc @Deprecated { msg="Use 'pageUrl' instead" }
+	Uri pageUri() {
+		pageUrl
+	}
+
 	** Returns a URI that can be used to render the given page. 
 	** The URI takes into account:
 	**  - Any welcome URI -> home page conversions
 	**  - The context used to render this page
 	**  - Any parent 'WebMods'
-	Uri pageUri() {
+	Uri pageUrl() {
 		clientUri := pageState.pageBaseUri
 
 		// add extra WebMod paths - but only if we're part of a web request!
@@ -66,7 +71,7 @@ class PageMeta {
 	** Returns a URI for a given event - use to create client side URIs to call the event.
 	Uri eventUri(Str eventName, Obj?[]? eventContext := null) {
 		eventMethod(eventName)		
-		eventUri 	:= pageUri.plusSlash + `${eventName}`
+		eventUri 	:= pageUrl.plusSlash + `${eventName}`
 		if (eventContext != null)
 			eventUri = eventUri.plusSlash + ctxToUri(eventContext)
 		return eventUri		
@@ -102,9 +107,9 @@ class PageMeta {
 		pageState.contextTypes
 	}
 	
-	** Returns 'pageUri'.
+	** Returns 'pageUrl'.
 	override Str toStr() {
-		pageUri.toStr
+		pageUrl.toStr
 	}
 	
 	private Uri ctxToUri(Obj?[] context) {

@@ -2,25 +2,25 @@ using afIoc::Inject
 using afIocConfig::Config
 
 @NoDoc
-const mixin PageUriResolver {
-	abstract Uri? pageUri(Type pageType)
+const mixin PageUrlResolver {
+	abstract Uri? pageUrl(Type pageType)
 }
 
-internal const class PageUriResolverImpl : PageUriResolver {
-	private const PageUriResolver[] resolvers
+internal const class PageUrlResolverImpl : PageUrlResolver {
+	private const PageUrlResolver[] resolvers
 	
-	new make(PageUriResolver[] resolvers, |This| in) { 
+	new make(PageUrlResolver[] resolvers, |This| in) { 
 		in(this) 
 		this.resolvers = resolvers
 	} 
 	
-	override Uri? pageUri(Type pageType) {
-		resolvers.eachWhile { it.pageUri(pageType) } ?: throw PillowErr(ErrMsgs.couldNotFindPageUri(pageType))
+	override Uri? pageUrl(Type pageType) {
+		resolvers.eachWhile { it.pageUrl(pageType) } ?: throw PillowErr(ErrMsgs.couldNotFindPageUrl(pageType))
 	}
 }
 
-internal const class ResolvePageUriFromPageFacet : PageUriResolver {
-	override Uri? pageUri(Type pageType) {
+internal const class ResolvePageUrlFromPageFacet : PageUrlResolver {
+	override Uri? pageUrl(Type pageType) {
 		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
 		url	 := page.url ?: page.uri
 		if (url == null)
@@ -33,8 +33,8 @@ internal const class ResolvePageUriFromPageFacet : PageUriResolver {
 	}
 }
 
-internal const class ResolvePageUriFromTypeName : PageUriResolver {
-	override Uri? pageUri(Type pageType) {
+internal const class ResolvePageUrlFromTypeName : PageUrlResolver {
+	override Uri? pageUrl(Type pageType) {
 		pageName := pageType.name
 
 		// TODO: contribute page name endings?
@@ -44,8 +44,8 @@ internal const class ResolvePageUriFromTypeName : PageUriResolver {
 		if (pageName.endsWith("Page"))
 			pageName = pageName[0..-5]
 		
-		pageUri := pageName.toDisplayName.replace(" ", "/").lower
+		pageUrl := pageName.toDisplayName.replace(" ", "/").lower
 	
-		return ("/" + pageUri).toUri
+		return ("/" + pageUrl).toUri
 	}
 }

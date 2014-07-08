@@ -1,5 +1,6 @@
 using afIoc
 using afIocEnv
+using afIocConfig
 using afEfanXtra
 using afBedSheet
 using afConcurrent
@@ -45,6 +46,9 @@ internal const class PagesImpl : Pages {
 	@Inject private const ComponentMeta			componentMeta
 			private const Type:PageMetaState	pageCache 
 
+	@Config { id="afPillow.cacheControl" }
+	@Inject private const Str					cacheControl
+
 	new make(PageMetaStateFactory metaFactory, |This| in) {
 		in(this)
 		cache := Utils.makeMap(Type#, PageMeta#)
@@ -80,6 +84,9 @@ internal const class PagesImpl : Pages {
 		if (!iocEnv.isProd)
 			httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
 		
+		// set the default cache headers
+		httpRes.headers.cacheControl = cacheControl		
+		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 		pageStr	 := PageMeta.push(pageMeta) |->Str| {
 			return efanXtra.component(pageMeta.pageType).render(pageArgs)
@@ -106,7 +113,10 @@ internal const class PagesImpl : Pages {
 					return eventValue
 				if (!iocEnv.isProd)
 					httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
-				
+
+				// set the default cache headers
+				httpRes.headers.cacheControl = cacheControl		
+
 				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 				componentRenderer.doRenderLoop(page)
 				return Text.fromMimeType(componentRenderer.renderResult, pageMeta.contentType)
