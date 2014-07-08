@@ -272,6 +272,11 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.12 [#v1.0.12]
+------------------
+ - New: Added a default 'cache-control' HTTP header as a config value.
+ - Chg: Renamed 'PageMeta.pageUri' -> 'PageMeta.pageUrl'.
+
 v1.0.10 [#v1.0.10]
 ------------------
  - New: Stack frames from 'Pillow', 'efanXtra' and 'efan' are marked as *boring* on BedSheet's Err500 page.
