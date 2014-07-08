@@ -13,13 +13,13 @@ const mixin T_PageContext : EfanComponent {
 	override Str renderTemplate() {
 		if (context == "err") {
 			try {
-				return pages.pageMeta(T_PageContext#, ["Muhaha", `/blah`]).pageUri.toStr
+				return pages.pageMeta(T_PageContext#, ["Muhaha", `/blah`]).pageUrl.toStr
 			} catch (Err e) {
 				return e.msg
 			}
 		}
 		return
-		"context=${context}\nclientUri=" + pageMeta.pageUri + "\nclientUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri
+		"context=${context}\nclientUri=" + pageMeta.pageUrl + "\nclientUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUrl
 	}
 }
 
@@ -36,15 +36,15 @@ const mixin T_PageContextMulti : EfanComponent {
 	override Str renderTemplate() {
 		if (name == "err") {
 			try {
-				return pages.pageMeta(T_PageContextMulti#, ["Muhaha"]).pageUri.toStr
+				return pages.pageMeta(T_PageContextMulti#, ["Muhaha"]).pageUrl.toStr
 			} catch (Err e) {
 				return e.msg
 			}
 		}
 		return 
 		"context=${name}/${age}
-		 clientUri=${pageMeta.pageUri}
-		 singleUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUri + "\n" +
-		 "clientUri=" + pages.pageMeta(T_PageContextMulti#, ["Dude", 666]).pageUri
+		 clientUri=${pageMeta.pageUrl}
+		 singleUri=" + pages.pageMeta(T_PageContext#, ["Dude"]).pageUrl + "\n" +
+		 "clientUri=" + pages.pageMeta(T_PageContextMulti#, ["Dude", 666]).pageUrl
 	}
 }

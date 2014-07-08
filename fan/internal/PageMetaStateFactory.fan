@@ -11,7 +11,7 @@ internal class PageMetaStateFactory  {
 	@Inject private const WelcomePageStrategy	welcomePageStrategy
 	
 	@Inject	private const ContentTypeResolver	contentTypeResolver
-	@Inject	private const PageUriResolver		pageUriResolver
+	@Inject	private const PageUrlResolver		pageUrlResolver
 	@Inject	private const ComponentMeta			componentMeta
 	@Inject	private const EfanXtra				efanXtra
 	@Inject	private const Registry				registry
@@ -34,7 +34,7 @@ internal class PageMetaStateFactory  {
 	}
 	
 	Uri pageBaseUri() {
-		clientUri := pageUriResolver.pageUri(pageType)
+		clientUri := pageUrlResolver.pageUrl(pageType)
 
 		// convert welcome pages
 		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
@@ -48,7 +48,7 @@ internal class PageMetaStateFactory  {
 	}
 	
 	Bool isWelcomePage() {
-		clientUri := pageUriResolver.pageUri(pageType)
+		clientUri := pageUrlResolver.pageUrl(pageType)
 		return isWelcomeUri(clientUri)
 	}
 	
@@ -58,7 +58,7 @@ internal class PageMetaStateFactory  {
 	}
 
 	Uri serverGlob() {
-		clientUri 	:= pageUriResolver.pageUri(pageType)
+		clientUri 	:= pageUrlResolver.pageUrl(pageType)
 		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
 		noOfParams 	:= contextTypes.size

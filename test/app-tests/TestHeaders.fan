@@ -7,6 +7,16 @@ using afEfanXtra
 
 internal class TestHeaders : PillowTest {
 
+	Void testCacheHeaders() {
+		start(T_AppModule11#)
+
+		res := client.get(`/headerRender/ctx`)
+		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
+
+		res = client.get(`/headerEvent/eventPage`)
+		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
+	}
+
 	Void testHeadersInDev() {
 		start(T_AppModule11#)
 
@@ -53,7 +63,7 @@ internal class T_AppModule12 {
 const mixin T_HeaderRender : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str		context	
-	override Str renderTemplate() { "pageUri:${pageMeta.pageUri} ctx:${context}" }
+	override Str renderTemplate() { "pageUrl:${pageMeta.pageUrl} ctx:${context}" }
 }
 
 @NoDoc
@@ -61,7 +71,9 @@ const mixin T_HeaderRender : EfanComponent {
 const mixin T_HeaderEvent : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageEvent
-	Obj event(Str ctx) { Text.fromPlain("event pageUri:${pageMeta.pageUri} ctx:${ctx}") }
+	Obj event(Str ctx) { Text.fromPlain("event pageUrl:${pageMeta.pageUrl} ctx:${ctx}") }
+	@PageEvent
+	Void eventPage() { }
 	override Str renderTemplate() { "wotever" }
 }
 

@@ -15,7 +15,7 @@ const class PillowModule {
 		binder.bind(Pages#)
 		binder.bind(PillowPrinter#)
 		binder.bind(ContentTypeResolver#)
-		binder.bind(PageUriResolver#)
+		binder.bind(PageUrlResolver#)
 		binder.bind(PageMetaStateFactory#)
 	}
 
@@ -42,10 +42,10 @@ const class PillowModule {
 		routeFactory.addPillowRoutes(config)
 	}
 
-	@Contribute { serviceType=PageUriResolver# } 
-	static Void contributePageUriResolvers(OrderedConfig config) {
-		config.addOrdered("FromPageFacet", 	ResolvePageUriFromPageFacet())
-		config.addOrdered("FromTypeName", 	ResolvePageUriFromTypeName())
+	@Contribute { serviceType=PageUrlResolver# } 
+	static Void contributePageUrlResolvers(OrderedConfig config) {
+		config.addOrdered("FromPageFacet", 	ResolvePageUrlFromPageFacet())
+		config.addOrdered("FromTypeName", 	ResolvePageUrlFromTypeName())
 	}
 	
 	@Contribute { serviceType=ContentTypeResolver# } 
@@ -70,6 +70,7 @@ const class PillowModule {
 		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
 		config[PillowConfigIds.enableRouting]		= true
 		config[PillowConfigIds.welcomePageStrategy]	= WelcomePageStrategy.onWithRedirects
+		config[PillowConfigIds.cacheControl]		= "max-age=0, no-cache"
 	}
 
 	@Contribute { serviceType=ErrPrinterHtml# }

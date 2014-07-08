@@ -37,4 +37,10 @@ const class PillowConfigIds {
 	** Defaults to 'onWithRedirects'
 	static const Str welcomePageStrategy	:=	"afPillow.welcomePageStrategy"
 
+	** The 'cache-control' HTTP header value to set in rendered Pillow pages. 
+	** The header is set just before the page is rendered, making it easy to override / re-set in any '@InitRender' method.   
+	** 
+	** Defaults to '"max-age=0, no-cache"'
+	static const Str cacheControl			:=	"afPillow.cacheControl"
+
 }
