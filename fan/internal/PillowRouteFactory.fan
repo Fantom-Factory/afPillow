@@ -50,9 +50,9 @@ internal const class PillowRouteFactory {
 
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
 				pageEvent	:= (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])	// Stoopid F4 	
-				eventUri 	:= serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventUrl 	:= serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
 				qname	 	:= "${pageType.qname}/${eventMethod.name}"
-				eventRoute	:= Route(eventUri, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)
+				eventRoute	:= Route(eventUrl, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)
 				config.addOrdered(qname, eventRoute, constraints)
 			}
 		}
