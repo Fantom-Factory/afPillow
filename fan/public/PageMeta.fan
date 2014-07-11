@@ -68,13 +68,18 @@ class PageMeta {
 		pageState.isWelcomePage
 	}
 
-	** Returns a URI for a given event - use to create client side URIs to call the event.
+	@NoDoc @Deprecated { msg="Use 'eventUrl' instead" }
 	Uri eventUri(Str eventName, Obj?[]? eventContext := null) {
+		eventUrl(eventName, eventContext)
+	}
+
+	** Returns a URI for a given event - use to create client side URIs to call the event.
+	Uri eventUrl(Str eventName, Obj?[]? eventContext := null) {
 		eventMethod(eventName)		
-		eventUri 	:= pageUrl.plusSlash + `${eventName}`
+		eventUrl 	:= pageUrl.plusSlash + `${eventName}`
 		if (eventContext != null)
-			eventUri = eventUri.plusSlash + ctxToUri(eventContext)
-		return eventUri		
+			eventUrl = eventUrl.plusSlash + ctxToUri(eventContext)
+		return eventUrl		
 	}
 
 	** Returns a new 'PageMeta' with the given page context.

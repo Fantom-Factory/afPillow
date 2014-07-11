@@ -272,7 +272,11 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
-v1.0.12 [#v1.0.12]
+v1.0.14 [#v1.0.14]
+------------------
+ - Chg: Renamed 'PageMeta.eventUri' -> 'PageMeta.eventUrl'.
+
+ v1.0.12 [#v1.0.12]
 ------------------
  - New: Added a default 'cache-control' HTTP header as a config value.
  - Chg: Renamed 'PageMeta.pageUri' -> 'PageMeta.pageUrl'.
