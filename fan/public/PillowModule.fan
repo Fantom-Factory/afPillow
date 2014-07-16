@@ -66,9 +66,9 @@ const class PillowModule {
 
 	@Contribute { serviceType=FactoryDefaults# }
 	static Void contributeFactoryDefaults(MappedConfig config) {
-		config[PillowConfigIds.welcomePageName]		= "index"
 		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
 		config[PillowConfigIds.enableRouting]		= true
+		config[PillowConfigIds.welcomePageName]		= "index"
 		config[PillowConfigIds.welcomePageStrategy]	= WelcomePageStrategy.onWithRedirects
 		config[PillowConfigIds.cacheControl]		= "max-age=0, no-cache"
 	}
