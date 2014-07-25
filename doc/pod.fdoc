@@ -70,7 +70,7 @@ class Main {
 @SubModule { modules=[EfanXtraModule#, PillowModule#] }
 class AppModule {
     @Contribute { serviceType=TemplateDirectories# }
-    static Void contributeEfanDirs(OrderedConfig config) {
+    static Void contributeEfanDirs(Configuration config) {
         // Look for Example.efan in the same dir as this fantom file
         config.add(`./`)
     }
@@ -274,6 +274,9 @@ Release Notes [#releaseNotes]
 *****************************
 v1.0.14 [#v1.0.14]
 ------------------
+ - New: Added '@PageEvent.name' which overrides the default method name.
+ - New: Added 'PageMeta.eventMethods()'.
+ - Chg: Updated to [IoC 1.7.2]`pod:afIoc` and [BedSheet 1.3.12]`pod:afBedSheet`.
  - Chg: Renamed 'PageMeta.eventUri' -> 'PageMeta.eventUrl'.
 
  v1.0.12 [#v1.0.12]

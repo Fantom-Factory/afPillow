@@ -47,7 +47,7 @@ internal class TestWelcomePageStrategy : PillowTest {
 
 internal class T_AppModule03 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.off
 	}
@@ -55,7 +55,7 @@ internal class T_AppModule03 {
 
 internal class T_AppModule04 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.offWithRedirects
 	}
@@ -63,7 +63,7 @@ internal class T_AppModule04 {
 
 internal class T_AppModule05 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.on
 	}
@@ -71,7 +71,7 @@ internal class T_AppModule05 {
 
 internal class T_AppModule06 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.onWithRedirects
 	}

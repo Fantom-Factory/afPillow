@@ -51,7 +51,7 @@ internal class TestWelcomePage : PillowTest {
 
 internal class T_AppModule07 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.off
 	}
@@ -59,7 +59,7 @@ internal class T_AppModule07 {
 
 internal class T_AppModule08 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.on
 	}
@@ -67,24 +67,24 @@ internal class T_AppModule08 {
 
 internal class T_AppModule09 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome2"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.onWithRedirects
 	}
-	@Contribute { serviceId="Routes" }
-	internal static Void contributeRoutes(OrderedConfig config, Pages pages, IocConfigSource icoConfigSrc) {
-		config.addOrdered("XXX", Route(`/xxx`, Text.fromPlain("XXX")), ["after: PillowEnd"])
+	@Contribute { serviceType=Routes# }
+	internal static Void contributeRoutes(Configuration config, Pages pages, IocConfigSource icoConfigSrc) {
+		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pillowEnd")
 	}
 }
 
 internal class T_AppModule10 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome3"
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.onWithRedirects
 	}
-	@Contribute { serviceId="Routes" }
-	internal static Void contributeRoutes(OrderedConfig config, Pages pages, IocConfigSource icoConfigSrc) {
-		config.addOrdered("XXX", Route(`/xxx`, Text.fromPlain("XXX")), ["after: PillowEnd"])
+	@Contribute { serviceType=Routes# }
+	internal static Void contributeRoutes(Configuration config, Pages pages, IocConfigSource icoConfigSrc) {
+		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pillowEnd")
 	}
 }
