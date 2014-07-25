@@ -27,12 +27,12 @@ class Build : BuildPod {
 			"afBeanUtils 1.0.2+",
 			"afConcurrent 1.0.6+",
 			"afIoc 1.7.2+",
-			"afIocConfig 1.0.12+",
-			"afIocEnv 1.0.10+",
+			"afIocConfig 1.0.12.1+",
+			"afIocEnv 1.0.10.1+",
 
 			// ---- web ------------------------
 			"afBedSheet 1.3.12+",
-			"afEfanXtra 1.1.10+",
+			"afEfanXtra 1.1.10.1+",
 			"afPlastic 1.0.16+",
 
 			// ---- test -----------------------
