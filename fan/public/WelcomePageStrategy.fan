@@ -7,8 +7,8 @@
 ** 
 ** pre> 
 ** @Contribute { serviceType=ApplicationDefaults# }
-** static Void contributeApplicationDefaults(MappedConfig config) {
-**     config[PillowConfigIds.welcomePageStrategy]	= WelcomePageStrategy.off
+** static Void contributeApplicationDefaults(Configuration config) {
+**     config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.off
 ** }
 ** <pre
 enum class WelcomePageStrategy {

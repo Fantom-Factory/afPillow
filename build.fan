@@ -24,20 +24,20 @@ class Build : BuildPod {
 			"web 1.0",
 		
 			// ---- core ------------------------
-			"afBeanUtils 1.0.0+",
+			"afBeanUtils 1.0.2+",
 			"afConcurrent 1.0.6+",
-			"afIoc 1.6.4+",
-			"afIocConfig 1.0.8+",
-			"afIocEnv 1.0.6+",
+			"afIoc 1.7.2+",
+			"afIocConfig 1.0.10+",
+			"afIocEnv 1.0.8+",
 
 			// ---- web ------------------------
-			"afBedSheet 1.3.10+",
-			"afEfanXtra 1.1.6+",
-			"afPlastic 1.0.14+",
+			"afBedSheet 1.3.12+",
+			"afEfanXtra 1.1.8+",
+			"afPlastic 1.0.16+",
 
 			// ---- test -----------------------
-			"afBounce 1.0.8+",
-			"afButter 1.0.0+"
+			"afBounce 1.0.10+",
+			"afButter 1.0.2+"
 		]
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]

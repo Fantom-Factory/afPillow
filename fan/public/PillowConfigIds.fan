@@ -10,7 +10,7 @@
 ** class AppModule {
 ** 
 **     @Contribute { serviceType=ApplicationDefaults# } 
-**     static Void configureAppDefaults(MappedConfig config) {
+**     static Void configureAppDefaults(Configuration config) {
 **         config[PillowConfigIds.welcomePage] = "home"
 **     }
 ** }
