@@ -272,6 +272,10 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.16 [#v1.0.16]
+------------------
+ - Bug: Bodged release.
+
 v1.0.14 [#v1.0.14]
 ------------------
  - New: Added '@PageEvent.name' which overrides the default method name.
@@ -279,7 +283,7 @@ v1.0.14 [#v1.0.14]
  - Chg: Updated to [IoC 1.7.2]`pod:afIoc` and [BedSheet 1.3.12]`pod:afBedSheet`.
  - Chg: Renamed 'PageMeta.eventUri' -> 'PageMeta.eventUrl'.
 
- v1.0.12 [#v1.0.12]
+v1.0.12 [#v1.0.12]
 ------------------
  - New: Added a default 'cache-control' HTTP header as a config value.
  - Chg: Renamed 'PageMeta.pageUri' -> 'PageMeta.pageUrl'.
