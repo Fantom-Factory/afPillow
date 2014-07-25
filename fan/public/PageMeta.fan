@@ -90,6 +90,7 @@ class PageMeta {
 	** Returns a new 'PageMeta' with the given page context.
 	PageMeta withContext(Obj?[]? pageContext) {
 		PageMeta(pageState, pageContext) {
+			it.bedServer 	 = this.bedServer
 			it.httpRequest 	 = this.httpRequest
 			it.valueEncoders = this.valueEncoders
 		}
