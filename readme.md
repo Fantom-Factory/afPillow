@@ -63,7 +63,7 @@ class Main {
 @SubModule { modules=[EfanXtraModule#, PillowModule#] }
 class AppModule {
     @Contribute { serviceType=TemplateDirectories# }
-    static Void contributeEfanDirs(OrderedConfig config) {
+    static Void contributeEfanDirs(Configuration config) {
         // Look for Example.efan in the same dir as this fantom file
         config.add(`./`)
     }

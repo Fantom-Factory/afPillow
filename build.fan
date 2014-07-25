@@ -5,13 +5,13 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.14")
+		version = Version("1.0.15")
 
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",			
 			"tags"			: "templating, web",
-			"repo.private"	: "false"
+			"repo.private"	: "true"
 		]
 
 		index = [	
