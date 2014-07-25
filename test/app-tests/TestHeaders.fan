@@ -21,20 +21,20 @@ internal class TestHeaders : PillowTest {
 		start(T_AppModule11#)
 
 		client.get(`/headerRender/ctx`)
-		verifyEq(client.lastResponse.headers.getFirst("X-Pillow-renderedPage"), T_HeaderRender#.qname)
+		verifyEq(client.lastResponse.headers.getFirst("X-afPillow-renderedPage"), T_HeaderRender#.qname)
 
 		client.get(`/headerEvent/event/ctx`)
-		verifyEq(client.lastResponse.headers.getFirst("X-Pillow-calledEvent"), T_HeaderEvent#event.qname)
+		verifyEq(client.lastResponse.headers.getFirst("X-afPillow-calledEvent"), T_HeaderEvent#event.qname)
 	}
 
 	Void testHeadersInProd() {
 		start(T_AppModule12#)
 
 		client.get(`/headerRender/ctx`)
-		verifyNull(client.lastResponse.headers.getFirst("X-Pillow-renderedPage"))
+		verifyNull(client.lastResponse.headers.getFirst("X-afPillow-renderedPage"))
 
 		client.get(`/headerEvent/event/ctx`)
-		verifyNull(client.lastResponse.headers.getFirst("X-Pillow-calledEvent"))
+		verifyNull(client.lastResponse.headers.getFirst("X-afPillow-calledEvent"))
 	}
 
 	override Void setup() {	}
@@ -46,14 +46,14 @@ internal class TestHeaders : PillowTest {
 
 internal class T_AppModule11 {
 	@Contribute { serviceType=ServiceOverrides# }
-	static Void contributeServiceOverride(MappedConfig config) {
+	static Void contributeServiceOverride(Configuration config) {
 		config["IocEnv"] = IocEnv.fromStr("Dev")
 	}
 }
 
 internal class T_AppModule12 {
 	@Contribute { serviceType=ServiceOverrides# }
-	static Void contributeServiceOverride(MappedConfig config) {
+	static Void contributeServiceOverride(Configuration config) {
 		config["IocEnv"] = IocEnv.fromStr("Prod")
 	}
 }

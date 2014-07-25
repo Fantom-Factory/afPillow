@@ -1,13 +1,14 @@
 using afIoc::Inject
 using afBedSheet::ValueEncoders
+using afBedSheet::BedSheetServer
 using afBedSheet::HttpRequest
-using concurrent::Actor
 
 ** (Service) - Returns details about the Pillow page currently being rendered.
 ** 
 ** 'PageMeta' objects may also be created by the `Pages` service.
 class PageMeta {
 
+	internal 		BedSheetServer	bedServer
 	internal 		HttpRequest		httpRequest
 	internal 		ValueEncoders	valueEncoders
 	private const 	PageMetaState	pageState
@@ -40,20 +41,19 @@ class PageMeta {
 	**  - The context used to render this page
 	**  - Any parent 'WebMods'
 	Uri pageUrl() {
-		clientUri := pageState.pageBaseUri
+		clientUrl := pageState.pageBaseUri
 
-		// add extra WebMod paths - but only if we're part of a web request!
-		if (Actor.locals["web.req"] != null && httpRequest.modBase != `/`)
-			clientUri = httpRequest.modBase + clientUri.toStr[1..-1].toUri
+		// add extra WebMod path info
+		clientUrl = bedServer.toClientUrl(clientUrl)
 
 		// append page context
 		contextTypes := contextTypes
 		if (contextTypes.size != pageContext.size)
 			throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, contextTypes, pageContext))
 		if (!contextTypes.isEmpty)
-			clientUri = clientUri.plusSlash + ctxToUri(pageContext)
+			clientUrl = clientUrl.plusSlash + ctxToUri(pageContext)
 
-		return clientUri
+		return clientUrl
 	}
 	
 	** Returns the 'Content-Type' produced by this page.
@@ -66,6 +66,11 @@ class PageMeta {
 	** Returns 'true' if the page is a welcome page.
 	Bool isWelcomePage() {
 		pageState.isWelcomePage
+	}
+
+	** Returns the HTTP method this page responds to.
+	Str httpMethod() {
+		pageState.httpMethod
 	}
 
 	@NoDoc @Deprecated { msg="Use 'eventUrl' instead" }
@@ -90,10 +95,11 @@ class PageMeta {
 		}
 	}
 	
-	Str httpMethod() {
-		pageState.httpMethod
+	** Returns all the event methods on the page.
+	Method[] eventMethods() {
+		pageType.methods.findAll { it.hasFacet(PageEvent#) }		
 	}
-	
+
 	@NoDoc
 	Uri serverGlob() {
 		pageState.serverGlob
@@ -101,8 +107,12 @@ class PageMeta {
 	
 	@NoDoc
 	Uri eventGlob(Method eventMethod) {
-		eventStr	:= eventMethod.name
-		noOfParams 	:= 	eventMethod.params.size
+		pageEvent	:= (PageEvent?) Method#.method("facet").callOn(eventMethod, [PageEvent#, false])	// Stoopid F4 	
+		if (pageEvent == null)
+			throw ArgErr("WTF: Method '${eventMethod.qname}' does not have a @${PageEvent#.name} facet.")
+		
+		eventStr	:= pageEvent.name ?: eventMethod.name
+		noOfParams 	:= eventMethod.params.size
 		noOfParams.times { eventStr += "/*" }
 		return eventStr.toUri
 	}
@@ -122,7 +132,10 @@ class PageMeta {
 	}
 	
 	private Method eventMethod(Str eventName) {
-		pageType.methods.find { it.hasFacet(PageEvent#) && it.name.equalsIgnoreCase(eventName) } ?: throw PillowErr(ErrMsgs.eventNotFound(pageType, eventName))		
+		eventMethods.find |method->Bool| {
+			pageEvent := (PageEvent) Method#.method("facet").callOn(method, [PageEvent#])	// Stoopid F4 	
+			return eventName.equalsIgnoreCase(pageEvent.name ?: Str.defVal) || eventName.equalsIgnoreCase(method.name)  
+		} ?: throw PillowErr(ErrMsgs.eventNotFound(pageType, eventName))		
 	}
 
 	internal static Obj? push(PageMeta pageMeta, |->Obj?| f) {

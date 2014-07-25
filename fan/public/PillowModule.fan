@@ -25,47 +25,47 @@ const class PillowModule {
 	}
 	
 	@Contribute { serviceType=EfanLibraries# }
-	static Void contributeEfanLibraries(MappedConfig config, BedSheetMetaData meta) {
-		if (meta.appPod != null)
-			config["app"] = meta.appPod
+	static Void contributeEfanLibraries(Configuration config, BedSheetServer bedServer) {
+		if (bedServer.appPod != null)
+			config["app"] = bedServer.appPod
 	}
 
 	@Contribute { serviceType=ComponentCompiler# }
-	static Void contributeComponentCompilerCallbacks(OrderedConfig config) {
+	static Void contributeComponentCompilerCallbacks(Configuration config) {
 		pageCompiler := (PageCompiler) config.autobuild(PageCompiler#)
 		config.add(pageCompiler.callback)
 	}
 
-	@Contribute { serviceId="Routes" }
-	static Void contributeRoutes(OrderedConfig config, Pages pages, IocConfigSource icoConfigSrc) {
+	@Contribute { serviceType=Routes# }
+	static Void contributeRoutes(Configuration config, Pages pages, IocConfigSource icoConfigSrc) {
 		routeFactory := (PillowRouteFactory) config.autobuild(PillowRouteFactory#)
 		routeFactory.addPillowRoutes(config)
 	}
 
 	@Contribute { serviceType=PageUrlResolver# } 
-	static Void contributePageUrlResolvers(OrderedConfig config) {
-		config.addOrdered("FromPageFacet", 	ResolvePageUrlFromPageFacet())
-		config.addOrdered("FromTypeName", 	ResolvePageUrlFromTypeName())
+	static Void contributePageUrlResolvers(Configuration config) {
+		config["afPillow.fromPageFacet"]	= ResolvePageUrlFromPageFacet()
+		config["afPillow.fromTypeName"]		= ResolvePageUrlFromTypeName()
 	}
 	
 	@Contribute { serviceType=ContentTypeResolver# } 
-	static Void contributeContentTypeResolvers(OrderedConfig config) {
-		config.addOrdered("FromPageFacet", 			ResolveContentTypeFromPageFacet())
-		config.addOrdered("FromTemplateExtension",	config.autobuild(ResolveContentTypeFromTemplateExtension#))
+	static Void contributeContentTypeResolvers(Configuration config) {
+		config["afPillow.fromPageFacet"]			= ResolveContentTypeFromPageFacet()
+		config["afPillow.fromTemplateExtension"]	= config.autobuild(ResolveContentTypeFromTemplateExtension#)
 	}
 
 	@Contribute { serviceType=ResponseProcessors# }
-	static Void contributeResponseProcessors(MappedConfig config) {
+	static Void contributeResponseProcessors(Configuration config) {
 		config[PageMeta#] = config.autobuild(PageMetaResponseProcessor#)
 	}
 	
 	@Contribute { serviceType=TemplateFinders# }
-	static Void contributeTemplateFinders(OrderedConfig config) {
-		config.addOrdered("FindByPageFacetValue", config.autobuild(FindEfanByPageFacetValue#))
+	static Void contributeTemplateFinders(Configuration config) {
+		config["afPillow.findByPageFacetValue"]	= config.autobuild(FindEfanByPageFacetValue#)
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }
-	static Void contributeFactoryDefaults(MappedConfig config) {
+	static Void contributeFactoryDefaults(Configuration config) {
 		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
 		config[PillowConfigIds.enableRouting]		= true
 		config[PillowConfigIds.welcomePageName]		= "index"
@@ -73,24 +73,24 @@ const class PillowModule {
 		config[PillowConfigIds.cacheControl]		= "max-age=0, no-cache"
 	}
 
-	@Contribute { serviceType=ErrPrinterHtml# }
-	internal static Void contributeErrPrinterHtml(OrderedConfig config, PillowPrinter printer) {
-		config.addOrdered("PillowPages",	|WebOutStream out, Err? err| { printer.printPillowPages(out) }, ["after: IocConfig", "before: Routes"])
+	@Contribute { serviceType=NotFoundPrinterHtml# }
+	internal static Void contributeNotFoundPrinterHtml(Configuration config, PillowPrinter printer) {
+		config.set("afPillow.pillowPages",	|WebOutStream out| { printer.printPillowPages(out) }).after("afBedSheet.routeCode").before("afBedSheet.routes")
 	}
 
-	@Contribute { serviceType=NotFoundPrinterHtml# }
-	internal static Void contributeNotFoundPrinterHtml(OrderedConfig config, PillowPrinter printer) {
-		config.addOrdered("PillowPages",	|WebOutStream out| { printer.printPillowPages(out) }, ["after: RouteCode", "before: Routes"])
+	@Contribute { serviceType=ErrPrinterHtml# }
+	internal static Void contributeErrPrinterHtml(Configuration config, PillowPrinter printer) {
+		config.set("afPillow.pillowPages",	|WebOutStream out, Err? err| { printer.printPillowPages(out) }).after("afBedSheet.iocConfig").before("afBedSheet.routes")
 	}
 
 	@Contribute { serviceType=RegistryStartup# }
-	internal static Void contributeRegistryStartup(OrderedConfig conf, PillowPrinter pillowPrinter) {
-		conf.remove  ("afEfanXtra.logLibraries")
-		conf.addOrdered("afPillow.logLibraries") |->| { pillowPrinter.logLibraries }
+	internal static Void contributeRegistryStartup(Configuration conf, PillowPrinter pillowPrinter) {
+		conf.remove("afEfanXtra.logLibraries")
+		conf["afPillow.logLibraries"] = |->| { pillowPrinter.logLibraries }
 	}
 	
 	@Contribute { serviceType=StackFrameFilter# }
-	static Void contributeStackFrameFilter(OrderedConfig config) {
+	static Void contributeStackFrameFilter(Configuration config) {
 		// remove boring Alien-Factory stack frames
 		config.add("^afEfan::.*\$")
 		config.add("^afEfanXtra::.*\$")

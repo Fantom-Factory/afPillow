@@ -40,6 +40,7 @@ internal const class PagesImpl : Pages {
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const EfanXtra 				efanXtra
 	@Inject	private const IocEnv				iocEnv
+	@Inject	private const BedSheetServer		bedServer			
 	@Inject	private const HttpResponse			httpRes
 	@Inject	private const HttpRequest			httpRequest
 	@Inject	private const ComponentRenderer		componentRenderer
@@ -67,8 +68,9 @@ internal const class PagesImpl : Pages {
 	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
 		pageState := pageCache[pageType] ?: throw PageNotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
 		return PageMeta(pageState, pageContext) {
-			it.httpRequest 	 = this.httpRequest
-			it.valueEncoders = this.valueEncoders
+			it.bedServer		= this.bedServer
+			it.httpRequest		= this.httpRequest
+			it.valueEncoders	= this.valueEncoders
 		}
 	}
 
@@ -82,7 +84,7 @@ internal const class PagesImpl : Pages {
 
 	override Text renderPageMeta(PageMeta pageMeta) {
 		if (!iocEnv.isProd)
-			httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
+			httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
 		
 		// set the default cache headers
 		httpRes.headers.cacheControl = cacheControl		
@@ -91,12 +93,12 @@ internal const class PagesImpl : Pages {
 		pageStr	 := PageMeta.push(pageMeta) |->Str| {
 			return efanXtra.component(pageMeta.pageType).render(pageArgs)
 		}
-		return Text.fromMimeType(pageStr, pageMeta.contentType)
+		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
 
 	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
 		if (!iocEnv.isProd) 
-			httpRes.headers["X-Pillow-calledEvent"] = eventMethod.qname
+			httpRes.headers["X-afPillow-calledEvent"] = eventMethod.qname
 
 		page 		:= efanXtra.component(pageType)
 		pageMeta	:= pageMeta(pageType, pageContext)
@@ -112,14 +114,14 @@ internal const class PagesImpl : Pages {
 				if (eventValue != null)
 					return eventValue
 				if (!iocEnv.isProd)
-					httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
+					httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
 
 				// set the default cache headers
 				httpRes.headers.cacheControl = cacheControl		
 
 				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 				componentRenderer.doRenderLoop(page)
-				return Text.fromMimeType(componentRenderer.renderResult, pageMeta.contentType)
+				return Text.fromContentType(componentRenderer.renderResult, pageMeta.contentType)
 			}
 		}
 	}
@@ -128,12 +130,12 @@ internal const class PagesImpl : Pages {
 
 	private Text doPageRender(PageMeta pageMeta) {
 		if (!iocEnv.isProd)
-			httpRes.headers["X-Pillow-renderedPage"] = pageMeta.pageType.qname
+			httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
 		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
 		pageStr	 := efanXtra.component(pageMeta.pageType).render(pageArgs)
 		
-		return Text.fromMimeType(pageStr, pageMeta.contentType)
+		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
 	
 	** Convert the Str from Routes into real arg objs

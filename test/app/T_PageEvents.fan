@@ -17,6 +17,11 @@ const mixin T_PageEvents : EfanComponent {
 		return Text.fromPlain("Plain Event Fired!")
 	}
 
+	@PageEvent { name="dingdong" }
+	Text namedEvent() {
+		return Text.fromPlain("Ding Dong Event Fired!")
+	}
+
 	@PageEvent
 	Text ctxEvent(Str name, Int iq) {
 		return Text.fromPlain("Event Ctx: name=$name, iq=$iq")

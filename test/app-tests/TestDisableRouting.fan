@@ -19,7 +19,7 @@ internal class TestDisableRouting : PillowTest {
 
 internal class T_AppModule02 {
 	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(MappedConfig config) {
+	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.enableRouting] = false
 	}
 }
