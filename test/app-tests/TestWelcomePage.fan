@@ -72,7 +72,7 @@ internal class T_AppModule09 {
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.onWithRedirects
 	}
 	@Contribute { serviceType=Routes# }
-	internal static Void contributeRoutes(Configuration config, Pages pages, IocConfigSource icoConfigSrc) {
+	internal static Void contributeRoutes(Configuration config, Pages pages) {
 		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pillowEnd")
 	}
 }
@@ -84,7 +84,7 @@ internal class T_AppModule10 {
 		config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.onWithRedirects
 	}
 	@Contribute { serviceType=Routes# }
-	internal static Void contributeRoutes(Configuration config, Pages pages, IocConfigSource icoConfigSrc) {
+	internal static Void contributeRoutes(Configuration config, Pages pages) {
 		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pillowEnd")
 	}
 }
