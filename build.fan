@@ -5,13 +5,13 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.17")
+		version = Version("1.0.18")
 
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",			
 			"tags"			: "templating, web",
-			"repo.private"	: "true"
+			"repo.private"	: "false"
 		]
 
 		index = [	
@@ -26,17 +26,17 @@ class Build : BuildPod {
 			// ---- core ------------------------
 			"afBeanUtils 1.0.2+",
 			"afConcurrent 1.0.6+",
-			"afIoc 1.7.2+",
-			"afIocConfig 1.0.12.1+",
-			"afIocEnv 1.0.10.1+",
+			"afIoc 1.7.6+",
+			"afIocConfig 1.0.14+",
+			"afIocEnv 1.0.12+",
 
 			// ---- web ------------------------
-			"afBedSheet 1.3.12+",
-			"afEfanXtra 1.1.10.1+",
+			"afBedSheet 1.3.14+",
+			"afEfanXtra 1.1.12+",
 			"afPlastic 1.0.16+",
 
 			// ---- test -----------------------
-			"afBounce 1.0.10+",
+			"afBounce 1.0.12+",
 			"afButter 1.0.2+"
 		]
 

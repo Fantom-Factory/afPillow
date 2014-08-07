@@ -37,7 +37,7 @@ const class PillowModule {
 	}
 
 	@Contribute { serviceType=Routes# }
-	static Void contributeRoutes(Configuration config, Pages pages, IocConfigSource icoConfigSrc) {
+	static Void contributeRoutes(Configuration config, Pages pages) {
 		routeFactory := (PillowRouteFactory) config.autobuild(PillowRouteFactory#)
 		routeFactory.addPillowRoutes(config)
 	}

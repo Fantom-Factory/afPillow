@@ -272,6 +272,10 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.18 [#v1.0.18]
+------------------
+ - Chg: Updated to [IoC 1.7.6]`pod:afIoc` and [IoC Config 1.0.14]`pod:afIocConfig`.
+
 v1.0.16 [#v1.0.16]
 ------------------
  - Bug: Bodged release.
