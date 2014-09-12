@@ -11,7 +11,7 @@ class Build : BuildPod {
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
 			"tags"			: "templating, web",
-			"repo.private"	: "true"
+			"repo.private"	: "false"
 		]
 
 		index = [	
