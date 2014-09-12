@@ -276,6 +276,7 @@ v1.0.20 [#v1.0.20]
 ------------------
  - Chg: Updated to [IoC 2.0.0]`pod:afIoc`.
  - Chg: Converted 'PageMeta' to a 'mixin'.
+ - Chg: Pillow BedSheet Routes are contributed via a single 'afPillow.pageRoutes' contribution, and not placeholders.
 
 v1.0.18 [#v1.0.18]
 ------------------
