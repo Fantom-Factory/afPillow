@@ -6,7 +6,52 @@ using afBedSheet::HttpRequest
 ** (Service) - Returns details about the Pillow page currently being rendered.
 ** 
 ** 'PageMeta' objects may also be created by the `Pages` service.
-class PageMeta {
+mixin PageMeta {
+
+	** Returns the page that this Meta object wraps.
+	abstract Type pageType()
+
+	** Returns the context used to initialise this page.
+	abstract Obj?[] pageContext()
+
+	** Returns a URI that can be used to render the given page. 
+	** The URI takes into account:
+	**  - Any welcome URI -> home page conversions
+	**  - The context used to render this page
+	**  - Any parent 'WebMods'
+	abstract Uri pageUrl()
+
+	** Returns the 'Content-Type' produced by this page.
+	** 
+	** Returns `PillowConfigIds#defaultContextType` if it can not be determined.
+	abstract MimeType contentType()
+	
+	** Returns 'true' if the page is a welcome page.
+	abstract Bool isWelcomePage()
+
+	** Returns the HTTP method this page responds to.
+	abstract Str httpMethod()
+
+	** Returns a URI for a given event - use to create client side URIs to call the event.
+	abstract Uri eventUrl(Str eventName, Obj?[]? eventContext := null)
+
+	** Returns a new 'PageMeta' with the given page context.
+	abstract PageMeta withContext(Obj?[]? pageContext)
+	
+	** Returns all the event methods on the page.
+	abstract Method[] eventMethods()
+
+	@NoDoc
+	abstract Uri serverGlob()
+	
+	@NoDoc
+	abstract Uri eventGlob(Method eventMethod)
+
+	@NoDoc
+	abstract Type[] contextTypes()	
+}
+
+internal class PageMetaImpl : PageMeta {
 
 	internal 		BedSheetServer	bedServer
 	internal 		HttpRequest		httpRequest
@@ -20,27 +65,15 @@ class PageMeta {
 		this.pageCtx 	= pageContext ?: Obj#.emptyList
 	}
 	
-	** Returns the page that this Meta object wraps.
-	Type pageType() {
+	override Type pageType() {
 		pageState.pageType
 	}
 
-	** Returns the context used to initialise this page.
-	Obj?[] pageContext() {
+	override Obj?[] pageContext() {
 		pageCtx
 	}
 
-	@NoDoc @Deprecated { msg="Use 'pageUrl' instead" }
-	Uri pageUri() {
-		pageUrl
-	}
-
-	** Returns a URI that can be used to render the given page. 
-	** The URI takes into account:
-	**  - Any welcome URI -> home page conversions
-	**  - The context used to render this page
-	**  - Any parent 'WebMods'
-	Uri pageUrl() {
+	override Uri pageUrl() {
 		clientUrl := pageState.pageBaseUri
 
 		// add extra WebMod path info
@@ -56,30 +89,19 @@ class PageMeta {
 		return clientUrl
 	}
 	
-	** Returns the 'Content-Type' produced by this page.
-	** 
-	** Returns `PillowConfigIds#defaultContextType` if it can not be determined.
-	MimeType contentType() {
+	override MimeType contentType() {
 		pageState.contentType
 	}
 	
-	** Returns 'true' if the page is a welcome page.
-	Bool isWelcomePage() {
+	override Bool isWelcomePage() {
 		pageState.isWelcomePage
 	}
 
-	** Returns the HTTP method this page responds to.
-	Str httpMethod() {
+	override Str httpMethod() {
 		pageState.httpMethod
 	}
 
-	@NoDoc @Deprecated { msg="Use 'eventUrl' instead" }
-	Uri eventUri(Str eventName, Obj?[]? eventContext := null) {
-		eventUrl(eventName, eventContext)
-	}
-
-	** Returns a URI for a given event - use to create client side URIs to call the event.
-	Uri eventUrl(Str eventName, Obj?[]? eventContext := null) {
+	override Uri eventUrl(Str eventName, Obj?[]? eventContext := null) {
 		eventMethod(eventName)		
 		eventUrl 	:= pageUrl.plusSlash + `${eventName}`
 		if (eventContext != null)
@@ -87,27 +109,23 @@ class PageMeta {
 		return eventUrl		
 	}
 
-	** Returns a new 'PageMeta' with the given page context.
-	PageMeta withContext(Obj?[]? pageContext) {
-		PageMeta(pageState, pageContext) {
+	override PageMeta withContext(Obj?[]? pageContext) {
+		PageMetaImpl(pageState, pageContext) {
 			it.bedServer 	 = this.bedServer
 			it.httpRequest 	 = this.httpRequest
 			it.valueEncoders = this.valueEncoders
 		}
 	}
 	
-	** Returns all the event methods on the page.
-	Method[] eventMethods() {
+	override Method[] eventMethods() {
 		pageType.methods.findAll { it.hasFacet(PageEvent#) }		
 	}
 
-	@NoDoc
-	Uri serverGlob() {
+	override Uri serverGlob() {
 		pageState.serverGlob
 	}
 	
-	@NoDoc
-	Uri eventGlob(Method eventMethod) {
+	override Uri eventGlob(Method eventMethod) {
 		pageEvent	:= (PageEvent?) Method#.method("facet").callOn(eventMethod, [PageEvent#, false])	// Stoopid F4 	
 		if (pageEvent == null)
 			throw ArgErr("WTF: Method '${eventMethod.qname}' does not have a @${PageEvent#.name} facet.")
@@ -118,12 +136,10 @@ class PageMeta {
 		return eventStr.toUri
 	}
 	
-	@NoDoc
-	Type[] contextTypes() {
+	override Type[] contextTypes() {
 		pageState.contextTypes
 	}
 	
-	** Returns 'pageUrl'.
 	override Str toStr() {
 		pageUrl.toStr
 	}

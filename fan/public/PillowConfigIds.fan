@@ -19,7 +19,7 @@ const class PillowConfigIds {
  
 	** The component name (Str) of directory welcome pages.
 	** 
-	** Defaults to "index".
+	** Defaults to '"index"'.
 	static const Str welcomePageName		:=	"afPillow.welcomePageName"
 
 	** The default 'Content-Type' to serve pages up as, if it can not be determined.
@@ -27,14 +27,9 @@ const class PillowConfigIds {
 	** Defaults to 'MimeType("text/plain")'
 	static const Str defaultContentType		:=	"afPillow.defaultContentType"
 
-	** Set to 'false' to disable the automatic routing of request URLs to Pillow page rendering.
-	** 
-	** Defaults to 'true'.
-	static const Str enableRouting			:=	"afPillow.enableRouting"
-
 	** Set the welcome page strategy which defines the interaction between welcome page URIs and directory URIs.
 	** 
-	** Defaults to 'onWithRedirects'
+	** Defaults to 'WelcomePageStrategy.onWithRedirects'
 	static const Str welcomePageStrategy	:=	"afPillow.welcomePageStrategy"
 
 	** The 'cache-control' HTTP header value to set in rendered Pillow pages. 

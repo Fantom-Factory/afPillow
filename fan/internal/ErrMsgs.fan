@@ -32,4 +32,12 @@ internal const class ErrMsgs {
 	static Str couldNotFindPage(Type pageType) {
 		"Could not find page of Type ${pageType.qname}"
 	}
+	
+	static Str componentNotMixin(Type type) {
+		"EfanXtra component ${type.qname} is NOT a mixin"
+	}
+
+	static Str componentNotConst(Type type) {
+		"EfanXtra component ${type.qname} is NOT const"
+	}
 }

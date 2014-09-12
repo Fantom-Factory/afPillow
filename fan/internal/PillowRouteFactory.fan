@@ -7,9 +7,6 @@ internal const class PillowRouteFactory {
 	private static const |Constraints|	normalPageConstraints	:= |Constraints c| { c.after("afPillow.pillowStart").before("afPillow.pillowWelcomePages") }
 	private static const |Constraints|	welcomePageConstraints	:= |Constraints c| { c.after("afPillow.pillowWelcomePages").before("afPillow.pillowEnd") }
 
-	@Config { id="afPillow.enableRouting" }
-	@Inject private const Bool	enableRouting
-
 	@Config { id="afPillow.welcomePageName" }
 	@Inject private const Str 	welcomePageName
 	
@@ -20,15 +17,12 @@ internal const class PillowRouteFactory {
 
 	new make(|This| in) { in(this) }
 	
-	Void addPillowRoutes(Configuration config) {
+	Route[] pillowPageRoutes(Configuration config) {
 		// allow the file system to trump pillow pages
-		config.addPlaceholder("afPillow.pillowStart"		).after("afBedSheet.fileHandlerEnd")
+		config.addPlaceholder("afPillow.pillowStart"		).after("afBedSheet.fileHandler")
 		config.addPlaceholder("afPillow.pillowEnd"			).after("afPillow.pillowStart")
 		config.addPlaceholder("afPillow.pillowWelcomePages"	).after("afPillow.pillowStart").before("afPillow.pillowEnd")
 
-		// Keep the placeholders
-		if (!enableRouting)	return
-		
 		pages.pageTypes.sort.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
 			serverUri	:= pageMeta.serverGlob
@@ -59,6 +53,7 @@ internal const class PillowRouteFactory {
 				constraints(config.set(qname, eventRoute))
 			}
 		}
+		return [,]
 	}	
 }
 

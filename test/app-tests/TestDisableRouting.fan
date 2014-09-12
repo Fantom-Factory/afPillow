@@ -18,8 +18,8 @@ internal class TestDisableRouting : PillowTest {
 }
 
 internal class T_AppModule02 {
-	@Contribute { serviceType=ApplicationDefaults# }
-	static Void contributeApplicationDefaults(Configuration config) {
-		config[PillowConfigIds.enableRouting] = false
+	@Contribute { serviceType=Routes# }
+	static Void contributeRoutes(Configuration config) {
+		config.remove("afPillow.pageRoutes")
 	}
 }

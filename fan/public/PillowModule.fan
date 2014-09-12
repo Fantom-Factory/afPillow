@@ -11,17 +11,23 @@ using web
 @NoDoc
 const class PillowModule {
 
-	static Void bind(ServiceBinder binder) {
-		binder.bind(Pages#)
-		binder.bind(PillowPrinter#)
-		binder.bind(ContentTypeResolver#)
-		binder.bind(PageUrlResolver#)
-		binder.bind(PageMetaStateFactory#)
+	static Void defineServices(ServiceDefinitions defs) {
+		defs.add(Pages#)
+		defs.add(PillowPrinter#)
+		defs.add(ContentTypeResolver#)
+		defs.add(PageUrlResolver#)
+		defs.add(PageMetaStateFactory#)
+		defs.add(PageFinder#)
 	}
 
 	@Build { scope=ServiceScope.perThread }
 	static PageMeta buildPageMeta() {
-		PageMeta.peek(true)
+		PageMetaImpl.peek(true)
+	}
+	
+	@Override
+	static ComponentFinder overrideComponentFinder() {
+		ComponentFinderImpl()
 	}
 	
 	@Contribute { serviceType=EfanLibraries# }
@@ -39,7 +45,7 @@ const class PillowModule {
 	@Contribute { serviceType=Routes# }
 	static Void contributeRoutes(Configuration config, Pages pages) {
 		routeFactory := (PillowRouteFactory) config.autobuild(PillowRouteFactory#)
-		routeFactory.addPillowRoutes(config)
+		routeFactory.pillowPageRoutes(config)
 	}
 
 	@Contribute { serviceType=PageUrlResolver# } 
@@ -67,7 +73,6 @@ const class PillowModule {
 	@Contribute { serviceType=FactoryDefaults# }
 	static Void contributeFactoryDefaults(Configuration config) {
 		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
-		config[PillowConfigIds.enableRouting]		= true
 		config[PillowConfigIds.welcomePageName]		= "index"
 		config[PillowConfigIds.welcomePageStrategy]	= WelcomePageStrategy.onWithRedirects
 		config[PillowConfigIds.cacheControl]		= "max-age=0, no-cache"

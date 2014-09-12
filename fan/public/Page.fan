@@ -14,9 +14,6 @@ facet class Page {
 	** <pre
 	const Uri? url
 
-	@NoDoc @Deprecated { msg="Use 'url' instead" }
-	const Uri? uri
-	
 	** By default, 'pillow' looks for a template with the same name as the page class.
 	**  
 	** Use this to explicitly set the location of efan template. The URI may take several forms:

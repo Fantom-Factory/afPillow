@@ -5,31 +5,35 @@ using web::WebOutStream
 internal const class PillowPrinter {
 	@Inject private	const Log				log
 	@Inject private	const Pages				pages
-	@Inject private	const EfanXtra			efanXtra
+	@Inject private	const EfanLibraries		efanLibs
 	@Inject private	const EfanXtraPrinter	exPrinter
+	@Inject private	const ComponentFinder	comFinder
+	@Inject private	const PageFinder		pageFinder
 
 	new make(|This| in) { in(this) }
 	
 	Void logLibraries() {
 		details := "\n"
-		efanXtra.libraries.each |lib| {
+		efanLibs.names.each |libName| {
 			// log the components, filtering out pages
-			details += pageDetailsToStr(lib)
-			details += exPrinter.libraryDetailsToStr(lib) |Type component->Bool| { !component.hasFacet(Page#) }
+			details += pageDetailsToStr(libName)
+//			details += exPrinter.libraryDetailsToStr(lib) |Type component->Bool| { !component.hasFacet(Page#) }
+			details += exPrinter.libraryDetailsToStr(libName) { true }
 		}
 		
 		log.info(details)
 	}
 
-	Str pageDetailsToStr(EfanLibrary lib) {
-		buf		 := StrBuf()
-		pageTypes := lib.componentTypes.findAll { it.hasFacet(Page#) }
+	Str pageDetailsToStr(Str libName) {
+		buf			:= StrBuf()
+		libPod		:= efanLibs.pod(libName)
+		pageTypes	:= pageFinder.findPageTypes(libPod)
 		
 		if (pageTypes.isEmpty)
 			return ""
 
 		maxName	 := (Int) pageTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
-		buf.add("\nefan Library: '${lib.name}' has ${pageTypes.size} pages:\n\n")
+		buf.add("\nefan Library: '${libName}' has ${pageTypes.size} pages:\n\n")
 
 		pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
