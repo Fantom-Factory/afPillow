@@ -73,7 +73,7 @@ internal class T_AppModule09 {
 	}
 	@Contribute { serviceType=Routes# }
 	internal static Void contributeRoutes(Configuration config, Pages pages) {
-		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pillowEnd")
+		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pageRoutes")
 	}
 }
 
@@ -85,6 +85,6 @@ internal class T_AppModule10 {
 	}
 	@Contribute { serviceType=Routes# }
 	internal static Void contributeRoutes(Configuration config, Pages pages) {
-		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pillowEnd")
+		config.set("XXX", Route(`/xxx`, Text.fromPlain("XXX"))).after("afPillow.pageRoutes")
 	}
 }

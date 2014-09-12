@@ -4,9 +4,6 @@ using afBedSheet
 
 internal const class PillowRouteFactory {
 	
-	private static const |Constraints|	normalPageConstraints	:= |Constraints c| { c.after("afPillow.pillowStart").before("afPillow.pillowWelcomePages") }
-	private static const |Constraints|	welcomePageConstraints	:= |Constraints c| { c.after("afPillow.pillowWelcomePages").before("afPillow.pillowEnd") }
-
 	@Config { id="afPillow.welcomePageName" }
 	@Inject private const Str 	welcomePageName
 	
@@ -17,11 +14,9 @@ internal const class PillowRouteFactory {
 
 	new make(|This| in) { in(this) }
 	
-	Route[] pillowPageRoutes(Configuration config) {
-		// allow the file system to trump pillow pages
-		config.addPlaceholder("afPillow.pillowStart"		).after("afBedSheet.fileHandler")
-		config.addPlaceholder("afPillow.pillowEnd"			).after("afPillow.pillowStart")
-		config.addPlaceholder("afPillow.pillowWelcomePages"	).after("afPillow.pillowStart").before("afPillow.pillowEnd")
+	Route[] pillowPageRoutes() {
+		normalRoutes 	:= Route[,]
+		welcomeRoutes	:= Route[,]
 
 		pages.pageTypes.sort.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
@@ -29,20 +24,20 @@ internal const class PillowRouteFactory {
 			initTypes	:= pageMeta.contextTypes
 			events		:= pageType.methods.findAll { it.hasFacet(PageEvent#) }
 			pageRoute	:= Route(serverUri, PageRenderFactory(pageType, initTypes), pageMeta.httpMethod)
-			constraints	:= pageMeta.isWelcomePage ? welcomePageConstraints : normalPageConstraints
+			routes		:= pageMeta.isWelcomePage ? welcomeRoutes : normalRoutes
 			
-			constraints(config.set(pageType.qname, pageRoute))
+			routes.add(pageRoute)
 			
 			if (strategy == WelcomePageStrategy.offWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
 				redirect := Route(serverUri.parent, Redirect.movedPermanently(serverUri), pageMeta.httpMethod)
-				constraints(config.set(pageType.qname + "-redirect", redirect))
+				routes.add(redirect)
 			}
 
 			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
 				// route all file extensions too, e.g. index.html
 				regex	 := ("(?i)^" + Regex.glob(serverUri.plusSlash.toStr).toStr + welcomePageName + "(?:\\..+)?").toRegex 
 				redirect := Route(regex, Redirect.movedPermanently(serverUri), pageMeta.httpMethod)
-				constraints(config.set(pageType.qname + "-redirect", redirect))				
+				routes.add(redirect)
 			}
 
 			pageMeta.eventMethods.each |eventMethod| {
@@ -50,10 +45,10 @@ internal const class PillowRouteFactory {
 				eventUrl 	:= serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
 				qname	 	:= "${pageType.qname}/${eventMethod.name}"
 				eventRoute	:= Route(eventUrl, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)
-				constraints(config.set(qname, eventRoute))
+				routes.add(eventRoute)
 			}
 		}
-		return [,]
+		return normalRoutes.addAll(welcomeRoutes)
 	}	
 }
 
