@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.19")
+		version = Version("1.0.20")
 
 		meta = [	
 			"proj.name"		: "Pillow",
@@ -26,17 +26,17 @@ class Build : BuildPod {
 			// ---- core ------------------------
 			"afBeanUtils 1.0.2+",
 			"afConcurrent 1.0.6+",
-			"afIoc 1.7.6+",
-			"afIocConfig 1.0.14+",
-			"afIocEnv 1.0.12+",
+			"afIoc 2.0.0+",
+			"afIocConfig 1.0.16+",
+			"afIocEnv 1.0.14+",
 
 			// ---- web ------------------------
-			"afBedSheet 1.3.14+",
-			"afEfanXtra 1.1.12+",
+			"afBedSheet 1.3.16+",
+			"afEfanXtra 1.1.14+",
 			"afPlastic 1.0.16+",
 
 			// ---- test -----------------------
-			"afBounce 1.0.12+",
+			"afBounce 1.0.14+",
 			"afButter 1.0.2+"
 		]
 

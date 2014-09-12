@@ -272,6 +272,11 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.20 [#v1.0.20]
+------------------
+ - Chg: Updated to [IoC 2.0.0]`pod:afIoc`.
+ - Chg: Converted 'PageMeta' to a 'mixin'.
+
 v1.0.18 [#v1.0.18]
 ------------------
  - Chg: Updated to [IoC 1.7.6]`pod:afIoc` and [IoC Config 1.0.14]`pod:afIocConfig`.

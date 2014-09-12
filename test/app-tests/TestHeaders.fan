@@ -45,16 +45,16 @@ internal class TestHeaders : PillowTest {
 }
 
 internal class T_AppModule11 {
-	@Contribute { serviceType=ServiceOverrides# }
-	static Void contributeServiceOverride(Configuration config) {
-		config["IocEnv"] = IocEnv.fromStr("Dev")
+	@Override
+	static IocEnv overrideIocEnv() {
+		IocEnv.fromStr("Dev")
 	}
 }
 
 internal class T_AppModule12 {
-	@Contribute { serviceType=ServiceOverrides# }
-	static Void contributeServiceOverride(Configuration config) {
-		config["IocEnv"] = IocEnv.fromStr("Prod")
+	@Override
+	static IocEnv overrideIocEnv() {
+		IocEnv.fromStr("Prod")
 	}
 }
 

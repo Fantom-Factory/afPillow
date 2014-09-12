@@ -16,7 +16,9 @@ const mixin Pages {
 	** (Note: 'pageContext' are the arguments to the '@InitRender' method, if any.) 
 	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null)
 
-	** An alias for 'pageMeta()'.
+	** Create 'PageMeta' for the given page type and context.
+	**  
+	** Convenience / alias for 'pageMeta(...)'.
 	@Operator
 	abstract PageMeta get(Type pageType, Obj?[]? pageContext := null)
 
@@ -39,12 +41,14 @@ internal const class PagesImpl : Pages {
 	
 	@Inject	private const ValueEncoders			valueEncoders
 	@Inject	private const EfanXtra 				efanXtra
+	@Inject	private const EfanLibraries			efanLibs
 	@Inject	private const IocEnv				iocEnv
 	@Inject	private const BedSheetServer		bedServer			
 	@Inject	private const HttpResponse			httpRes
 	@Inject	private const HttpRequest			httpRequest
 	@Inject	private const ComponentRenderer		componentRenderer
 	@Inject private const ComponentMeta			componentMeta
+	@Inject private const PageFinder			pageFinder
 			private const Type:PageMetaState	pageCache 
 
 	@Config { id="afPillow.cacheControl" }
@@ -53,8 +57,9 @@ internal const class PagesImpl : Pages {
 	new make(PageMetaStateFactory metaFactory, |This| in) {
 		in(this)
 		cache := Utils.makeMap(Type#, PageMeta#)
-		efanXtra.libraries.each |lib| {
-			lib.componentTypes.findAll { it.hasFacet(Page#) }.each {
+		efanXtra.libraryNames.each |libName| {
+			pod := efanLibs.pod(libName)
+			pageFinder.findPageTypes(pod).each {
 				cache[it] =  metaFactory.toPageMetaState(it)
 			}
 		}
@@ -67,7 +72,7 @@ internal const class PagesImpl : Pages {
 	
 	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
 		pageState := pageCache[pageType] ?: throw PageNotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
-		return PageMeta(pageState, pageContext) {
+		return PageMetaImpl(pageState, pageContext) {
 			it.bedServer		= this.bedServer
 			it.httpRequest		= this.httpRequest
 			it.valueEncoders	= this.valueEncoders
@@ -90,7 +95,7 @@ internal const class PagesImpl : Pages {
 		httpRes.headers.cacheControl = cacheControl		
 		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
-		pageStr	 := PageMeta.push(pageMeta) |->Str| {
+		pageStr	 := PageMetaImpl.push(pageMeta) |->Str| {
 			return efanXtra.component(pageMeta.pageType).render(pageArgs)
 		}
 		return Text.fromContentType(pageStr, pageMeta.contentType)
@@ -105,7 +110,7 @@ internal const class PagesImpl : Pages {
 		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
-		return PageMeta.push(pageMeta) |->Obj| {
+		return PageMetaImpl.push(pageMeta) |->Obj| {
 			return componentRenderer.runInCtx(page) |->Obj| {
 				// TODO: what if InitRender returns false?
 				componentMeta.callMethod(InitRender#, page, initArgs)
