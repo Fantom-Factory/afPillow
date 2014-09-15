@@ -66,7 +66,7 @@ internal const class PillowPrinter {
 				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
 //				eventMeth := (PageEvent) Type#.method("facet").callOn(eventMethod, [PageEvent#])
 				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
-				map["(${eventMethod.name})^"] = pageEvent.httpMethod + " - " + eventGlob 			
+				map["^(${eventMethod.name})"] = pageEvent.httpMethod + " - " + eventGlob 			
 			}
 		}
 
