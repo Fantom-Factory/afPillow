@@ -22,7 +22,7 @@ enum class WelcomePageStrategy {
 	** Welcome pages are accessed via their normal URIs and directory URIs are redirected to the welcome page.
 	** 
 	**   /app/index  --> 200 OK
-	**   /app/       --> 302 Redirect
+	**   /app/       --> 308 Redirect to '/index'
 	offWithRedirects,
 	
 	** Welcome pages are accessed via directory URIs and welcome page URIs return 404s.
@@ -33,7 +33,7 @@ enum class WelcomePageStrategy {
 	
 	** Welcome pages are accessed via directory URIs and welcome page URIs are redirected to the directory URI.
 	** 
-	**   /app/index  --> 302 Redirect to '/'
+	**   /app/index  --> 308 Redirect to '/'
 	**   /app/       --> 200 OK
 	onWithRedirects;
 	
