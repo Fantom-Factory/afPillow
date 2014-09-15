@@ -32,7 +32,7 @@ class Build : BuildPod {
 
 			// ---- web ------------------------
 			"afBedSheet 1.3.16+",
-			"afEfanXtra 1.1.14+",
+			"afEfanXtra 1.1.16+",
 			"afPlastic 1.0.16+",
 
 			// ---- test -----------------------
