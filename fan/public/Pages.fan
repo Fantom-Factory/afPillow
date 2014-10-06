@@ -34,7 +34,6 @@ const mixin Pages {
 	** Executes the page event in the given page context.
 	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
 	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
-
 }
 
 internal const class PagesImpl : Pages {
@@ -56,7 +55,7 @@ internal const class PagesImpl : Pages {
 
 	new make(PageMetaStateFactory metaFactory, |This| in) {
 		in(this)
-		cache := Utils.makeMap(Type#, PageMeta#)
+		cache := Type:PageMetaState[:] { ordered = true }
 		efanXtra.libraryNames.each |libName| {
 			pod := efanLibs.pod(libName)
 			pageFinder.findPageTypes(pod).each {

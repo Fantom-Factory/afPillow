@@ -37,17 +37,24 @@ class Build : BuildPod {
 
 			// ---- test -----------------------
 			"afBounce 1.0.14+",
-			"afButter 1.0.2+"
+			"afButter 1.0.2+",
+			"compiler 1.0",
+			"build 1.0"
 		]
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
 		resDirs = [`test/app/`]
 	}
 	
+	@Target
 	override Void compile() {
+		Pod.find("build").log.level = LogLevel.debug
+		Pod.find("compiler").log.level = LogLevel.debug
 		// remove test pods from final build
 		testPods := "afBounce afButter".split
 		depends = depends.exclude { testPods.contains(it.split.first) }
+		srcDirs = srcDirs.exclude { it.toStr.startsWith("test/") }
+		resDirs = resDirs.exclude { it.toStr.startsWith("test/") }
 		super.compile
 	}
 }
