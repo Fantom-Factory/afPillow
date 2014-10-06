@@ -38,4 +38,9 @@ facet class Page {
 	** 
 	** Defaults to 'GET'
 	const Str httpMethod	:= "GET"
+	
+	** If 'true' then Page Routes, including events and welcome page redirects, are *not* added to BedSheet.
+	** 
+	** Defaults to 'false'
+	const Bool disableRoutes	:= false
 }

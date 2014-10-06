@@ -19,6 +19,10 @@ internal const class PillowRouteFactory {
 		welcomeRoutes	:= Route[,]
 
 		pages.pageTypes.sort.each |pageType| {
+			pageFacet	:= (Page) Type#.method("facet").callOn(pageType, [Page#])
+			if (pageFacet.disableRoutes)
+				return
+			
 			pageMeta 	:= pages.pageMeta(pageType, null)
 			serverUri	:= pageMeta.serverGlob
 			initTypes	:= pageMeta.contextTypes

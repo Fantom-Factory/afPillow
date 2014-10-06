@@ -272,6 +272,10 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 Release Notes [#releaseNotes]
 *****************************
+v1.0.22 [#v1.0.22]
+------------------
+ - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
+
 v1.0.20 [#v1.0.20]
 ------------------
  - Chg: Updated to [IoC 2.0.0]`pod:afIoc`.
