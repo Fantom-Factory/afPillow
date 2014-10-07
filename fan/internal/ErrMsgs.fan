@@ -44,4 +44,12 @@ internal const class ErrMsgs {
 	static Str optionalParamsNotAllowedWithEvents() {
 		"Optional page parameters are not allowed with page events"
 	}
+
+	static Str pageCtxMustBeNullable(Field field) {
+		"Page context ${field.qname} must be nullable because it is marked as optional."
+	}
+
+	static Str pageCtxMustBeOptional(Field field) {
+		"Page context ${field.qname} must be optional because the page context before it was."
+	}
 }

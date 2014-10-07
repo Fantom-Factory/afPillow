@@ -4,7 +4,6 @@ using afEfanXtra
 internal const class InitRenderMethod {
 
 	const Type[]	paramTypes
-	const Int		minNoOfArgs
 
 	const Bool[]	optionals
 	const Type		pageType
@@ -22,18 +21,33 @@ internal const class InitRenderMethod {
 			throw PillowErr(ErrMsgs.pageCanNotHaveInitRenderAndPageContext(pageType))
 
 		if (initMethod != null) {
-			this.paramTypes		= initMethod.params.map     {  it.type }
-			this.optionals		= initMethod.params.map     {  it.hasDefault }
-			this.minNoOfArgs	= initMethod.params.findAll { !it.hasDefault }.size
+			this.paramTypes		= initMethod.params.map {  it.type }
+			this.optionals		= initMethod.params.map {  it.hasDefault }
 			return
 		}
 
 		if (!initFields.isEmpty) {
-			this.paramTypes		= initFields.map { it.type }
-			this.optionals		= initFields.map { false }
-			this.minNoOfArgs	= initFields.size
 			this.initFields		= initFields
+			this.paramTypes		= initFields.map { it.type }
+			opts := false
+			this.optionals		= initFields.map |Field f->Bool| {
+				pageCtx := (PageContext?) Slot#.method("facet").callOn(f, [PageContext#, false])	// Stoopid F4
+				optional := pageCtx?.optional ?: false
+				
+				if (optional && !f.type.isNullable)
+					throw PillowErr(ErrMsgs.pageCtxMustBeNullable(f))
+				
+				if (optional) opts = true
+				if (!optional && opts)
+					throw PillowErr(ErrMsgs.pageCtxMustBeOptional(f))
+
+				return optional
+			}
 		}
+	}
+
+	Int minNoOfArgs() {
+		optionals.findAll { !it }.size
 	}
 	
 	Bool hasOptionalParams() {
@@ -55,11 +69,8 @@ internal const class InitRenderMethod {
 			return
 		
 		sig  := initFields.map |f, i->Str| {
-			
-			pageCtx := (PageContext) Slot#.method("facet").callOn(f, [PageContext#])	// Stoopid F4
-			
-			return "${f.type.signature} ctx${i}"
-			
+			defVal := optionals[i] ? " := null" : Str.defVal
+			return "${f.type.signature} ctx${i}${defVal}"
 		}.join(", ")
 
 		body := initFields.map |f, i->Str| { "this.${f.name} = ctx${i}" }.join("\n")
