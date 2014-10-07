@@ -292,6 +292,7 @@ Release Notes [#releaseNotes]
 v1.0.22 [#v1.0.22]
 ------------------
  - New: '@InitRender' method parameters with default values become optional URL parameters.
+ - New: '@PageContext' fields may also be optional.
  - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
 
 v1.0.20 [#v1.0.20]
@@ -345,7 +346,7 @@ v1.0.4 [#v1.0.4]
 
 v1.0.2 [#v1.0.2]
 ----------------
- - Chg: Page context values may now be immutable / non-const objects.
+ - Chg: Page context values may now be mutable / non-const objects.
 
 v1.0.0 [#v1.0.0]
 ----------------

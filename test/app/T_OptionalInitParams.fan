@@ -1,8 +1,8 @@
 using afEfanXtra
 
 @NoDoc
-@Page { url=`/optionalInit1`}
-const mixin T_OptionalInitParams1 : EfanComponent {
+@Page { url=`/optionalInitParams`}
+const mixin T_OptionalInitParams : EfanComponent {
 	
 	abstract Str? p1; abstract Str? p2; abstract Str? p3
 	
@@ -17,8 +17,15 @@ const mixin T_OptionalInitParams1 : EfanComponent {
 }
 
 @NoDoc
-@Page { url=`/optionalInit2`}
-const mixin T_OptionalInitParams2 : EfanComponent {
+@Page { url=`/optionalPageCtx`}
+const mixin T_OptionalPageCtx : EfanComponent {
 	
-	override Str renderTemplate() { "wotever" }
+	@PageContext
+	abstract Str p1
+	@PageContext { optional=true }
+	abstract Str? p2
+	@PageContext { optional=true }
+	abstract Str? p3
+	
+	override Str renderTemplate() { "$p1 $p2 $p3" }
 }

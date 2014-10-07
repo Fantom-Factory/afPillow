@@ -18,7 +18,7 @@ internal const class PillowRouteFactory {
 		normalRoutes 	:= Route[,]
 		welcomeRoutes	:= Route[,]
 
-		pages.pageTypes.sort.each |pageType| {
+		pages.pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
 			if (pageMeta.disableRoutes)
 				return
