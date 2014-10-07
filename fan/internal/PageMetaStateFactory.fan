@@ -17,19 +17,27 @@ internal class PageMetaStateFactory  {
 	@Inject	private const Registry				registry
 
 	Type? pageType
+	InitRenderMethod? initRender
 	
 	new make(|This|in) { in(this) }
 
 	PageMetaState toPageMetaState(Type pageType) {
-		this.pageType = pageType
+		this.pageType	= pageType
+		this.initRender	= InitRenderMethod(componentMeta, pageType)		
+		
+		if (initRender.hasOptionalParams && !eventMethods.isEmpty)
+			throw PillowErr(ErrMsgs.optionalParamsNotAllowedWithEvents)
+		
 		return PageMetaState {
 			it.pageType			= this.pageType
 			it.pageBaseUri		= this.pageBaseUri
 			it.contentType		= this.contentType
 			it.isWelcomePage	= this.isWelcomePage
 			it.httpMethod		= this.httpMethod
+			it.disableRoutes	= this.disableRoutes
 			it.serverGlob		= this.serverGlob
-			it.contextTypes		= this.contextTypes
+			it.eventMethods		= this.eventMethods
+			it.initRender		= this.initRender
 		}
 	}
 	
@@ -56,37 +64,33 @@ internal class PageMetaStateFactory  {
 		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
 		return page.httpMethod
 	}
+	
+	Bool disableRoutes() {
+		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
+		return page.disableRoutes
+	}
 
 	Uri serverGlob() {
 		clientUri 	:= pageUrlResolver.pageUrl(pageType)
 		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
 			clientUri = clientUri.parent
-		noOfParams 	:= contextTypes.size
-		noOfParams.times { clientUri = clientUri.plusSlash + `*` }
+		
+		if (!initRender.paramTypes.isEmpty) {
+			if (initRender.hasOptionalParams)
+				// need to use `/**` syntax to match optional params 
+				clientUri = clientUri.plusSlash + `**`
+			else
+				// need to use `/*/*` syntax if page has events  
+				initRender.paramTypes.size.times { clientUri = clientUri.plusSlash + `*` }
+		}
+		
 		return clientUri
 	}
 
-	Uri eventGlob(Method eventMethod) {
-		eventStr	:= eventMethod.name
-		noOfParams 	:= 	eventMethod.params.size
-		noOfParams.times { eventStr += "/*" }
-		return eventStr.toUri
+	Method[] eventMethods() {
+		pageType.methods.findAll { it.hasFacet(PageEvent#) }
 	}
-
-	Type[] contextTypes() {
-		fields 	 := pageType.fields.findAll { it.hasFacet(PageContext#) || it.name == PageContext#.name.decapitalize }
-		initMeth := componentMeta.findMethod(pageType, InitRender#)
-		
-		if (!fields.isEmpty && initMeth != null)
-			throw PillowErr(ErrMsgs.pageCanNotHaveInitRenderAndPageContext(pageType))
-
-		if (!fields.isEmpty)
-			return fields.map { it.type }
-		if (initMeth != null)
-			return initMeth.params.map { it.type }
-		return Type#.emptyList
-	}
-
+	
 	private Bool isWelcomeUri(Uri clientUri) {
 		return clientUri.name.equalsIgnoreCase(welcomePageName)
 	}	

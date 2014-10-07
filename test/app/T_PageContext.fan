@@ -11,7 +11,7 @@ const mixin T_PageContext : EfanComponent {
 			abstract Str 		context
 	
 	override Str renderTemplate() {
-		// just test withContext() works - sometimes we forget to set fields in the it-block
+		// just test that withContext() works - sometimes we forget to set fields in the it-block
 		pages.pageMeta(T_PageContext#).withContext(null)
 		
 		if (context == "err") {

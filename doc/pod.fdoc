@@ -167,6 +167,23 @@ const mixin Example : EfanComponent {
 Note that a Pillow Page may choose to have *either* an '@InitRender' method or '@PageContext' fields, not both.
 Also note that page context objects need to be immutable ('const' classes).
 
+Any '@InitRender' method parameter with a default value becomes an optional URL parameter. Example:
+
+pre>
+syntax: fantom
+
+@Page
+const mixin Example : EfanComponent {
+    @InitRender
+    Void initRender(Int age := 69) { .. }
+}
+<pre
+
+Would respond to URLs of both:
+
+  /example
+  /example/42
+
 
 
 Page Events [#pageEvents]
@@ -221,7 +238,7 @@ Page Meta [#pageMeta]
 The `PageMeta` class holds information about the Pillow Page currently being rendered.
 Obviously, using 'PageMeta' in a page class, returns information about itself! Which is quite handy.
 
-Arguably the most useful method is 'pageUri()' which returns a URI that can be used, by a client,
+Arguably the most useful method is 'pageUrl()' which returns a URI that can be used, by a client,
 to render the page complete with the current page context.
 You can create new PageMeta instances with different page contexts by using the 'withContext()' method.
 Using our example again:
@@ -258,11 +275,11 @@ Content Type [#contentType]
 ***************************
 Page template files should use a double extension in their name, for example,
 
-  IndexPage.xhtml.slim
+  IndexPage.html.slim
 
 The outer extension denotes the type of templating to use, [Slim]`pod:afSlim` in our example.
 The innter extension is used to find the [Content-Type]`http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17`
-that is sent in the HTTP response header. In our example, the 'Content-Type' would be set to 'application/xhtml+xml'.
+that is sent in the HTTP response header. In our example, the 'Content-Type' would be set to 'text/html'.
 
 If a double extension is not used, or not know, then the default content type, as defined by the config value, is used.
 
@@ -274,6 +291,7 @@ Release Notes [#releaseNotes]
 *****************************
 v1.0.22 [#v1.0.22]
 ------------------
+ - New: '@InitRender' method parameters with default values become optional URL parameters.
  - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
 
 v1.0.20 [#v1.0.20]
