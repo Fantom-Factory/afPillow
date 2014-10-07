@@ -32,6 +32,9 @@ mixin PageMeta {
 	** Returns the HTTP method this page responds to.
 	abstract Str httpMethod()
 
+	** Returns 'true' if BedSheet route generation has been disabled for this page.
+	abstract Bool disableRoutes()
+
 	** Returns a URI for a given event - use to create client side URIs to call the event.
 	abstract Uri eventUrl(Str eventName, Obj?[]? eventContext := null)
 
@@ -48,7 +51,7 @@ mixin PageMeta {
 	abstract Uri eventGlob(Method eventMethod)
 
 	@NoDoc
-	abstract Type[] contextTypes()	
+	abstract internal InitRenderMethod initRender()	
 }
 
 internal class PageMetaImpl : PageMeta {
@@ -57,20 +60,16 @@ internal class PageMetaImpl : PageMeta {
 	internal 		HttpRequest		httpRequest
 	internal 		ValueEncoders	valueEncoders
 	private const 	PageMetaState	pageState
-	private 		Obj?[]			pageCtx
+	override 		Obj?[]			pageContext
 	
 	internal new make(PageMetaState pageState, Obj?[]? pageContext, |This|in) {
 		in(this)
-		this.pageState	= pageState
-		this.pageCtx 	= pageContext ?: Obj#.emptyList
+		this.pageState		= pageState
+		this.pageContext 	= pageContext ?: Obj#.emptyList
 	}
 	
 	override Type pageType() {
 		pageState.pageType
-	}
-
-	override Obj?[] pageContext() {
-		pageCtx
 	}
 
 	override Uri pageUrl() {
@@ -79,11 +78,12 @@ internal class PageMetaImpl : PageMeta {
 		// add extra WebMod path info
 		clientUrl = bedServer.toClientUrl(clientUrl)
 
+		// validate args
+		if (pageContext.size < initRender.minNoOfArgs || pageContext.size > initRender.paramTypes.size)
+			throw ArgErr(ErrMsgs.invalidNumberOfInitArgs(pageType, initRender.minNoOfArgs, pageContext))		
+
 		// append page context
-		contextTypes := contextTypes
-		if (contextTypes.size != pageContext.size)
-			throw Err(ErrMsgs.invalidNumberOfInitArgs(pageType, contextTypes, pageContext))
-		if (!contextTypes.isEmpty)
+		if (!pageContext.isEmpty)
 			clientUrl = clientUrl.plusSlash + ctxToUri(pageContext)
 
 		return clientUrl
@@ -101,6 +101,10 @@ internal class PageMetaImpl : PageMeta {
 		pageState.httpMethod
 	}
 
+	override Bool disableRoutes() {
+		pageState.disableRoutes
+	}
+	
 	override Uri eventUrl(Str eventName, Obj?[]? eventContext := null) {
 		eventMethod(eventName)		
 		eventUrl 	:= pageUrl.plusSlash + `${eventName}`
@@ -118,7 +122,7 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	override Method[] eventMethods() {
-		pageType.methods.findAll { it.hasFacet(PageEvent#) }		
+		pageState.eventMethods
 	}
 
 	override Uri serverGlob() {
@@ -136,8 +140,8 @@ internal class PageMetaImpl : PageMeta {
 		return eventStr.toUri
 	}
 	
-	override Type[] contextTypes() {
-		pageState.contextTypes
+	override InitRenderMethod initRender() {
+		pageState.initRender
 	}
 	
 	override Str toStr() {

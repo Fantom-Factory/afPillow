@@ -17,7 +17,6 @@ internal const class PillowPrinter {
 		efanLibs.names.each |libName| {
 			// log the components, filtering out pages
 			details += pageDetailsToStr(libName)
-//			details += exPrinter.libraryDetailsToStr(lib) |Type component->Bool| { !component.hasFacet(Page#) }
 			details += exPrinter.libraryDetailsToStr(libName) { true }
 		}
 		
@@ -57,6 +56,9 @@ internal const class PillowPrinter {
 		map := [:] { ordered=true }
 		pages.pageTypes.rw.sort.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
+			if (pageMeta.disableRoutes)
+				return
+
 			serverGlob	:= pageMeta.serverGlob
 			
 			map[pageType.name.toDisplayName] = pageMeta.httpMethod + " - " + serverGlob
@@ -64,7 +66,6 @@ internal const class PillowPrinter {
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
 				// TODO: research why event in abstract class only appears once!?
 				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
-//				eventMeth := (PageEvent) Type#.method("facet").callOn(eventMethod, [PageEvent#])
 				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
 				map["^(${eventMethod.name})"] = pageEvent.httpMethod + " - " + eventGlob 			
 			}

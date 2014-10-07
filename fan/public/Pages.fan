@@ -49,9 +49,11 @@ internal const class PagesImpl : Pages {
 	@Inject private const ComponentMeta			componentMeta
 	@Inject private const PageFinder			pageFinder
 			private const Type:PageMetaState	pageCache 
+			override const Type[] 				pageTypes
 
 	@Config { id="afPillow.cacheControl" }
 	@Inject private const Str					cacheControl
+
 
 	new make(PageMetaStateFactory metaFactory, |This| in) {
 		in(this)
@@ -63,10 +65,7 @@ internal const class PagesImpl : Pages {
 			}
 		}
 		this.pageCache = cache
-	}
-	
-	override Type[] pageTypes() {
-		pageCache.keys.sort
+		this.pageTypes = pageCache.keys.sort
 	}
 	
 	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
@@ -93,7 +92,7 @@ internal const class PagesImpl : Pages {
 		// set the default cache headers
 		httpRes.headers.cacheControl = cacheControl		
 		
-		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
+		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 		pageStr	 := PageMetaImpl.push(pageMeta) |->Str| {
 			return efanXtra.component(pageMeta.pageType).render(pageArgs)
 		}
@@ -106,7 +105,7 @@ internal const class PagesImpl : Pages {
 
 		page 		:= efanXtra.component(pageType)
 		pageMeta	:= pageMeta(pageType, pageContext)
-		initArgs 	:= convertArgs(pageContext, pageMeta.contextTypes)
+		initArgs 	:= convertArgs(pageContext, pageMeta.initRender.paramTypes)
 		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
 		
 		return PageMetaImpl.push(pageMeta) |->Obj| {
@@ -123,24 +122,14 @@ internal const class PagesImpl : Pages {
 				// set the default cache headers
 				httpRes.headers.cacheControl = cacheControl		
 
-				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
+				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 				componentRenderer.doRenderLoop(page)
 				return Text.fromContentType(componentRenderer.renderResult, pageMeta.contentType)
 			}
 		}
 	}
 	
-	// ---- Private Methods --------------------------------------------------------------------------------------------	
-
-	private Text doPageRender(PageMeta pageMeta) {
-		if (!iocEnv.isProd)
-			httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
-		
-		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.contextTypes)
-		pageStr	 := efanXtra.component(pageMeta.pageType).render(pageArgs)
-		
-		return Text.fromContentType(pageStr, pageMeta.contentType)
-	}
+	// ---- Private Methods --------------------------------------------------------------------------------------------
 	
 	** Convert the Str from Routes into real arg objs
 	private Obj[] convertArgs(Str?[] argsIn, Type[] convertTo) {
@@ -158,16 +147,4 @@ internal const class PagesImpl : Pages {
 	}
 }
 
-
-internal const class PageMetaState {
-	const Type 		pageType
-	const Uri 		pageBaseUri
-	const MimeType 	contentType
-	const Bool 		isWelcomePage
-	const Str 		httpMethod
-	const Uri 		serverGlob
-	const Type[]	contextTypes
-
-	new make(|This|in) { in(this) }
-}
 

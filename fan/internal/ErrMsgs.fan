@@ -17,8 +17,8 @@ internal const class ErrMsgs {
 		"Pillow is NOT currently rendering a page."
 	}
 
-	static Str invalidNumberOfInitArgs(Type pageType, Type[] initTypes, Obj[] context) {
-		"Page ${pageType.qname} requires ${initTypes.size} init parameter(s) but ${context.size} were given: " + context.map { it.toStr }
+	static Str invalidNumberOfInitArgs(Type pageType, Int minNoOfArgs, Obj[] context) {
+		"Page ${pageType.qname} requires ${minNoOfArgs} init parameter(s) but ${context.size} were given: " + context.map { it.toStr }
 	}
 
 	static Str eventNotFound(Type pageType, Str eventName) {
@@ -39,5 +39,9 @@ internal const class ErrMsgs {
 
 	static Str componentNotConst(Type type) {
 		"EfanXtra component ${type.qname} is NOT const"
+	}
+
+	static Str optionalParamsNotAllowedWithEvents() {
+		"Optional page parameters are not allowed with page events"
 	}
 }

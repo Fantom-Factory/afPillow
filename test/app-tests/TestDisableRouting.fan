@@ -17,6 +17,14 @@ internal class TestDisableRouting : PillowTest {
 	}
 }
 
+internal class TestDisableRouting2 : PillowTest {
+	Void testDisableRouting() {
+		client.errOn4xx.enabled = false
+		res := client.get(`/disableRoutes`)
+		verifyEq(res.statusCode, 404)
+	}
+}
+
 internal class T_AppModule02 {
 	@Contribute { serviceType=Routes# }
 	static Void contributeRoutes(Configuration config) {

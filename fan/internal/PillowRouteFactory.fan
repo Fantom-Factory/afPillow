@@ -19,15 +19,14 @@ internal const class PillowRouteFactory {
 		welcomeRoutes	:= Route[,]
 
 		pages.pageTypes.sort.each |pageType| {
-			pageFacet	:= (Page) Type#.method("facet").callOn(pageType, [Page#])
-			if (pageFacet.disableRoutes)
+			pageMeta 	:= pages.pageMeta(pageType, null)
+			if (pageMeta.disableRoutes)
 				return
 			
-			pageMeta 	:= pages.pageMeta(pageType, null)
 			serverUri	:= pageMeta.serverGlob
-			initTypes	:= pageMeta.contextTypes
+			initTypes	:= pageMeta.initRender.paramTypes
 			events		:= pageType.methods.findAll { it.hasFacet(PageEvent#) }
-			pageRoute	:= Route(serverUri, PageRenderFactory(pageType, initTypes), pageMeta.httpMethod)
+			pageRoute	:= Route(serverUri, PageRenderFactory(pageMeta.initRender), pageMeta.httpMethod)
 			routes		:= pageMeta.isWelcomePage ? welcomeRoutes : normalRoutes
 			
 			routes.add(pageRoute)
@@ -57,25 +56,23 @@ internal const class PillowRouteFactory {
 }
 
 internal const class PageRenderFactory : RouteResponseFactory {
-	const Type 		pageType
-	const Type[]	initParams
+	const InitRenderMethod initRender
 	
-	new make(Type pageType, Type[] initParams) {
-		this.pageType 	= pageType
-		this.initParams	= initParams
+	new make(InitRenderMethod initRender) {
+		this.initRender = initRender
 	}
 	
 	override Bool matchSegments(Str?[] segments) {
-		matchesParams(initParams, segments)
+		initRender.argsMatch(segments)
 	}
 	
 	override Obj? createResponse(Str?[] segments) {
 		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
-		MethodCall(Pages#renderPage, [pageType, segments])
+		MethodCall(Pages#renderPage, [initRender.pageType, segments])
 	}
 	
 	override Str toStr() {
-		"Pillow Page ${pageType.qname}" + (initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")")
+		"Pillow Page ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
 	}
 }
 
