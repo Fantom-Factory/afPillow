@@ -1,5 +1,18 @@
+using afIoc
+using web
 
 internal class TestPageContext : PillowTest {
+	
+	@Inject Pages? pages
+	
+	Void testBugFixEncodingPageCtx() {
+		// this was an encoding bug with the Bushmasters contact page
+		url := pages[T_PageContext#].withContext(["venture:4x4"]).pageUrl
+		verifyEq(url, `/pageContextStr/venture%3A4x4`)
+
+		url = pages[T_PageContext#].withContext([null]).pageUrl
+		verifyEq(url, `/pageContextStr/`)
+	}
 	
 	Void testPageContextSingle() {
 		res := client.get(`/pageContextStr/emma`)
@@ -48,5 +61,4 @@ internal class TestPageContext : PillowTest {
 		// Page afPillow::T_PageContextMulti requires 2 init parameters but 1 were given: [Muhaha]
 		verifyEq(res.asStr, ErrMsgs.invalidNumberOfInitArgs(T_PageContextMulti#, 2, ["Muhaha"]))
 	}
-
 }
