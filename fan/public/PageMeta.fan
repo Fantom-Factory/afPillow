@@ -2,6 +2,7 @@ using afIoc::Inject
 using afBedSheet::ValueEncoders
 using afBedSheet::BedSheetServer
 using afBedSheet::HttpRequest
+using web::WebUtil
 
 ** (Service) - Returns details about the Pillow page currently being rendered.
 ** 
@@ -149,7 +150,13 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	private Uri ctxToUri(Obj?[] context) {
-		context.map { valueEncoders.toClient(it.typeof, it) ?: "" }.join("/").toUri		
+		context.map { 
+			percentEscape(
+				it == null 
+					? Str.defVal 
+					: (valueEncoders.toClient(it.typeof, it) ?: Str.defVal)
+			)
+		}.join("/").toUri		
 	}
 	
 	private Method eventMethod(Str eventName) {
@@ -165,6 +172,22 @@ internal class PageMetaImpl : PageMeta {
 	
 	internal static PageMeta? peek(Bool checked) {
 		ThreadStack.peek("afPillow.renderingPageMeta", false) ?: (checked ? throw PillowErr(ErrMsgs.renderingPageMetaNotRendering) : null)
+	}
+
+	private static Str percentEscape(Str query) {
+		if (WebUtil.isToken(query))
+			return query
+		// TODO: question fantom on it's Uri.encode impl
+		buf := StrBuf(query.size + 2)
+		query.chars.each {
+			if (WebUtil.isToken(it.toChar)) {
+				buf.addChar(it)
+			} else {
+				buf.addChar('%')
+				buf.add(it.toHex(2).upper)
+			}
+		}
+		return buf.toStr
 	}
 }
 
