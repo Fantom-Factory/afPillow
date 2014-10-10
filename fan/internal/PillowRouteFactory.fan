@@ -67,12 +67,29 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 	
 	override Obj? createResponse(Str?[] segments) {
+		pageSegs  := segments.map { decodeUri(it) }
+
 		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
-		MethodCall(Pages#renderPage, [initRender.pageType, segments])
+		return MethodCall(Pages#renderPage, [initRender.pageType, pageSegs])
 	}
 	
 	override Str toStr() {
 		"Pillow Page ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
+	}
+	
+	** Decode the Str *from* URI standard form
+	** see http://fantom.org/sidewalk/topic/2357
+	private static Str decodeUri(Str str) {
+		if (!str.chars.contains('\\'))
+			return str
+		buf := StrBuf(str.size)
+		escaped := false
+		str.chars.each |char| {
+			escaped = (char == '\\' && !escaped)
+			if (!escaped)
+				buf.addChar(char)
+		}
+		return buf.toStr
 	}
 }
 
@@ -98,13 +115,29 @@ internal const class EventCallerFactory : RouteResponseFactory {
 	}
 
 	override Obj? createResponse(Str?[] segments) {
-		initSegs  := segments[0..<initParams.size]
-		eventSegs := segments[initParams.size..-1]
-		return MethodCall(Pages#callPageEvent, [pageType, initSegs, eventMethod, eventSegs])
+		pageSegs  := segments[0..<initParams.size].map { decodeUri(it) }
+		eventSegs := segments[initParams.size..-1].map { decodeUri(it) }
+		return MethodCall(Pages#callPageEvent, [pageType, pageSegs, eventMethod, eventSegs])
 	}
 	
 	override Str toStr() {
 		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
 		return "Pillow Event ${pageType.qname}${params}:${eventMethod.name}"
+	}
+	
+	// decode the Str *from* URI standard form
+	// see http://fantom.org/sidewalk/topic/2357
+	private static Str decodeUri(Str uri) {
+		if (!uri.chars.contains('\\'))
+			return uri
+		buf := StrBuf(uri.size)
+		slash := false
+		uri.chars.each |char| {
+			if (char == '\\')
+				slash = true
+			else
+				buf.addChar(char)
+		}
+		return buf.toStr
 	}
 }

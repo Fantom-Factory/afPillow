@@ -294,7 +294,7 @@ v1.0.22 [#v1.0.22]
  - New: '@InitRender' method parameters with default values become optional URL parameters.
  - New: '@PageContext' fields may also be optional.
  - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
- - Bug: Page context parameters are now correctly URL encoded.
+ - Bug: Page context parameters are now correctly URL encoded and decoded - see [URI Encoding / Decoding]`http://fantom.org/sidewalk/topic/2357`.
 
 v1.0.20 [#v1.0.20]
 ------------------
