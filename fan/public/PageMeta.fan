@@ -150,20 +150,14 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	private Uri ctxToUri(Obj?[] context) {
-		context.map { 
-			percentEscape(
-				it == null 
-					? Str.defVal 
-					: (valueEncoders.toClient(it.typeof, it) ?: Str.defVal)
-			)
-		}.join("/").toUri		
+		((Uri) context.reduce(``) |Uri url, obj -> Uri| { url.plusSlash.plus(encodeObj(obj)) }).relTo(`/`)
 	}
 	
 	private Method eventMethod(Str eventName) {
 		eventMethods.find |method->Bool| {
 			pageEvent := (PageEvent) Method#.method("facet").callOn(method, [PageEvent#])	// Stoopid F4 	
 			return eventName.equalsIgnoreCase(pageEvent.name ?: Str.defVal) || eventName.equalsIgnoreCase(method.name)  
-		} ?: throw PillowErr(ErrMsgs.eventNotFound(pageType, eventName))		
+		} ?: throw PillowErr(ErrMsgs.eventNotFound(pageType, eventName))
 	}
 
 	internal static Obj? push(PageMeta pageMeta, |->Obj?| f) {
@@ -174,18 +168,23 @@ internal class PageMetaImpl : PageMeta {
 		ThreadStack.peek("afPillow.renderingPageMeta", false) ?: (checked ? throw PillowErr(ErrMsgs.renderingPageMetaNotRendering) : null)
 	}
 
-	private static Str percentEscape(Str query) {
-		if (WebUtil.isToken(query))
-			return query
-		// TODO: question fantom on it's Uri.encode impl
-		buf := StrBuf(query.size + 2)
-		query.chars.each {
-			if (WebUtil.isToken(it.toChar)) {
-				buf.addChar(it)
-			} else {
-				buf.addChar('%')
-				buf.add(it.toHex(2).upper)
-			}
+	private Uri encodeObj(Obj? obj) {
+		if (obj == null)
+			return ``
+		str := valueEncoders.toClient(obj.typeof, obj) ?: Str.defVal
+		return Uri.fromStr(encodeUri(str))
+	}
+
+	private static const Int[] delims := ":/?#[]@\\".chars
+
+	// Encode the Str *to* URI standard form
+	// see http://fantom.org/sidewalk/topic/2357
+	private static Str encodeUri(Str str) {
+		buf := StrBuf(str.size + 8) // allow for 8 escapes
+		str.chars.each |char| {
+			if (delims.contains(char))
+				buf.addChar('\\')
+			buf.addChar(char)
 		}
 		return buf.toStr
 	}
