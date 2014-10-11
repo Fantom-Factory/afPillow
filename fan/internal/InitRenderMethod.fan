@@ -53,6 +53,12 @@ internal const class InitRenderMethod {
 	Bool hasOptionalParams() {
 		optionals.any { it }
 	}
+
+	Bool allParamsOptional() {
+		if (optionals.isEmpty)
+			throw ArgErr("Optionals is empty")
+		return optionals.all { it }
+	}
 	
 	Bool argsMatch(Str?[] segments) {
 		if (segments.size < minNoOfArgs || segments.size > paramTypes.size)

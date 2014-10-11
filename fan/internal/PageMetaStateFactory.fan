@@ -78,7 +78,7 @@ internal class PageMetaStateFactory  {
 		if (!initRender.paramTypes.isEmpty) {
 			if (initRender.hasOptionalParams)
 				// need to use `/**` syntax to match optional params 
-				clientUri = clientUri.plusSlash + `**`
+				clientUri = clientUri.plusSlash + ((initRender.allParamsOptional ? "?" : "") + "**").toUri
 			else
 				// need to use `/*/*` syntax if page has events  
 				initRender.paramTypes.size.times { clientUri = clientUri.plusSlash + `*` }

@@ -79,8 +79,8 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	
 	** Decode the Str *from* URI standard form
 	** see http://fantom.org/sidewalk/topic/2357
-	private static Str decodeUri(Str str) {
-		if (!str.chars.contains('\\'))
+	private static Str? decodeUri(Str? str) {
+		if (str == null || !str.chars.contains('\\'))
 			return str
 		buf := StrBuf(str.size)
 		escaped := false
