@@ -127,15 +127,14 @@ internal const class EventCallerFactory : RouteResponseFactory {
 	
 	// decode the Str *from* URI standard form
 	// see http://fantom.org/sidewalk/topic/2357
-	private static Str decodeUri(Str uri) {
-		if (!uri.chars.contains('\\'))
-			return uri
-		buf := StrBuf(uri.size)
-		slash := false
-		uri.chars.each |char| {
-			if (char == '\\')
-				slash = true
-			else
+	private static Str? decodeUri(Str? str) {
+		if (str == null || !str.chars.contains('\\'))
+			return str
+		buf := StrBuf(str.size)
+		escaped := false
+		str.chars.each |char| {
+			escaped = (char == '\\' && !escaped)
+			if (!escaped)
 				buf.addChar(char)
 		}
 		return buf.toStr

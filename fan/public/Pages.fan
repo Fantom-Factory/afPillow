@@ -50,8 +50,7 @@ internal const class PagesImpl : Pages {
 	@Inject private const PageFinder			pageFinder
 			private const Type:PageMetaState	pageCache 
 			override const Type[] 				pageTypes
-
-	@Config { id="afPillow.cacheControl" }
+	@Config
 	@Inject private const Str					cacheControl
 
 
@@ -89,8 +88,9 @@ internal const class PagesImpl : Pages {
 		if (!iocEnv.isProd)
 			httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
 		
-		// set the default cache headers
-		httpRes.headers.cacheControl = cacheControl		
+		if (iocEnv.isProd)
+			// set the default cache headers
+			httpRes.headers.cacheControl = cacheControl		
 		
 		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 		pageStr	 := PageMetaImpl.push(pageMeta) |->Str| {
@@ -119,8 +119,9 @@ internal const class PagesImpl : Pages {
 				if (!iocEnv.isProd)
 					httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
 
-				// set the default cache headers
-				httpRes.headers.cacheControl = cacheControl		
+				if (iocEnv.isProd)
+					// set the default cache headers
+					httpRes.headers.cacheControl = cacheControl		
 
 				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 				componentRenderer.doRenderLoop(page)
