@@ -7,8 +7,18 @@ using afEfanXtra
 
 internal class TestHeaders : PillowTest {
 
-	Void testCacheHeaders() {
+	Void testCacheHeadersInDev() {
 		start(T_AppModule11#)
+
+		res := client.get(`/headerRender/ctx`)
+		verifyNull(res.headers.cacheControl)
+
+		res = client.get(`/headerEvent/eventPage`)
+		verifyNull(res.headers.cacheControl)
+	}
+
+	Void testCacheHeadersInProd() {
+		start(T_AppModule12#)
 
 		res := client.get(`/headerRender/ctx`)
 		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
