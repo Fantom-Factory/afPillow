@@ -22,18 +22,26 @@ const mixin Pages {
 	@Operator
 	abstract PageMeta get(Type pageType, Obj?[]? pageContext := null)
 
-	** Renders the given page, using the 'pageContext' as arguments to '@InitRender'. 
+	** Manually renders the given page using 'pageContext' as arguments to '@InitRender'. 
 	** 
-	** Note that 'pageContext' items converted their appropriate type via BedSheet's 'ValueEncoder' service.
-	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
+	** There should be no need to call this in normal Pillow usage.
+	** 
+	** Note that 'pageContext' Strs are converted to their appropriate type via BedSheet's 'ValueEncoder' service.
+	// Obj 'cos the method may be called manually (from ResponseProcessor)
 	abstract Text renderPage(Type pageType, Obj?[]? pageContext := null)
 
-	@NoDoc
+	** Manually renders the given 'pageMeta'. 
+	** 
+	** There should be no need to call this in normal Pillow usage.
 	abstract Text renderPageMeta(PageMeta pageMeta)
 
-	** Executes the page event in the given page context.
-	@NoDoc	// Obj 'cos the method may be called manually (from ResponseProcessor)
-	abstract Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext)
+	** Manually executes the page event in the given page context.
+	** 
+	** There should be no need to call this in normal Pillow usage.
+	** 
+	** Note this may be used to call *any* method on a page, not just ones annotated with the '@PageEvent' facet.
+	// Obj 'cos the method may be called manually (from ResponseProcessor)
+	abstract Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext)
 }
 
 internal const class PagesImpl : Pages {
@@ -99,14 +107,14 @@ internal const class PagesImpl : Pages {
 		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
 
-	override Obj callPageEvent(Type pageType, Obj?[] pageContext, Method eventMethod, Obj?[] eventContext) {
+	override Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext) {
 		if (!iocEnv.isProd) 
 			httpRes.headers["X-afPillow-calledEvent"] = eventMethod.qname
 
 		page 		:= efanXtra.component(pageType)
 		pageMeta	:= pageMeta(pageType, pageContext)
-		initArgs 	:= convertArgs(pageContext, pageMeta.initRender.paramTypes)
-		eventArgs 	:= convertArgs(eventContext, eventMethod.params.map { it.type })
+		initArgs 	:= convertArgs(pageContext  ?: Str#.emptyList, pageMeta.initRender.paramTypes)
+		eventArgs 	:= convertArgs(eventContext ?: Str#.emptyList, eventMethod.params.map { it.type })
 		
 		return PageMetaImpl.push(pageMeta) |->Obj| {
 			return componentRenderer.runInCtx(page) |->Obj| {
@@ -133,7 +141,7 @@ internal const class PagesImpl : Pages {
 	// ---- Private Methods --------------------------------------------------------------------------------------------
 	
 	** Convert the Str from Routes into real arg objs
-	private Obj[] convertArgs(Str?[] argsIn, Type[] convertTo) {
+	private Obj[] convertArgs(Obj?[] argsIn, Type[] convertTo) {
 		argsOut := argsIn.map |arg, i -> Obj?| {
 			// guard against having more args than the method has params! 
 			// Should never happen if the Routes do their job!

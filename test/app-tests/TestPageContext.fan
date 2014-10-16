@@ -8,6 +8,7 @@ internal class TestPageContext : PillowTest {
 	Void testBugFixEncodingPageCtx() {
 		// this was an encoding bug with the Bushmasters contact page
 		// see http://fantom.org/sidewalk/topic/2357
+
 		// this tests the ENCODING
 		url := pages[T_PageContext#].withContext(["venture:4x4"]).pageUrl
 		verifyEq(url, `/pageContextStr/venture\:4x4`)
@@ -19,6 +20,10 @@ internal class TestPageContext : PillowTest {
 
 		url = pages[T_PageContext#].withContext([null]).pageUrl
 		verifyEq(url, `/pageContextStr/`)
+
+		// Fantom Bug: see http://fantom.org/sidewalk/topic/2359
+//		url = pages[T_PageContext#].withContext([`foo/`]).pageUrl
+//		verifyEq(url, `foo/`)
 
 		// this tests the DECODING
 		res  := client.get(Uri.fromStr("/pageContextStr/em\\:ma"))
