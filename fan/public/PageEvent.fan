@@ -1,5 +1,8 @@
 
 ** Place on a page method to mark it as an Event.
+** 
+** If the method returns 'Void' or 'null' then the containing page is re-rendered.
+** Otherwise the returned object is treated as a BedSheet response object.
 facet class PageEvent { 
 	
 	** The name of the event. This appears in client URLs.

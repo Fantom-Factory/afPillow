@@ -15,16 +15,16 @@ mixin PageMeta {
 	** Returns the context used to initialise this page.
 	abstract Obj?[] pageContext()
 
-	** Returns a URI that can be used to render the given page. 
-	** The URI takes into account:
-	**  - Any welcome URI -> home page conversions
+	** Returns a client URL that can be used to render the given page. 
+	** The URL takes into account:
+	**  - Any welcome URL -> home page conversions
 	**  - The context used to render this page
 	**  - Any parent 'WebMods'
 	abstract Uri pageUrl()
 
 	** Returns the 'Content-Type' produced by this page.
 	** 
-	** Returns `PillowConfigIds#defaultContextType` if it can not be determined.
+	** Returns `PillowConfigIds#defaultContentType` if it can not be determined.
 	abstract MimeType contentType()
 	
 	** Returns 'true' if the page is a welcome page.
@@ -36,7 +36,7 @@ mixin PageMeta {
 	** Returns 'true' if BedSheet route generation has been disabled for this page.
 	abstract Bool disableRoutes()
 
-	** Returns a URI for a given event - use to create client side URIs to call the event.
+	** Returns a client URL for a given event - use to create client side URIs to call the event.
 	abstract Uri eventUrl(Str eventName, Obj?[]? eventContext := null)
 
 	** Returns a new 'PageMeta' with the given page context.
@@ -52,7 +52,7 @@ mixin PageMeta {
 	abstract Uri eventGlob(Method eventMethod)
 
 	@NoDoc
-	abstract internal InitRenderMethod initRender()	
+	abstract InitRenderMethod initRender()	
 }
 
 internal class PageMetaImpl : PageMeta {
@@ -107,8 +107,8 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	override Uri eventUrl(Str eventName, Obj?[]? eventContext := null) {
-		eventMethod(eventName)		
-		eventUrl 	:= pageUrl.plusSlash + `${eventName}`
+		eventMethod(eventName) // verify event exists
+		eventUrl := pageUrl.plusSlash + Uri.fromStr(encodeUri(eventName))
 		if (eventContext != null)
 			eventUrl = eventUrl.plusSlash + ctxToUri(eventContext)
 		return eventUrl		

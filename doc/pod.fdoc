@@ -20,7 +20,7 @@ Install '@{project.name}' with the Fantom Repository Manager ( [fanr]`docFanr::T
 
 To use in a [Fantom]`http://fantom.org/` project, add a dependency to 'build.fan':
 
-  depends = ["sys 1.0", ..., "@{pod.name} @{pod.version}+"]
+  depends = ["sys 1.0", ..., "@{pod.name} @{pod.version}"]
 
 
 
@@ -286,6 +286,26 @@ If a double extension is not used, or not know, then the default content type, a
 Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 
+Page Routes [#pageRoutes]
+*************************
+HTTP requests are routed to pages and events via standard BedSheet routes.
+All the Pillow routes are contributed under a single contribution called 'afPillow.pageRoutes'.
+So to disable Pillow routing, simply remove this contribution:
+
+  @Contribute { serviceType=Routes# }
+  static Void contributeRoutes(Configuration config) {
+      config.remove("afPillow.pageRoutes")
+  }
+
+Should you wish to override any page route, contribute your own 'Route' *before* the Pillow routes.
+That way your 'Route' is processed first.
+
+  @Contribute { serviceType=Routes# }
+  static Void contributeRoutes(Configuration config) {
+      config.add(Route(...)).before("afPillow.pageRoutes")
+  }
+
+
 
 Release Notes [#releaseNotes]
 *****************************
@@ -295,6 +315,7 @@ v1.0.22 [#v1.0.22]
  - New: '@PageContext' fields may also be optional.
  - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
  - Chg: Caching HTTP headers are only set in prod mode.
+ - Chg: Made 'Pages.renderXXXX()' methods public.
  - Bug: Page context parameters are now correctly URL encoded and decoded - see [URI Encoding / Decoding]`http://fantom.org/sidewalk/topic/2357`.
 
 v1.0.20 [#v1.0.20]

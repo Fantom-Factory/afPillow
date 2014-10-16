@@ -1,13 +1,12 @@
 using afPlastic
 using afEfanXtra
 
-internal const class InitRenderMethod {
-
-	const Type[]	paramTypes
-
-	const Bool[]	optionals
-	const Type		pageType
-	const Field[]?	initFields
+@NoDoc	// public 'cos Sitemap needs to know if a page has params 
+const class InitRenderMethod {
+			const Type		pageType
+			const Type[]	paramTypes	
+	private const Bool[]	optionals
+	private const Field[]?	initFields
 	
 	new make(ComponentMeta componentMeta, Type pageType) {
 		this.pageType	= pageType

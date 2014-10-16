@@ -19,7 +19,7 @@ Install `Pillow` with the Fantom Repository Manager ( [fanr](http://fantom.org/d
 
 To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan`:
 
-    depends = ["sys 1.0", ..., "afPillow 1.0+"]
+    depends = ["sys 1.0", ..., "afPillow 1.0"]
 
 ## Documentation 
 
@@ -139,6 +139,21 @@ const mixin Example : EfanComponent {
 
 Note that a Pillow Page may choose to have *either* an `@InitRender` method or `@PageContext` fields, not both. Also note that page context objects need to be immutable ('const' classes).
 
+Any `@InitRender` method parameter with a default value becomes an optional URL parameter. Example:
+
+```
+@Page
+const mixin Example : EfanComponent {
+    @InitRender
+    Void initRender(Int age := 69) { .. }
+}
+```
+
+Would respond to URLs of both:
+
+    /example
+    /example/42
+
 ## Page Events 
 
 Page events allow pages to respond to RESTful actions by mapping URIs to page event methods. Page event methods are called in the context of the page they are defined. Denote page events with the `@PageEvent` facet.
@@ -182,7 +197,7 @@ Event methods may return any [BedSheet](http://www.fantomfactory.org/pods/afBedS
 
 The [PageMeta](http://repo.status302.com/doc/afPillow/PageMeta.html) class holds information about the Pillow Page currently being rendered. Obviously, using `PageMeta` in a page class, returns information about itself! Which is quite handy.
 
-Arguably the most useful method is `pageUri()` which returns a URI that can be used, by a client, to render the page complete with the current page context. You can create new PageMeta instances with different page contexts by using the `withContext()` method. Using our example again:
+Arguably the most useful method is `pageUrl()` which returns a URI that can be used, by a client, to render the page complete with the current page context. You can create new PageMeta instances with different page contexts by using the `withContext()` method. Using our example again:
 
 ```
 @Page
@@ -211,11 +226,27 @@ Use the [Pages](http://repo.status302.com/doc/afPillow/Pages.html) service to cr
 
 Page template files should use a double extension in their name, for example,
 
-    IndexPage.xhtml.slim
+    IndexPage.html.slim
 
-The outer extension denotes the type of templating to use, [Slim](http://www.fantomfactory.org/pods/afSlim) in our example. The innter extension is used to find the [Content-Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) that is sent in the HTTP response header. In our example, the `Content-Type` would be set to `application/xhtml+xml`.
+The outer extension denotes the type of templating to use, [Slim](http://www.fantomfactory.org/pods/afSlim) in our example. The innter extension is used to find the [Content-Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) that is sent in the HTTP response header. In our example, the `Content-Type` would be set to `text/html`.
 
 If a double extension is not used, or not know, then the default content type, as defined by the config value, is used.
 
 Or you can use the [@Page](http://repo.status302.com/doc/afPillow/Page.html) facet to explicitly set the content type.
+
+## Page Routes 
+
+HTTP requests are routed to pages and events via standard BedSheet routes. All the Pillow routes are contributed under a single contribution called `afPillow.pageRoutes`. So to disable Pillow routing, simply remove this contribution:
+
+    @Contribute { serviceType=Routes# }
+    static Void contributeRoutes(Configuration config) {
+        config.remove("afPillow.pageRoutes")
+    }
+
+Should you wish to override any page route, contribute your own `Route` *before* the Pillow routes. That way your `Route` is processed first.
+
+    @Contribute { serviceType=Routes# }
+    static Void contributeRoutes(Configuration config) {
+        config.add(Route(...)).before("afPillow.pageRoutes")
+    }
 
