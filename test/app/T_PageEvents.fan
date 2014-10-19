@@ -26,6 +26,16 @@ const mixin T_PageEvents : EfanComponent {
 	Text ctxEvent(Str name, Int iq) {
 		return Text.fromPlain("Event Ctx: name=$name, iq=$iq")
 	}
+
+	@PageEvent { name="opt" }
+	Text optionalEvent(Str name := "not supplied") {
+		return Text.fromPlain("Optional Event Ctx: name=$name")
+	}
+
+	@PageEvent { name=""; httpMethod="POST" }
+	Text emptyEvent(Str name := "not supplied") {
+		return Text.fromPlain("Empty Event Ctx: name=$name")
+	}
 }
 
 

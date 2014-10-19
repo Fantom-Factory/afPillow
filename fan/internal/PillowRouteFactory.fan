@@ -23,7 +23,7 @@ internal const class PillowRouteFactory {
 			if (pageMeta.disableRoutes)
 				return
 			
-			serverUri	:= pageMeta.serverGlob
+			serverUri	:= pageMeta.pageGlob
 			initTypes	:= pageMeta.initRender.paramTypes
 			events		:= pageType.methods.findAll { it.hasFacet(PageEvent#) }
 			pageRoute	:= Route(serverUri, PageRenderFactory(pageMeta.initRender), pageMeta.httpMethod)
@@ -44,7 +44,7 @@ internal const class PillowRouteFactory {
 			}
 
 			pageMeta.eventMethods.each |eventMethod| {
-				pageEvent	:= (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])	// Stoopid F4 	
+				pageEvent	:= (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])	// Stoopid F4
 				eventUrl 	:= serverUri.plusSlash + pageMeta.eventGlob(eventMethod)
 				qname	 	:= "${pageType.qname}/${eventMethod.name}"
 				eventRoute	:= Route(eventUrl, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)

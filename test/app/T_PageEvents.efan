@@ -9,6 +9,10 @@
 
 	<a id="ctxEvent" href="<%= pageMeta.eventUrl("ctxEvent", ["Emma", 69]) %>">Event with Context</a>
 
+	<a id="optEvent" href="<%= pageMeta.eventUrl(#optionalEvent) %>">Event with Optional Context</a>
+
+	<a id="mtEvent" href="<%= pageMeta.eventUrl(#emptyEvent) %>">Empty Event Name</a>
+
 	<!-- create invalid link -->
 
 </body>

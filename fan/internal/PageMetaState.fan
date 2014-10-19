@@ -6,7 +6,7 @@ internal const class PageMetaState {
 	const Bool 		isWelcomePage
 	const Str		httpMethod
 	const Bool		disableRoutes
-	const Uri 		serverGlob
+	const Uri 		pageGlob
 	const Method[]	eventMethods
 
 	const InitRenderMethod	initRender

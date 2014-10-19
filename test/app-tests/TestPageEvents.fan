@@ -64,4 +64,25 @@ internal class TestPageEvents : PillowTest {
 		Element("#ctxName").verifyTextEq("Emma")
 		Element("#ctxIq").verifyTextEq("69")
 	}
+
+	Void testOptionalEvent() {
+		client.get(`/pageEvents`)
+		plainEvent := Link("#optEvent")
+		verifyEq(plainEvent.href, "/pageEvents/opt")
+
+		client.errOn4xx.enabled = false
+		res := plainEvent.click
+		verifyEq(res.asStr, "Optional Event Ctx: name=not supplied")
+	}
+
+	Void testEventWithEmptyName() {
+		client.get(`/pageEvents`)
+		plainEvent := Link("#mtEvent")
+		verifyEq(plainEvent.href, "/pageEvents")
+
+		client.errOn4xx.enabled = false
+		res := client.postForm(`/pageEvents`, [:])
+		echo(res.asStr)
+		verifyEq(res.asStr, "Empty Event Ctx: name=not supplied")
+	}
 }

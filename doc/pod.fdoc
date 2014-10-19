@@ -313,9 +313,11 @@ v1.0.22 [#v1.0.22]
 ------------------
  - New: '@InitRender' method parameters with default values become optional URL parameters.
  - New: '@PageContext' fields may also be optional.
+ - New: '@PageEvent' methods may also have optional and nullable URL parameters.
  - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
- - Chg: Caching HTTP headers are only set in prod mode.
+ - Chg: 'PageMeta.eventUrl(...)' may now take a Method or a Str as the event argument.  
  - Chg: Made 'Pages.renderXXXX()' methods public.
+ - Chg: Caching HTTP headers are only set in prod mode.
  - Bug: Page context parameters are now correctly URL encoded and decoded - see [URI Encoding / Decoding]`http://fantom.org/sidewalk/topic/2357`.
 
 v1.0.20 [#v1.0.20]

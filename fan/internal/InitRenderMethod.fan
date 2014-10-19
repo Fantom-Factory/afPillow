@@ -53,10 +53,18 @@ const class InitRenderMethod {
 		optionals.any { it }
 	}
 
-	Bool allParamsOptional() {
-		if (optionals.isEmpty)
-			throw ArgErr("Optionals is empty")
-		return optionals.all { it }
+	Uri paramGlob(Uri pageGlob) {
+		hasDefs := false
+		optionals.each {
+			if (!hasDefs)
+				if (it) {
+					// need to use `/**` syntax to match optional params
+					pageGlob = pageGlob.plusSlash.plusName("?**")
+					hasDefs = true
+				} else
+					pageGlob = pageGlob.plusSlash.plusName("*")
+		}
+		return pageGlob
 	}
 	
 	Bool argsMatch(Str?[] segments) {

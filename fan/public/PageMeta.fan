@@ -37,7 +37,11 @@ mixin PageMeta {
 	abstract Bool disableRoutes()
 
 	** Returns a client URL for a given event - use to create client side URIs to call the event.
-	abstract Uri eventUrl(Str eventName, Obj?[]? eventContext := null)
+	** 
+	** 'event' may be either a: 
+	**  - 'Str' - the name of the event
+	**  - 'Method' - the event method itself 
+	abstract Uri eventUrl(Obj event, Obj?[]? eventContext := null)
 
 	** Returns a new 'PageMeta' with the given page context.
 	abstract PageMeta withContext(Obj?[]? pageContext)
@@ -46,7 +50,7 @@ mixin PageMeta {
 	abstract Method[] eventMethods()
 
 	@NoDoc
-	abstract Uri serverGlob()
+	abstract Uri pageGlob()
 	
 	@NoDoc
 	abstract Uri eventGlob(Method eventMethod)
@@ -106,11 +110,33 @@ internal class PageMetaImpl : PageMeta {
 		pageState.disableRoutes
 	}
 	
-	override Uri eventUrl(Str eventName, Obj?[]? eventContext := null) {
-		eventMethod(eventName) // verify event exists
-		eventUrl := pageUrl.plusSlash + Uri.fromStr(encodeUri(eventName))
-		if (eventContext != null)
+	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {
+		eventName := Str.defVal
+		if (event isnot Str && event isnot Method)
+			throw ArgErr(ErrMsgs.eventTypeNotKnown(event))
+		
+		if (event is Method) {
+			method := (Method) event
+			if (!method.parent.fits(pageType) && !pageType.fits(method.parent))
+				throw ArgErr(ErrMsgs.eventMethodNotInPage(pageType, method))
+			eventName = method.name
+			pageEvent	:= (PageEvent?) Method#.method("facet").callOn(method, [PageEvent#, false])	// Stoopid F4 	
+			if (pageEvent?.name != null)
+				eventName = pageEvent.name
+		}
+
+		if (event is Str) {
+			eventName = event
+			eventMethod(eventName) // verify event exists
+		}
+		
+		eventUrl := pageUrl
+		if (!eventName.isEmpty)
+			eventUrl = eventUrl.plusSlash + Uri.fromStr(encodeUri(eventName))
+		
+		if (eventContext != null && !eventContext.isEmpty)
 			eventUrl = eventUrl.plusSlash + ctxToUri(eventContext)
+
 		return eventUrl		
 	}
 
@@ -126,8 +152,8 @@ internal class PageMetaImpl : PageMeta {
 		pageState.eventMethods
 	}
 
-	override Uri serverGlob() {
-		pageState.serverGlob
+	override Uri pageGlob() {
+		pageState.pageGlob
 	}
 	
 	override Uri eventGlob(Method eventMethod) {
@@ -136,9 +162,17 @@ internal class PageMetaImpl : PageMeta {
 			throw ArgErr("WTF: Method '${eventMethod.qname}' does not have a @${PageEvent#.name} facet.")
 		
 		eventStr	:= pageEvent.name ?: eventMethod.name
-		noOfParams 	:= eventMethod.params.size
-		noOfParams.times { eventStr += "/*" }
-		return eventStr.toUri
+		
+		hasDefs := false
+		eventMethod.params.each {
+			if (!hasDefs)
+				if (it.hasDefault) {
+					eventStr += "/?**"
+					hasDefs = true
+				} else
+					eventStr += "/*"
+		}
+		return eventStr.toUri.relTo(`/`)
 	}
 	
 	override InitRenderMethod initRender() {

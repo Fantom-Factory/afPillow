@@ -33,6 +33,14 @@ internal const class ErrMsgs {
 		"Could not find page of Type ${pageType.qname}"
 	}
 	
+	static Str eventTypeNotKnown(Obj event) {
+		"Event should be either a Str or a page Method - ${event}"
+	}
+
+	static Str eventMethodNotInPage(Type pageType, Method method) {
+		stripSys("Event method ${method.qname} does not belong to page ${pageType.qname}")
+	}
+	
 	static Str componentNotMixin(Type type) {
 		"EfanXtra component ${type.qname} is NOT a mixin"
 	}
@@ -51,5 +59,9 @@ internal const class ErrMsgs {
 
 	static Str pageCtxMustBeOptional(Field field) {
 		"Page context ${field.qname} must be optional because the page context before it was."
+	}
+	
+	static Str stripSys(Str str) {
+		str.replace("sys::", "")
 	}
 }
