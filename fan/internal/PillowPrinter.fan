@@ -41,7 +41,7 @@ internal const class PillowPrinter {
 			buf.add("  ${line}\n")
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventGlob := pageGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventGlob := pageMeta.eventGlob(eventMethod)
 				line = ("(${eventMethod.name})^").padl(maxName) + " : " + eventGlob
 				buf.add("  ${line}\n")
 			}
@@ -66,7 +66,7 @@ internal const class PillowPrinter {
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
 				// TODO: research why event in abstract class only appears once!?
 				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
-				eventGlob := pageGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventGlob := pageMeta.eventGlob(eventMethod)
 				map["^(${eventMethod.name})"] = pageEvent.httpMethod + " - " + eventGlob 			
 			}
 		}

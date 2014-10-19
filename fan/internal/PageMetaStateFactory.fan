@@ -25,8 +25,11 @@ internal class PageMetaStateFactory  {
 		this.pageType	= pageType
 		this.initRender	= InitRenderMethod(componentMeta, pageType)		
 		
+		// can't have optional page params AND event methods
 		if (initRender.hasOptionalParams && !eventMethods.isEmpty)
-			throw PillowErr(ErrMsgs.optionalParamsNotAllowedWithEvents)
+			// unless the event is called with NO page ctx AND has a different httpMethod
+			if (initRender.minNoOfArgs > 0)	// TODO: check http methods -> introduce an Event objs
+				throw PillowErr(ErrMsgs.optionalParamsNotAllowedWithEvents)
 		
 		return PageMetaState {
 			it.pageType			= this.pageType
