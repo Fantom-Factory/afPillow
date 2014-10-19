@@ -1,7 +1,6 @@
-using afIoc::Inject
-using afBedSheet::ValueEncoders
-using afBedSheet::BedSheetServer
-using afBedSheet::HttpRequest
+using afIoc
+using afBedSheet
+using afBeanUtils
 using web::WebUtil
 
 ** (Service) - Returns details about the Pillow page currently being rendered.
@@ -39,7 +38,7 @@ mixin PageMeta {
 	** Returns a client URL for a given event - use to create client side URIs to call the event.
 	** 
 	** 'event' may be either a: 
-	**  - 'Str' - the name of the event
+	**  - 'Str' - the name of the event (*not* the name of the method)
 	**  - 'Method' - the event method itself 
 	abstract Uri eventUrl(Obj event, Obj?[]? eventContext := null)
 
@@ -85,7 +84,7 @@ internal class PageMetaImpl : PageMeta {
 
 		// validate args
 		if (pageContext.size < initRender.minNoOfArgs || pageContext.size > initRender.paramTypes.size)
-			throw ArgErr(ErrMsgs.invalidNumberOfInitArgs(pageType, initRender.minNoOfArgs, pageContext))		
+			throw ArgErr(ErrMsgs.invalidNumberOfPageArgs(pageType, initRender.minNoOfArgs, initRender.paramTypes.size, pageContext))		
 
 		// append page context
 		if (!pageContext.isEmpty)
@@ -111,33 +110,37 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {
-		eventName := Str.defVal
+		eventMethod := (Method?) null
+
 		if (event isnot Str && event isnot Method)
 			throw ArgErr(ErrMsgs.eventTypeNotKnown(event))
 		
 		if (event is Method) {
-			method := (Method) event
-			if (!method.parent.fits(pageType) && !pageType.fits(method.parent))
-				throw ArgErr(ErrMsgs.eventMethodNotInPage(pageType, method))
-			eventName = method.name
-			pageEvent	:= (PageEvent?) Method#.method("facet").callOn(method, [PageEvent#, false])	// Stoopid F4 	
-			if (pageEvent?.name != null)
-				eventName = pageEvent.name
+			eventMethod = (Method) event
+			if (!eventMethod.parent.fits(pageType) && !pageType.fits(eventMethod.parent))
+				throw ArgErr(ErrMsgs.eventMethodNotInPage(pageType, eventMethod))
 		}
 
 		if (event is Str) {
-			eventName = event
-			eventMethod(eventName) // verify event exists
+			eventName := (Str) event
+			eventMethod 
+				= eventMethods.find { eventName.equalsIgnoreCase(pageEventName(it)) }
+				?: throw ArgNotFoundErr(ErrMsgs.eventNotFound(pageType, eventName), eventMethods.map { pageEventName(it) })
 		}
 		
+		// validate args
+		evtCtxSize  := eventContext?.size ?: 0
+		minNoOfArgs := eventMethod.params.reduce(0) |Int tot, param->Int| { param.hasDefault ? tot : tot++ }
+		if (evtCtxSize < minNoOfArgs || evtCtxSize > eventMethod.params.size)
+			throw ArgErr(ErrMsgs.invalidNumberOfEventArgs(eventMethod, minNoOfArgs, eventMethod.params.size, eventContext))		
+		
+		eventName := pageEventName(eventMethod)
 		eventUrl := pageUrl
 		if (!eventName.isEmpty)
 			eventUrl = eventUrl.plusSlash + Uri.fromStr(encodeUri(eventName))
-		
 		if (eventContext != null && !eventContext.isEmpty)
 			eventUrl = eventUrl.plusSlash + ctxToUri(eventContext)
-
-		return eventUrl		
+		return eventUrl
 	}
 
 	override PageMeta withContext(Obj?[]? pageContext) {
@@ -160,19 +163,26 @@ internal class PageMetaImpl : PageMeta {
 		pageEvent	:= (PageEvent?) Method#.method("facet").callOn(eventMethod, [PageEvent#, false])	// Stoopid F4 	
 		if (pageEvent == null)
 			throw ArgErr("WTF: Method '${eventMethod.qname}' does not have a @${PageEvent#.name} facet.")
+		eventName	:= pageEvent.name ?: eventMethod.name
 		
-		eventStr	:= pageEvent.name ?: eventMethod.name
-		
+		eventCtx := ""
 		hasDefs := false
 		eventMethod.params.each {
 			if (!hasDefs)
 				if (it.hasDefault) {
-					eventStr += "/?**"
+					eventCtx += "/?**"
 					hasDefs = true
 				} else
-					eventStr += "/*"
+					eventCtx += "/*"
 		}
-		return eventStr.toUri.relTo(`/`)
+
+		eventGlob := pageGlob
+		if (!eventName.isEmpty)
+			eventGlob = eventGlob.plusSlash + Uri.fromStr(encodeUri(eventName))
+		if (!eventCtx.isEmpty)
+			eventGlob = eventGlob.plusSlash + eventCtx.toUri.relTo(`/`)
+		
+		return eventGlob
 	}
 	
 	override InitRenderMethod initRender() {
@@ -187,13 +197,6 @@ internal class PageMetaImpl : PageMeta {
 		((Uri) context.reduce(``) |Uri url, obj -> Uri| { url.plusSlash.plus(encodeObj(obj)) }).relTo(`/`)
 	}
 	
-	private Method eventMethod(Str eventName) {
-		eventMethods.find |method->Bool| {
-			pageEvent := (PageEvent) Method#.method("facet").callOn(method, [PageEvent#])	// Stoopid F4 	
-			return eventName.equalsIgnoreCase(pageEvent.name ?: Str.defVal) || eventName.equalsIgnoreCase(method.name)  
-		} ?: throw PillowErr(ErrMsgs.eventNotFound(pageType, eventName))
-	}
-
 	internal static Obj? push(PageMeta pageMeta, |->Obj?| f) {
 		ThreadStack.pushAndRun("afPillow.renderingPageMeta", pageMeta, f)
 	}
@@ -221,6 +224,11 @@ internal class PageMetaImpl : PageMeta {
 			buf.addChar(char)
 		}
 		return buf.toStr
+	}
+	
+	private static Str pageEventName(Method method) {
+		pageEvent := (PageEvent) Method#.method("facet").callOn(method, [PageEvent#])	// Stoopid F4
+		return pageEvent.name ?: method.name
 	}
 }
 

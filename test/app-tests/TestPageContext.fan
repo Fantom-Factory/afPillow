@@ -59,7 +59,7 @@ internal class TestPageContext : PillowTest {
 
 	Void testPageContextSingleErr() {
 		res := client.get(`/pageContextStr/err`)
-		verifyEq(res.asStr, ErrMsgs.invalidNumberOfInitArgs(T_PageContext#, 1, ["Muhaha", `/blah`]))
+		verifyEq(res.asStr, ErrMsgs.invalidNumberOfPageArgs(T_PageContext#, 1, 1, ["Muhaha", `/blah`]))
 	}
 
 	Void testPageContextMulti() {
@@ -84,6 +84,6 @@ internal class TestPageContext : PillowTest {
 	Void testPageContextMultiErr() {
 		res := client.get(`/pageContextStrMulti/err/666`)
 		// Page afPillow::T_PageContextMulti requires 2 init parameters but 1 were given: [Muhaha]
-		verifyEq(res.asStr, ErrMsgs.invalidNumberOfInitArgs(T_PageContextMulti#, 2, ["Muhaha"]))
+		verifyEq(res.asStr, ErrMsgs.invalidNumberOfPageArgs(T_PageContextMulti#, 2, 2, ["Muhaha"]))
 	}
 }
