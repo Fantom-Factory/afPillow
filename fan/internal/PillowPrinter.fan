@@ -36,12 +36,12 @@ internal const class PillowPrinter {
 
 		pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
-			serverGlob	:= pageMeta.serverGlob
-			line := pageType.name.toDisplayName.padl(maxName) + " : " + serverGlob
+			pageGlob	:= pageMeta.pageGlob
+			line := pageType.name.toDisplayName.padl(maxName) + " : " + pageGlob
 			buf.add("  ${line}\n")
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventGlob := pageGlob.plusSlash + pageMeta.eventGlob(eventMethod)
 				line = ("(${eventMethod.name})^").padl(maxName) + " : " + eventGlob
 				buf.add("  ${line}\n")
 			}
@@ -59,14 +59,14 @@ internal const class PillowPrinter {
 			if (pageMeta.disableRoutes)
 				return
 
-			serverGlob	:= pageMeta.serverGlob
+			pageGlob	:= pageMeta.pageGlob
 			
-			map[pageType.name.toDisplayName] = pageMeta.httpMethod + " - " + serverGlob
+			map[pageType.name.toDisplayName] = pageMeta.httpMethod + " - " + pageGlob
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
 				// TODO: research why event in abstract class only appears once!?
 				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
-				eventGlob := serverGlob.plusSlash + pageMeta.eventGlob(eventMethod)
+				eventGlob := pageGlob.plusSlash + pageMeta.eventGlob(eventMethod)
 				map["^(${eventMethod.name})"] = pageEvent.httpMethod + " - " + eventGlob 			
 			}
 		}

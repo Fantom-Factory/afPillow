@@ -35,7 +35,7 @@ internal class PageMetaStateFactory  {
 			it.isWelcomePage	= this.isWelcomePage
 			it.httpMethod		= this.httpMethod
 			it.disableRoutes	= this.disableRoutes
-			it.serverGlob		= this.serverGlob
+			it.pageGlob			= this.pageGlob
 			it.eventMethods		= this.eventMethods
 			it.initRender		= this.initRender
 		}
@@ -70,20 +70,11 @@ internal class PageMetaStateFactory  {
 		return page.disableRoutes
 	}
 
-	Uri serverGlob() {
+	Uri pageGlob() {
 		clientUri 	:= pageUrlResolver.pageUrl(pageType)
 		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
-			clientUri = clientUri.parent
-		
-		if (!initRender.paramTypes.isEmpty) {
-			if (initRender.hasOptionalParams)
-				// need to use `/**` syntax to match optional params 
-				clientUri = clientUri.plusSlash + ((initRender.allParamsOptional ? "?" : "") + "**").toUri
-			else
-				// need to use `/*/*` syntax if page has events  
-				initRender.paramTypes.size.times { clientUri = clientUri.plusSlash + `*` }
-		}
-		
+			clientUri = clientUri.parent		
+		clientUri = initRender.paramGlob(clientUri)
 		return clientUri
 	}
 
