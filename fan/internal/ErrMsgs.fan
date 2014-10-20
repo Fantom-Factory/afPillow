@@ -43,10 +43,6 @@ internal const class ErrMsgs {
 		"Event should be either a Str or a page Method - ${event}"
 	}
 
-	static Str eventMethodNotInPage(Type pageType, Method method) {
-		stripSys("Event method ${method.qname} does not belong to page ${pageType.qname}")
-	}
-	
 	static Str componentNotMixin(Type type) {
 		"EfanXtra component ${type.qname} is NOT a mixin"
 	}
