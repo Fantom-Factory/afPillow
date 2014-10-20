@@ -117,8 +117,8 @@ internal class PageMetaImpl : PageMeta {
 		
 		if (event is Method) {
 			eventMethod = (Method) event
-			if (!eventMethod.parent.fits(pageType) && !pageType.fits(eventMethod.parent))
-				throw ArgErr(ErrMsgs.eventMethodNotInPage(pageType, eventMethod))
+			if (!eventMethods.contains(eventMethod))
+				throw ArgNotFoundErr(ErrMsgs.eventNotFound(pageType, eventMethod.name), eventMethods.map { pageEventName(it) })
 		}
 
 		if (event is Str) {
