@@ -207,8 +207,8 @@ internal class PageMetaImpl : PageMeta {
 
 	private Uri encodeObj(Obj? obj) {
 		if (obj == null)
-			return ``
-		str := valueEncoders.toClient(obj.typeof, obj) ?: Str.defVal
+			return ``	// null is usually represented by an empty string
+		str := valueEncoders.toClient(obj.typeof, obj)
 		return Uri.fromStr(encodeUri(str))
 	}
 
