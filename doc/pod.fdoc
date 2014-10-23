@@ -230,6 +230,14 @@ The default action, should the event method be 'Void' or return 'null', is to re
 
 Event methods may return any [BedSheet]`pod:afBedSheet` response object.
 
+It is standard practice to prefix event methods with the word 'on', so the 'loves()' method could also be written as:
+
+    @PageEvent
+    Void onLoves(Str meat) {
+        echo("${name} loves ${meat}!")
+    }
+
+But note that the event *name* (as used in the URL) is still 'love'.
 
 
 
