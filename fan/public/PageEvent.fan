@@ -7,7 +7,7 @@ facet class PageEvent {
 	
 	** The name of the event. This appears in client URLs.
 	** 
-	** Defaults to the event method name.
+	** Defaults to the event method name (minus any 'on' prefix).
 	const Str? name
 
 	** The HTTP method the page event should respond to.

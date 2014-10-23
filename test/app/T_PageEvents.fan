@@ -13,7 +13,7 @@ const mixin T_PageEvents : EfanComponent {
 	}
 	
 	@PageEvent
-	Text plainEvent() {
+	Text onPlainEvent() {
 		return Text.fromPlain("Plain Event Fired!")
 	}
 

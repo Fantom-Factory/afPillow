@@ -160,10 +160,7 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	override Uri eventGlob(Method eventMethod) {
-		pageEvent	:= (PageEvent?) Method#.method("facet").callOn(eventMethod, [PageEvent#, false])	// Stoopid F4 	
-		if (pageEvent == null)
-			throw ArgErr("WTF: Method '${eventMethod.qname}' does not have a @${PageEvent#.name} facet.")
-		eventName	:= pageEvent.name ?: eventMethod.name
+		eventName	:= pageEventName(eventMethod)
 		
 		eventCtx := ""
 		hasDefs := false
@@ -228,7 +225,12 @@ internal class PageMetaImpl : PageMeta {
 	
 	private static Str pageEventName(Method method) {
 		pageEvent := (PageEvent) Method#.method("facet").callOn(method, [PageEvent#])	// Stoopid F4
-		return pageEvent.name ?: method.name
+		if (pageEvent.name != null)
+			return pageEvent.name
+		eventName := method.name
+		if (eventName.startsWith("on"))
+			eventName = eventName[2..-1].decapitalize
+		return eventName
 	}
 }
 

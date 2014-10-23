@@ -1,7 +1,7 @@
 <html>
 <body>
 
-	<a id="plainEvent" href="<%= pageMeta.eventUrl("plainEvent") %>">Plain Event</a>
+	<a id="plainEvent" href="<%= pageMeta.eventUrl(#onPlainEvent) %>">Plain Event</a>
 
 	<a id="namedEvent" href="<%= pageMeta.eventUrl("dingdong") %>">Named Event</a>
 
