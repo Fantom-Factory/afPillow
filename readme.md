@@ -1,6 +1,6 @@
 ## Overview 
 
-`Pillow` is a web framework that maps HTTP request URIs to Pillow Pages, letting them react to RESTful events.
+`Pillow` is a web framework that maps HTTP request URLs to Pillow Pages, letting them react to RESTful events.
 
 `Pillow`...
 
