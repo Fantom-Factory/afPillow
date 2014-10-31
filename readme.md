@@ -193,6 +193,15 @@ Event methods are invoked before anything is rendered. The default action, shoul
 
 Event methods may return any [BedSheet](http://www.fantomfactory.org/pods/afBedSheet) response object.
 
+It is standard practice to prefix event methods with the word `on`, so the `loves()` method could also be written as:
+
+    @PageEvent
+    Void onLoves(Str meat) {
+        echo("${name} loves ${meat}!")
+    }
+
+But note that the event *name* (as used in the URL) is still `love`.
+
 ## Page Meta 
 
 The [PageMeta](http://repo.status302.com/doc/afPillow/PageMeta.html) class holds information about the Pillow Page currently being rendered. Obviously, using `PageMeta` in a page class, returns information about itself! Which is quite handy.
@@ -249,4 +258,39 @@ Should you wish to override any page route, contribute your own `Route` *before*
     static Void contributeRoutes(Configuration config) {
         config.add(Route(...)).before("afPillow.pageRoutes")
     }
+
+## 404 and Err Pages 
+
+Pillow pages may be used as BedSheet 404 Status and 500 Error pages. To do so, contribute a `MethodCall` func to `Pages.renderPage()`:
+
+To render `Error404Page` as a BedSheet 404 status page:
+
+```
+@Contribute { serviceType=HttpStatusResponses# }
+static Void contribute404Response(Configuration config) {
+    conf[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
+}
+```
+
+To render `Error500Page` as a BedSheet error page:
+
+```
+@Contribute { serviceType=ErrResponses# }
+static Void contributeErrResponses(Configuration config) {
+    config[Err#] = MethodCall(Pages#renderPage, [Error500Page#]).toImmutableFunc
+}
+```
+
+Note that you should also disable routing for those pages so they can't be accessed directly by a URL.
+
+```
+using afEfanXtra
+using afPillow
+
+@Page { disableRoutes=true }
+const mixin Error404Page : EfanComponent { ... }
+
+@Page { disableRoutes=true }
+const mixin Error500Page : EfanComponent { ... }
+```
 

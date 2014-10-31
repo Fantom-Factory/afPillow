@@ -1,5 +1,5 @@
 
-** Place on a page method to mark it as an Event.
+** Place on a method to mark it as a page event.
 ** 
 ** If the method returns 'Void' or 'null' then the containing page is re-rendered.
 ** Otherwise the returned object is treated as a BedSheet response object.

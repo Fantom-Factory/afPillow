@@ -1,6 +1,6 @@
 Overview [#overview]
 ********************
-'Pillow' is a web framework that maps HTTP request URIs to Pillow Pages, letting them react to RESTful events.
+'Pillow' is a web framework that maps HTTP request URLs to Pillow Pages, letting them react to RESTful events.
 
 'Pillow'...
  - Is a [BedSheet]`pod:afBedSheet` framework
@@ -294,6 +294,7 @@ If a double extension is not used, or not know, then the default content type, a
 Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 
+
 Page Routes [#pageRoutes]
 *************************
 HTTP requests are routed to pages and events via standard BedSheet routes.
@@ -312,6 +313,42 @@ That way your 'Route' is processed first.
   static Void contributeRoutes(Configuration config) {
       config.add(Route(...)).before("afPillow.pageRoutes")
   }
+
+
+404 and Err Pages [#errAnd404Pages]
+***********************************
+Pillow pages may be used as BedSheet 404 Status and 500 Error pages. To do so, contribute a 'MethodCall' func to 'Pages.renderPage()':
+
+To render 'Error404Page' as a BedSheet 404 status page:
+
+pre>
+@Contribute { serviceType=HttpStatusResponses# }
+static Void contribute404Response(Configuration config) {
+    conf[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
+}
+<pre
+
+To render 'Error500Page' as a BedSheet error page:
+
+pre>
+@Contribute { serviceType=ErrResponses# }
+static Void contributeErrResponses(Configuration config) {
+    config[Err#] = MethodCall(Pages#renderPage, [Error500Page#]).toImmutableFunc
+}
+<pre
+
+Note that you should also disable routing for those pages so they can't be accessed directly by a URL.
+
+pre>
+using afEfanXtra
+using afPillow
+
+@Page { disableRoutes=true }
+const mixin Error404Page : EfanComponent { ... }
+
+@Page { disableRoutes=true }
+const mixin Error500Page : EfanComponent { ... }
+<pre
 
 
 
