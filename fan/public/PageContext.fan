@@ -1,5 +1,5 @@
 
-** Place on page field to mark it as a page context value.
+** Place on a field to mark it as a page context value.
 facet class PageContext {
 	
 	** Declares the page context to be optional. Optional parameter types must be nullable. 

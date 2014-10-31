@@ -5,7 +5,7 @@ internal class TestPageEvents : PillowTest {
 	Void testPageEvent() {
 		client.get(`/pageEvents`)
 		plainEvent := Link("#plainEvent")
-		verifyEq(plainEvent.href, "/pageEvents/plainEvent")
+		verifyEq(plainEvent.href, `/pageEvents/plainEvent`)
 
 		res := plainEvent.click
 		verifyEq(res.asStr, "Plain Event Fired!")
@@ -14,7 +14,7 @@ internal class TestPageEvents : PillowTest {
 	Void testPageEventWithFacetName() {
 		client.get(`/pageEvents`)
 		plainEvent := Link("#namedEvent")
-		verifyEq(plainEvent.href, "/pageEvents/dingdong")
+		verifyEq(plainEvent.href, `/pageEvents/dingdong`)
 
 		res := plainEvent.click
 		verifyEq(res.asStr, "Ding Dong Event Fired!")
@@ -23,7 +23,7 @@ internal class TestPageEvents : PillowTest {
 	Void testVoidReturnValueRendersSamePage() {
 		client.get(`/pageEvents`)
 		plainEvent := Link("#defaultReturnValue")
-		verifyEq(plainEvent.href, "/pageEvents/defaultReturnValue")
+		verifyEq(plainEvent.href, `/pageEvents/defaultReturnValue`)
 
 		res := plainEvent.click
 		verifyEq(res.headers["X-afPillow-renderedPage"], T_PageEvents#.qname)
@@ -32,7 +32,7 @@ internal class TestPageEvents : PillowTest {
 	Void testPageEventWithCtx() {
 		client.get(`/pageEvents`)
 		event := Link("#ctxEvent")
-		verifyEq(event.href, "/pageEvents/ctxEvent/Emma/69")
+		verifyEq(event.href, `/pageEvents/ctxEvent/Emma/69`)
 
 		res := event.click
 		verifyEq(res.asStr, "Event Ctx: name=Emma, iq=69")
@@ -41,7 +41,7 @@ internal class TestPageEvents : PillowTest {
 	Void testPageCtxEvent() {
 		client.get(`/pageCtxEvents/Debs/2`)
 		event := Link("#plainEvent")
-		verifyEq(event.href, "/pageCtxEvents/Debs/2/plainEvent")
+		verifyEq(event.href, `/pageCtxEvents/Debs/2/plainEvent`)
 
 		res := event.click.asStr.splitLines
 		verifyEq(res[0], "Plain Event Fired!")
@@ -51,7 +51,7 @@ internal class TestPageEvents : PillowTest {
 	Void testPageCtxEventWithCtx() {
 		client.get(`/pageCtxEvents/Debs/2`)
 		event := Link("#ctxEvent")
-		verifyEq(event.href, "/pageCtxEvents/Debs/2/ctxEvent/Emma/69")
+		verifyEq(event.href, `/pageCtxEvents/Debs/2/ctxEvent/Emma/69`)
 
 		res := event.click.asStr.splitLines
 		verifyEq(res[0], "Page Ctx: name=Debs, iq=2")
@@ -68,7 +68,7 @@ internal class TestPageEvents : PillowTest {
 	Void testOptionalEvent() {
 		client.get(`/pageEvents`)
 		plainEvent := Link("#optEvent")
-		verifyEq(plainEvent.href, "/pageEvents/opt")
+		verifyEq(plainEvent.href, `/pageEvents/opt`)
 
 		client.errOn4xx.enabled = false
 		res := plainEvent.click
@@ -78,7 +78,7 @@ internal class TestPageEvents : PillowTest {
 	Void testEventWithEmptyName() {
 		client.get(`/pageEvents`)
 		plainEvent := Link("#mtEvent")
-		verifyEq(plainEvent.href, "/pageEvents")
+		verifyEq(plainEvent.href, `/pageEvents`)
 
 		client.errOn4xx.enabled = false
 		res := client.postForm(`/pageEvents`, [:])

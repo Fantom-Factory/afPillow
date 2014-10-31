@@ -51,7 +51,10 @@ internal const class PillowRouteFactory {
 				routes.add(eventRoute)
 			}
 		}
-		return normalRoutes.addAll(welcomeRoutes)
+		
+		// welcomeRoutes, i.e. /poo/ and /poo/index need to come before normalRoutes, 'cos normalRoutes may have a
+		// capture all pageContext like /poo/* meaning the welcomeRoute would never get a look in!
+		return welcomeRoutes.addAll(normalRoutes)
 	}	
 }
 
