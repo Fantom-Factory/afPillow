@@ -165,7 +165,6 @@ const mixin Example : EfanComponent {
 <pre
 
 Note that a Pillow Page may choose to have *either* an '@InitRender' method or '@PageContext' fields, not both.
-Also note that page context objects need to be immutable ('const' classes).
 
 Any '@InitRender' method parameter with a default value becomes an optional URL parameter. Example:
 
@@ -179,7 +178,7 @@ const mixin Example : EfanComponent {
 }
 <pre
 
-Would respond to URLs of both:
+Would respond to both of the following URLs:
 
   /example
   /example/42
