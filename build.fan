@@ -10,7 +10,7 @@ class Build : BuildPod {
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
-			"tags"			: "templating, web",
+			"tags"			: "web",
 			"repo.private"	: "true"
 		]
 
