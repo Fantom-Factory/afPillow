@@ -10,16 +10,16 @@ internal class TestEfanXtraIntegration : PillowTest {
 
 	Void testPageMappingBasic() {
 		res := client.get(`/basic`)
-		verifyEq(res.asStr, "Basic Mapping Okay")
+		verifyEq(res.body.str, "Basic Mapping Okay")
 	}
 
 	Void testPageMappingBasicNested() {
 		res := client.get(`/basic/nested`)
-		verifyEq(res.asStr, "Nested Mapping Okay")
+		verifyEq(res.body.str, "Nested Mapping Okay")
 	}
 
 	Void testPageMappingFacet() {
 		res := client.get(`/facetRemapped`)
-		verifyEq(res.asStr, "Facet Mapping Okay")
+		verifyEq(res.body.str, "Facet Mapping Okay")
 	}
 }

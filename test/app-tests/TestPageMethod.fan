@@ -8,7 +8,7 @@ internal class TestMethod : PillowTest {
 		verifyEq(res.statusCode, 404)
 
 		res = client.postStr(`/pageMethod`, "wotever")
-		verifyEq(res.asStr, "POST Rendered")
+		verifyEq(res.body.str, "POST Rendered")
 	}
 
 	Void testPageEventMethod() {
@@ -17,7 +17,7 @@ internal class TestMethod : PillowTest {
 		verifyEq(res.statusCode, 404)
 
 		res = client.postStr(`/pageMethod/getsome`, "wotever")
-		verifyEq(res.asStr, "POST Event Rendered")
+		verifyEq(res.body.str, "POST Event Rendered")
 	}
 
 }

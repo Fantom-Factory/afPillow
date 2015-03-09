@@ -8,22 +8,22 @@ internal class TestWelcomePage : PillowTest {
 	Void testWelcomePageOffPageUrl() {
 		start(T_AppModule07#)
 		res := client.get(`/welcome`)
-		verifyEq(res.asStr, "WelcomePage ClientUri: /welcome")
+		verifyEq(res.body.str, "WelcomePage ClientUri: /welcome")
 	}
 
 	Void testWelcomePageOnPageUrl() {
 		start(T_AppModule08#)
 		res := client.get(`/`)
-		verifyEq(res.asStr, "WelcomePage ClientUri: /")
+		verifyEq(res.body.str, "WelcomePage ClientUri: /")
 	}
 
 	Void testWelcomePageOnWithContext() {
 		start(T_AppModule09#)
 		res := client.get(`/dude`)
-		verifyEq(res.asStr, "pageUrl:/dude ctx:dude")
+		verifyEq(res.body.str, "pageUrl:/dude ctx:dude")
 
 		res = client.get(`/welcome2`)
-		verifyEq(res.asStr, "pageUrl:/welcome2 ctx:welcome2")
+		verifyEq(res.body.str, "pageUrl:/welcome2 ctx:welcome2")
 
 		// I have no say over the page ordering in the resulting Routes - I wanted the XX pillow page to appear before
 		// welcome2 to make a failing test. The idea is that welcome pages with ctx (e.g. `/*`) are after normal page 
@@ -36,10 +36,10 @@ internal class TestWelcomePage : PillowTest {
 		// events are less likely to conflict because they usually have a ctx 
 		start(T_AppModule10#)
 		res := client.get(`/xxx/vicky`)
-		verifyEq(res.asStr, "xxx pageUrl:/ ctx:vicky")
+		verifyEq(res.body.str, "xxx pageUrl:/ ctx:vicky")
 
 		res = client.get(`/xxx`)
-		verifyEq(res.asStr, "XXX")
+		verifyEq(res.body.str, "XXX")
 	}
 
 	override Void setup() {	}

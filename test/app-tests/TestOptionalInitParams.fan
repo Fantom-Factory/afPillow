@@ -59,7 +59,7 @@ internal class TestOptionalInitParams : PillowTest {
 		// ... Nullable ...
 		res := client.get(`/initParamNullable/`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "null")
+		verifyEq(res.body.str, "null")
 
 		res = client.get(`/initParamNullable`)
 		verifyEq(res.statusCode, 404)
@@ -67,11 +67,11 @@ internal class TestOptionalInitParams : PillowTest {
 		// ... vs Optional ...
 		res = client.get(`/initParamOptional/`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "null")
+		verifyEq(res.body.str, "null")
 
 		res = client.get(`/initParamOptional`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "null")
+		verifyEq(res.body.str, "null")
 	}
 
 	Void testNullableVsOptionalPageCtx() {
@@ -80,7 +80,7 @@ internal class TestOptionalInitParams : PillowTest {
 		// ... Nullable ...
 		res := client.get(`/pageCtxNullable/`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "null")
+		verifyEq(res.body.str, "null")
 
 		res = client.get(`/pageCtxNullable`)
 		verifyEq(res.statusCode, 404)
@@ -88,10 +88,10 @@ internal class TestOptionalInitParams : PillowTest {
 		// ... vs Optional ...
 		res = client.get(`/pageCtxOptional/`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "null")
+		verifyEq(res.body.str, "null")
 
 		res = client.get(`/pageCtxOptional`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "null")
+		verifyEq(res.body.str, "null")
 	}
 }
