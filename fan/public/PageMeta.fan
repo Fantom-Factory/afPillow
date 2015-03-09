@@ -23,7 +23,7 @@ mixin PageMeta {
 
 	** Returns the 'Content-Type' produced by this page.
 	** 
-	** Returns `PillowConfigIds#defaultContentType` if it can not be determined.
+	** Returns `PillowConfigIds.defaultContentType` if it can not be determined.
 	abstract MimeType contentType()
 	
 	** Returns 'true' if the page is a welcome page.
