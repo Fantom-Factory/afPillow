@@ -36,8 +36,8 @@ class Build : BuildPod {
 			"afEfanXtra   1.1.18 - 1.1",
 
 			// ---- Test -----------------------
-			"afBounce     1.0.18 - 1.0",
-			"afButter     1.0.4  - 1.0"
+			"afBounce     1.0.20 - 1.0",
+			"afButter     1.1.2  - 1.1"
 		]
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]

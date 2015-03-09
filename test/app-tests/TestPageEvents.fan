@@ -8,7 +8,7 @@ internal class TestPageEvents : PillowTest {
 		verifyEq(plainEvent.href, `/pageEvents/plainEvent`)
 
 		res := plainEvent.click
-		verifyEq(res.asStr, "Plain Event Fired!")
+		verifyEq(res.body.str, "Plain Event Fired!")
 	}
 
 	Void testPageEventWithFacetName() {
@@ -17,7 +17,7 @@ internal class TestPageEvents : PillowTest {
 		verifyEq(plainEvent.href, `/pageEvents/dingdong`)
 
 		res := plainEvent.click
-		verifyEq(res.asStr, "Ding Dong Event Fired!")
+		verifyEq(res.body.str, "Ding Dong Event Fired!")
 	}
 
 	Void testVoidReturnValueRendersSamePage() {
@@ -35,7 +35,7 @@ internal class TestPageEvents : PillowTest {
 		verifyEq(event.href, `/pageEvents/ctxEvent/Emma/69`)
 
 		res := event.click
-		verifyEq(res.asStr, "Event Ctx: name=Emma, iq=69")
+		verifyEq(res.body.str, "Event Ctx: name=Emma, iq=69")
 	}
 
 	Void testPageCtxEvent() {
@@ -43,7 +43,7 @@ internal class TestPageEvents : PillowTest {
 		event := Link("#plainEvent")
 		verifyEq(event.href, `/pageCtxEvents/Debs/2/plainEvent`)
 
-		res := event.click.asStr.splitLines
+		res := event.click.body.str.splitLines
 		verifyEq(res[0], "Plain Event Fired!")
 		verifyEq(res[1], "Page Ctx: name=Debs, iq=2")
 	}
@@ -53,7 +53,7 @@ internal class TestPageEvents : PillowTest {
 		event := Link("#ctxEvent")
 		verifyEq(event.href, `/pageCtxEvents/Debs/2/ctxEvent/Emma/69`)
 
-		res := event.click.asStr.splitLines
+		res := event.click.body.str.splitLines
 		verifyEq(res[0], "Page Ctx: name=Debs, iq=2")
 		verifyEq(res[1], "Event Ctx: name=Emma, iq=69")
 	}
@@ -72,7 +72,7 @@ internal class TestPageEvents : PillowTest {
 
 		client.errOn4xx.enabled = false
 		res := plainEvent.click
-		verifyEq(res.asStr, "Optional Event Ctx: name=not supplied")
+		verifyEq(res.body.str, "Optional Event Ctx: name=not supplied")
 	}
 
 	Void testEventWithEmptyName() {
@@ -82,7 +82,6 @@ internal class TestPageEvents : PillowTest {
 
 		client.errOn4xx.enabled = false
 		res := client.postForm(`/pageEvents`, [:])
-		echo(res.asStr)
-		verifyEq(res.asStr, "Empty Event Ctx: name=not supplied")
+		verifyEq(res.body.str, "Empty Event Ctx: name=not supplied")
 	}
 }

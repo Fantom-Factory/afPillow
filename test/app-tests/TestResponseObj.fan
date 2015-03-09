@@ -5,7 +5,7 @@ internal class TestResponseObj : PillowTest {
 	
 	Void testResponseObj() {
 		res := client.get(`/responseObj`)
-		verifyEq(res.asStr, "WelcomePage ClientUri: /welcome")
+		verifyEq(res.body.str, "WelcomePage ClientUri: /welcome")
 	}
 	
 }

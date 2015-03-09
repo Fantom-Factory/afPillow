@@ -5,7 +5,7 @@ internal class TestInitSigRoute : PillowTest {
 	Void testCorrectRoutes() {
 		res := client.get(`/Init/Sig/Route/69/Dude!`)
 		verifyEq(res.statusCode, 200)
-		verifyEq(res.asStr, "Int X := 69; Str Y := Dude!")
+		verifyEq(res.body.str, "Int X := 69; Str Y := Dude!")
 	}
 
 	Void testRoutingMismatch1() {
@@ -28,6 +28,6 @@ internal class TestInitSigRoute : PillowTest {
 	
 	Void testInitRenderReturnValue() {
 		res := client.get(`/Initreturnvalue`)
-		verifyEq(res.asStr, "Train trouble.")
+		verifyEq(res.body.str, "Train trouble.")
 	}
 }
