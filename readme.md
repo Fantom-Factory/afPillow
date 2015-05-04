@@ -115,7 +115,7 @@ Or you can use the [@Page](http://repo.status302.com/doc/afPillow/Page.html) fac
 
 `Pillow` supports the routing of welcome pages, also known as directory pages, through the [WelcomePageStrategy](http://repo.status302.com/doc/afPillow/WelcomePageStrategy.html).
 
-When switched on, whenever a request is made for a directory URI (one that ends with a /slash/) then `Pillow` will render the directory's [welcome page](http://repo.status302.com/doc/afPillow/PillowConfigIds#welcomePageName.html), which defaults to a page named `Index`. Examples:
+When switched on, whenever a request is made for a directory URL (one that ends with a /slash/) then `Pillow` will render the directory's [welcome page](http://repo.status302.com/doc/afPillow/PillowConfigIds#welcomePageName.html), which defaults to a page named `Index`. Examples:
 
     `/`        --> Index.fan
     `/admin/`  --> AdminIndex.fan
@@ -161,7 +161,7 @@ Would respond to both of the following URLs:
 
 ## Page Events
 
-Page events allow pages to respond to RESTful actions by mapping URIs to page event methods. Page event methods are called in the context of the page they are defined. Denote page events with the `@PageEvent` facet.
+Page events allow pages to respond to RESTful actions by mapping URLs to page event methods. Page event methods are called in the context of the page they are defined. Denote page events with the `@PageEvent` facet.
 
 Lets change our example so that the page context is a `Str` and introduce an event called `loves`:
 
@@ -179,11 +179,11 @@ const mixin Example : EfanComponent {
 }
 ```
 
-Event URIs follow the pattern:
+Event URLs follow the pattern:
 
     <page name> / <page context(s)> / <event name> / <event context(s)>
 
-So we can call the `loves` event with the URI `http://localhost:8069/example/Emma/loves/sausage`, which is broken down as:
+So we can call the `loves` event with the URL `http://localhost:8069/example/Emma/loves/sausage`, which is broken down as:
 
 ```
 example --> 'Example#' page type
@@ -192,7 +192,7 @@ loves   --> 'loves()' method
 sausage --> 'meat' argument
 ```
 
-Use `PageMeta.eventUri(name, context)` to generate event URIs that can be used in templates.
+Use `PageMeta.eventUrl(name, context)` to generate event URLs that can be used in templates.
 
 Event methods are invoked before anything is rendered. The default action, should the event method be `Void` or return `null`, is to re-render the containing page.
 
@@ -207,11 +207,45 @@ It is standard practice to prefix event methods with the word `on`, so the `love
 
 But note that the event *name* (as used in the URL) is still `love`.
 
+### RESTful Services
+
+Pillow can be used to easily create RESTful services. Simply use Page events to service the request and set the `@PageEvent.httpMethod` attribute to the required HTTP method:
+
+```
+using afIoc
+using afBedSheet
+using afPillow
+
+@Page
+const mixin RestService {
+    @Inject abstract HttpRequest  httpRequest
+    @Inject abstract HttpResponse httpResponse
+
+    new make(|This| in) { in(this) }
+
+    @PageEvent { httpMethod="PUT" }
+    Text onCreate(Int id) {
+        // 'id' is supplied as part of the URL
+
+        // use the request body to get submitted data as a JSON object
+        json := httpRequest.body.jsonObj
+
+        ...
+
+        // return a different status code, e.g. 201 - Created
+        httpResponse.statusCode = 201
+
+        // return JSON objects to the client
+        return Text.fromJsonObj(["response":"OK"])
+    }
+}
+```
+
 ## Page Meta
 
 The [PageMeta](http://repo.status302.com/doc/afPillow/PageMeta.html) class holds information about the Pillow Page currently being rendered. Obviously, using `PageMeta` in a page class, returns information about itself! Which is quite handy.
 
-Arguably the most useful method is `pageUrl()` which returns a URI that can be used, by a client, to render the page complete with the current page context. You can create new PageMeta instances with different page contexts by using the `withContext()` method. Using our example again:
+Arguably the most useful method is `pageUrl()` which returns a URL that can be used, by a client, to render the page complete with the current page context. You can create new `PageMeta` instances with different page contexts by using the `withContext()` method. Using our example again:
 
 ```
 @Page
