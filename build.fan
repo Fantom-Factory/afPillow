@@ -32,7 +32,7 @@ class Build : BuildPod {
 			"afIocEnv     1.0.14 - 1.0",
 
 			// ---- Web ------------------------
-			"afBedSheet   1.4.0  - 1.4",
+			"afBedSheet   1.4.10 - 1.4",
 			"afEfanXtra   1.1.18 - 1.1",
 
 			// ---- Test -----------------------

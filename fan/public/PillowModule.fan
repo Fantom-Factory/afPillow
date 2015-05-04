@@ -45,7 +45,7 @@ const class PillowModule {
 	@Contribute { serviceType=Routes# }
 	static Void contributeRoutes(Configuration config) {
 		routeFactory := (PillowRouteFactory) config.autobuild(PillowRouteFactory#)		
-		config.set("afPillow.pageRoutes", routeFactory.pillowPageRoutes).after("afBedSheet.fileHandler")
+		config["afPillow.pageRoutes"] = routeFactory.pillowPageRoutes
 	}
 
 	@Contribute { serviceType=PageUrlResolver# } 
