@@ -75,7 +75,7 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 	
 	override Str toStr() {
-		"Pillow Page ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
+		"Pillow Page  ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
 	}
 }
 

@@ -4,6 +4,7 @@ using afIocConfig
 using afEfanXtra
 using afBedSheet
 using afConcurrent
+using afEfan
 
 ** (Service) - Methods for discovering Pillow pages and returning `PageMeta` instances.
 const mixin Pages {
@@ -24,8 +25,6 @@ const mixin Pages {
 
 	** Manually renders the given page using 'pageContext' as arguments to '@InitRender'. 
 	** 
-	** There should be no need to call this in normal Pillow usage.
-	** 
 	** Note that 'pageContext' Strs are converted to their appropriate type via BedSheet's 'ValueEncoder' service.
 	// Obj 'cos the method may be called manually (from ResponseProcessor)
 	abstract Text renderPage(Type pageType, Obj?[]? pageContext := null)
@@ -37,11 +36,12 @@ const mixin Pages {
 
 	** Manually executes the page event in the given page context.
 	** 
-	** There should be no need to call this in normal Pillow usage.
-	** 
 	** Note this may be used to call *any* method on a page, not just ones annotated with the '@PageEvent' facet.
 	// Obj 'cos the method may be called manually (from ResponseProcessor)
 	abstract Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext)
+	
+	** Returns the currently rendering page. Or 'null' if no page is being rendered.
+	abstract EfanComponent? getRenderingPage()
 }
 
 internal const class PagesImpl : Pages {
@@ -93,20 +93,39 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Text renderPageMeta(PageMeta pageMeta) {
-		if (!iocEnv.isProd)
-			httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+		page 	 := efanXtra.component(pageMeta.pageType)
+		initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 		
-		if (iocEnv.isProd)
-			// set the default cache headers
-			httpRes.headers.cacheControl = cacheControl		
-		
-		pageArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 		pageStr	 := PageMetaImpl.push(pageMeta) |->Str| {
-			return efanXtra.component(pageMeta.pageType).render(pageArgs)
+			if (!iocEnv.isProd)
+				httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+			
+			if (iocEnv.isProd)
+				// set the default cache headers
+				httpRes.headers.cacheControl = cacheControl		
+		
+			return componentRenderer.render(page, initArgs)
+//			return efanXtra.component(pageMeta.pageType).render(initArgs)
 		}
 		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
 
+//	Str render(EfanComponent component, Obj?[]? initArgs := null, |->|? bodyFunc := null) {
+//		rendered := EfanRenderer.renderTemplate(component.templateMeta, component, renderBuf, bodyFunc) |->Obj?| {
+//			componentCtxMgr.createNew
+//			
+//			initRet := componentMeta.callMethod(InitRender#, component, initArgs ?: Obj#.emptyList)
+//
+//			// if initRender() returns false, cut rendering short
+//			return (initRet == false) ? false : doRenderLoop(component) 
+//		}
+//
+//		// if the rendering stack is empty, return the result of rendering
+//		if (rendered == true && (EfanRenderingStack.peek(false) == null)) 
+//			return renderResult
+//		return Str.defVal
+//	}
+	
 	override Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext) {
 		if (!iocEnv.isProd) 
 			httpRes.headers["X-afPillow-calledEvent"] = eventMethod.qname
@@ -124,6 +143,9 @@ internal const class PagesImpl : Pages {
 				eventValue := eventMethod.callOn(page, eventArgs)
 				if (eventValue != null)
 					return eventValue
+
+				// re-render the page without re-calling @InitRender so event changes get picked up 
+				
 				if (!iocEnv.isProd)
 					httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
 
@@ -131,10 +153,17 @@ internal const class PagesImpl : Pages {
 					// set the default cache headers
 					httpRes.headers.cacheControl = cacheControl		
 
-				pageArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 				componentRenderer.doRenderLoop(page)
 				return Text.fromContentType(componentRenderer.renderResult, pageMeta.contentType)
 			}
+		}
+	}
+	
+	override EfanComponent? getRenderingPage() {
+		Efan.renderingStack.eachrWhile |element| {
+			element.templateInstance is EfanComponent && element.templateMeta.type.hasFacet(Page#)
+				? element.templateInstance
+				: null
 		}
 	}
 	

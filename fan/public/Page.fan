@@ -39,8 +39,11 @@ facet class Page {
 	** Defaults to 'GET'
 	const Str httpMethod	:= "GET"
 	
+	@NoDoc @Deprecated { msg="Use 'disableRouting' instead" }
+	const Bool disableRoutes	:= false
+
 	** If 'true' then Page Routes, including events and welcome page redirects, are *not* added to BedSheet.
 	** 
 	** Defaults to 'false'
-	const Bool disableRoutes	:= false
+	const Bool disableRouting	:= false
 }

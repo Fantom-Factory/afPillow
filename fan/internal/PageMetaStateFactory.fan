@@ -70,7 +70,7 @@ internal class PageMetaStateFactory  {
 	
 	Bool disableRoutes() {
 		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
-		return page.disableRoutes
+		return page.disableRouting == false ? page.disableRoutes : page.disableRouting 
 	}
 
 	Uri pageGlob() {
