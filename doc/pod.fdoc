@@ -387,7 +387,6 @@ Release Notes [#releaseNotes]
 *****************************
 v1.0.24 [#v1.0.24]
 ==================
- - New: Added 'Pages.getRenderingPage()'
  - Chg: Deprecated 'Page.disableRoutes' in favour of 'Page.disableRouting'
 
 v1.0.22 [#v1.0.22]

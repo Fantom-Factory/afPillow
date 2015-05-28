@@ -4,7 +4,6 @@ using afIocConfig
 using afEfanXtra
 using afBedSheet
 using afConcurrent
-using afEfan
 
 ** (Service) - Methods for discovering Pillow pages and returning `PageMeta` instances.
 const mixin Pages {
