@@ -20,7 +20,7 @@ internal const class PillowRouteFactory {
 
 		pages.pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
-			if (pageMeta.disableRoutes)
+			if (pageMeta.routesDisabled)
 				return
 			
 			serverUri	:= pageMeta.pageGlob

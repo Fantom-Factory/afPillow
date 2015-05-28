@@ -5,7 +5,7 @@ internal const class PageMetaState {
 	const MimeType 	contentType
 	const Bool 		isWelcomePage
 	const Str		httpMethod
-	const Bool		disableRoutes
+	const Bool		routesDisabled
 	const Uri 		pageGlob
 	const Method[]	eventMethods
 

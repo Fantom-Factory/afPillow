@@ -56,7 +56,7 @@ internal const class PillowPrinter {
 		map := [:] { ordered=true }
 		pages.pageTypes.rw.sort.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
-			if (pageMeta.disableRoutes)
+			if (pageMeta.routesDisabled)
 				return
 
 			pageGlob	:= pageMeta.pageGlob
