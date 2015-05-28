@@ -67,7 +67,7 @@ internal const class PillowPrinter {
 				// TODO: research why event in abstract class only appears once!?
 				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
 				eventGlob := pageMeta.eventGlob(eventMethod)
-				map[" \u2191(${eventMethod.name})"] = pageEvent.httpMethod.justl(4) + " " + eventGlob 			
+				map["  \u2191${eventMethod.name}"] = pageEvent.httpMethod.justl(4) + " " + eventGlob 			
 			}
 		}
 
