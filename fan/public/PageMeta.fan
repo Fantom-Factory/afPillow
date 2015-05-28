@@ -32,8 +32,11 @@ mixin PageMeta {
 	** Returns the HTTP method this page responds to.
 	abstract Str httpMethod()
 
+	@NoDoc @Deprecated { msg = "Use 'routesDisabled()' instead" }
+	virtual Bool disableRoutes() { routesDisabled }
+
 	** Returns 'true' if BedSheet route generation has been disabled for this page.
-	abstract Bool disableRoutes()
+	abstract Bool routesDisabled()
 
 	** Returns a client URL for a given event - use to create client side URIs to call the event.
 	** 
@@ -105,8 +108,8 @@ internal class PageMetaImpl : PageMeta {
 		pageState.httpMethod
 	}
 
-	override Bool disableRoutes() {
-		pageState.disableRoutes
+	override Bool routesDisabled() {
+		pageState.routesDisabled
 	}
 	
 	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {

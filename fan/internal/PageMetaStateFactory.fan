@@ -37,7 +37,7 @@ internal class PageMetaStateFactory  {
 			it.contentType		= this.contentType
 			it.isWelcomePage	= this.isWelcomePage
 			it.httpMethod		= this.httpMethod
-			it.disableRoutes	= this.disableRoutes
+			it.routesDisabled	= this.disableRoutes
 			it.pageGlob			= this.pageGlob
 			it.eventMethods		= this.eventMethods
 			it.initRender		= this.initRender
@@ -70,7 +70,7 @@ internal class PageMetaStateFactory  {
 	
 	Bool disableRoutes() {
 		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
-		return page.disableRouting == false ? page.disableRoutes : page.disableRouting 
+		return page.disableRouting ? page.disableRouting : page.disableRoutes 
 	}
 
 	Uri pageGlob() {
