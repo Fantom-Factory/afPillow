@@ -39,9 +39,10 @@ const mixin Pages {
 	** Note this may be used to call *any* method on a page, not just ones annotated with the '@PageEvent' facet.
 	// Obj 'cos the method may be called manually (from ResponseProcessor)
 	abstract Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext)
-	
-	** Returns the currently rendering page. Or 'null' if no page is being rendered.
-	abstract EfanComponent? getRenderingPage()
+
+	// moar thought needs to go into how to get / set the data ctx so the page can retrieve thread local data
+//	** Returns the currently rendering page. Or 'null' if no page is being rendered.
+//	abstract EfanComponent? getRenderingPage()
 }
 
 internal const class PagesImpl : Pages {
@@ -110,22 +111,6 @@ internal const class PagesImpl : Pages {
 		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
 
-//	Str render(EfanComponent component, Obj?[]? initArgs := null, |->|? bodyFunc := null) {
-//		rendered := EfanRenderer.renderTemplate(component.templateMeta, component, renderBuf, bodyFunc) |->Obj?| {
-//			componentCtxMgr.createNew
-//			
-//			initRet := componentMeta.callMethod(InitRender#, component, initArgs ?: Obj#.emptyList)
-//
-//			// if initRender() returns false, cut rendering short
-//			return (initRet == false) ? false : doRenderLoop(component) 
-//		}
-//
-//		// if the rendering stack is empty, return the result of rendering
-//		if (rendered == true && (EfanRenderingStack.peek(false) == null)) 
-//			return renderResult
-//		return Str.defVal
-//	}
-	
 	override Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext) {
 		if (!iocEnv.isProd) 
 			httpRes.headers["X-afPillow-calledEvent"] = eventMethod.qname
@@ -139,7 +124,7 @@ internal const class PagesImpl : Pages {
 			return componentRenderer.runInCtx(page) |->Obj| {
 				// TODO: what if InitRender returns false?
 				componentMeta.callMethod(InitRender#, page, initArgs)
-				
+
 				eventValue := eventMethod.callOn(page, eventArgs)
 				if (eventValue != null)
 					return eventValue
@@ -159,13 +144,13 @@ internal const class PagesImpl : Pages {
 		}
 	}
 	
-	override EfanComponent? getRenderingPage() {
-		Efan.renderingStack.eachrWhile |element| {
-			element.templateInstance is EfanComponent && element.templateMeta.type.hasFacet(Page#)
-				? element.templateInstance
-				: null
-		}
-	}
+//	override EfanComponent? getRenderingPage() {
+//		Efan.renderingStack.eachrWhile |element| {
+//			element.templateInstance is EfanComponent && element.templateMeta.type.hasFacet(Page#)
+//				? element.templateInstance
+//				: null
+//		}
+//	}
 	
 	// ---- Private Methods --------------------------------------------------------------------------------------------
 	
