@@ -5,7 +5,9 @@
 ** 
 ** To change the strategy set the application default in your 'AppModule'. Example:
 ** 
-** pre> 
+** pre>
+** syntax: fantom
+** 
 ** @Contribute { serviceType=ApplicationDefaults# }
 ** static Void contributeApplicationDefaults(Configuration config) {
 **     config[PillowConfigIds.welcomePageStrategy] = WelcomePageStrategy.off
