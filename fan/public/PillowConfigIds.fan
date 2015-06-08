@@ -3,6 +3,8 @@
 ** To change their value, override them in your 'AppModule'. Example:
 ** 
 ** pre>
+** syntax: fantom
+** 
 ** using afIoc
 ** using afIocConfig
 ** using afPillow

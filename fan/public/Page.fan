@@ -6,6 +6,8 @@ facet class Page {
 	** Use to map the page to a specific URL. Page URLs should start with a leading /slash/. Example:
 	** 
 	** pre>
+	** syntax: fantom
+	** 
 	** using afEfanXtra
 	** using afPillow
 	** 
@@ -26,6 +28,8 @@ facet class Page {
 	** The 'Content-Type' is set in the HTTP response header.   
 	** 
 	** pre>
+	** syntax: fantom
+	** 
 	** using afPillow
 	** using afEfanXtra
 	** 

@@ -5,13 +5,13 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.23")
+		version = Version("1.0.22")
 
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
-			"tags"			: "web",
-			"repo.private"	: "true"
+			"repo.tags"		: "web",
+			"repo.public"	: "true"
 		]
 
 		index = [	
@@ -42,7 +42,7 @@ class Build : BuildPod {
 		]
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
-		resDirs = [`test/app/`]
+		resDirs = [`doc/`,`test/app/`]
 	}
 	
 	@Target

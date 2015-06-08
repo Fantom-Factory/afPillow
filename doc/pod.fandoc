@@ -1,39 +1,21 @@
-Overview [#overview]
-********************
-'Pillow' is a web framework that maps HTTP request URLs to Pillow Pages, letting them react to RESTful events.
+Overview
+********
+Pillow is a web framework that maps HTTP request URLs to Pillow Pages, letting them react to RESTful events.
 
-'Pillow'...
+Pillow...
  - Is a [BedSheet]`pod:afBedSheet` framework
  - Extends [efanXtra]`pod:afEfanXtra` components
  - Plays great with [Slim]`pod:afSlim`
  - Runs on [IoC]`pod:afIoc`
 
-'Pillow' - Something for your web app to get its teeth into!
-
-
-
-Install [#Install]
-******************
-Install '@{project.name}' with the Fantom Repository Manager ( [fanr]`docFanr::Tool.install` ):
-
-  C:\> fanr install -r http://repo.status302.com/fanr/ @{pod.name}
-
-To use in a [Fantom]`http://fantom.org/` project, add a dependency to 'build.fan':
-
-  depends = ["sys 1.0", ..., "@{pod.name} @{pod.version}"]
-
-
-
-Documentation [#documentation]
-******************************
-Full API & fandocs are available on the [Status302 repository]`http://repo.status302.com/doc/@{pod.name}/`.
+Pillow - Something for your web app to get its teeth into!
 
 
 
 Quick Start [#quickStart]
 *************************
 1. Create a text file called 'Example.efan'
-    syntax: jsp
+    syntax: html
 
     Hello Mum! I'm <%= age %> years old!
 
@@ -74,7 +56,6 @@ Quick Start [#quickStart]
     }
 
 3. Run 'Example.fan' as a Fantom script from the command line:
-    syntax: bash
 
     C:\> fan Example.fan
 
@@ -87,8 +68,8 @@ Quick Start [#quickStart]
 
 
 
-Usage [#usage]
-**************
+Usage
+*****
 To create a web page, define an 'EfanComponent' that is annotated with the [Page]`Page` facet. Example:
 
 pre>
@@ -105,7 +86,7 @@ const mixin Admin : EfanComponent {
 
 [Pages]`Page` are [efanXtra]`pod:afEfanXtra` components and behave in exactly the same way.
 
-'Pillow' will automatically route URLs with your page name, to your page.
+Pillow will automatically route URLs with your page name, to your page.
 Camel casing class names results in a '/' delimiter.
 Examples:
 
@@ -116,12 +97,11 @@ Or you can use the [@Page]`Page` facet to define an explicit URL.
 
 
 
-Welcome Pages [#welcomePages]
-*****************************
-'Pillow' supports the routing of welcome pages, also known as directory pages, through the `WelcomePageStrategy`.
+Welcome Pages
+*************
+Pillow supports the routing of welcome pages, also known as directory pages, through the `WelcomePageStrategy`.
 
-When switched on, whenever a request is made for a directory URL (one that ends with a /slash/) then 'Pillow' will render the
-directory's [welcome page]`PillowConfigIds#welcomePageName`, which defaults to a page named 'Index'.
+When switched on, whenever a request is made for a directory URL (one that ends with a /slash/) then 'Pillow' will render the directory's [welcome page]`PillowConfigIds.welcomePageName`, which defaults to a page named 'Index'.
 Examples:
 
   `/`        --> Index.fan
@@ -131,13 +111,12 @@ More can be read about directory URLs in the article:
 [Should Your URLs Point to the Directory or the Index Page?]`http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml`
 
 The [welcome page strategy]`WelcomePageStrategy` also supports redirects, where requests for legacy pages
-(like '/index.html') are redirected to the directory URI. Redirects are preferred over serving up the same page for multiple
-URIs to avoid [duplicate content]`http://moz.com/learn/seo/duplicate-content`.
+(like '/index.html') are redirected to the directory URI. Redirects are preferred over serving up the same page for multiple URIs to avoid [duplicate content]`http://moz.com/learn/seo/duplicate-content`.
 
 
 
-Page Contexts [#pageContexts]
-*****************************
+Page Contexts
+*************
 As seen in the [Quick Start]`#quickStart` example, parts of the request path are automatically mapped to '@PageContext' fields.
 In our exmaple, the '42' in 'http://localhost:8069/example/42' is mapped to the 'age' page context field.
 
@@ -179,8 +158,8 @@ Would respond to both of the following URLs:
 
 
 
-Page Events [#pageEvents]
-*************************
+Page Events
+***********
 Page events allow pages to respond to RESTful actions by mapping URLs to page event methods.
 Page event methods are called in the context of the page they are defined.
 Denote page events with the '@PageEvent' facet.
@@ -225,6 +204,8 @@ Event methods may return any [BedSheet]`pod:afBedSheet` response object.
 
 It is standard practice to prefix event methods with the word 'on', so the 'loves()' method could also be written as:
 
+    syntax: fantom
+
     @PageEvent
     Void onLoves(Str meat) {
         echo("${name} loves ${meat}!")
@@ -234,8 +215,8 @@ But note that the event *name* (as used in the URL) is still 'love'.
 
 
 
-RESTful Services [#rest]
-========================
+RESTful Services
+================
 Pillow can be used to easily create RESTful services. Simply use Page events to service the request and set the '@PageEvent.httpMethod' attribute to the required HTTP method:
 
 pre>
@@ -272,8 +253,8 @@ const mixin RestService {
 
 
 
-Page Meta [#pageMeta]
-*********************
+Page Meta
+*********
 The `PageMeta` class holds information about the Pillow Page currently being rendered.
 Obviously, using 'PageMeta' in a page class, returns information about itself! Which is quite handy.
 
@@ -310,8 +291,8 @@ Use the `Pages` service to create 'PageMeta' instances for any Pillow page.
 
 
 
-Content Type [#contentType]
-***************************
+Content Type
+************
 Page template files should use a double extension in their name, for example,
 
   IndexPage.html.slim
@@ -326,11 +307,13 @@ Or you can use the [@Page]`Page` facet to explicitly set the content type.
 
 
 
-Page Routes [#pageRoutes]
-*************************
+Page Routes
+***********
 HTTP requests are routed to pages and events via standard BedSheet routes.
 All the Pillow routes are contributed under a single contribution called 'afPillow.pageRoutes'.
 So to disable Pillow routing, simply remove this contribution:
+
+  syntax: fantom
 
   @Contribute { serviceType=Routes# }
   static Void contributeRoutes(Configuration config) {
@@ -340,19 +323,23 @@ So to disable Pillow routing, simply remove this contribution:
 Should you wish to override any page route, contribute your own 'Route' *before* the Pillow routes.
 That way your 'Route' is processed first.
 
+  syntax: fantom
+
   @Contribute { serviceType=Routes# }
   static Void contributeRoutes(Configuration config) {
       config.add(Route(...)).before("afPillow.pageRoutes")
   }
 
 
-404 and Err Pages [#errAnd404Pages]
-***********************************
+404 and Err Pages
+*****************
 Pillow pages may be used as BedSheet 404 Status and 500 Error pages. To do so, contribute a 'MethodCall' func to 'Pages.renderPage()':
 
 To render 'Error404Page' as a BedSheet 404 status page:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceType=HttpStatusResponses# }
 static Void contribute404Response(Configuration config) {
     conf[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
@@ -362,6 +349,8 @@ static Void contribute404Response(Configuration config) {
 To render 'Error500Page' as a BedSheet error page:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceType=ErrResponses# }
 static Void contributeErrResponses(Configuration config) {
     config[Err#] = MethodCall(Pages#renderPage, [Error500Page#]).toImmutableFunc
@@ -371,6 +360,8 @@ static Void contributeErrResponses(Configuration config) {
 Note that you should also disable routing for those pages so they can't be accessed directly by a URL.
 
 pre>
+syntax: fantom
+
 using afEfanXtra
 using afPillow
 
@@ -380,118 +371,4 @@ const mixin Error404Page : EfanComponent { ... }
 @Page { disableRoutes=true }
 const mixin Error500Page : EfanComponent { ... }
 <pre
-
-
-
-Release Notes [#releaseNotes]
-*****************************
-v1.0.24 [#v1.0.24]
-==================
- - Chg: Deprecated 'Page.disableRoutes' in favour of 'Page.disableRouting'
-
-v1.0.22 [#v1.0.22]
-==================
- - New: '@InitRender' method parameters with default values become optional URL parameters.
- - New: '@PageContext' fields may also be optional.
- - New: '@PageEvent' methods may also have optional and nullable URL parameters.
- - New: Added '@Page.disableRoutes' so individual pages can be omitted from Route generation.
- - Chg: 'PageMeta.eventUrl(...)' may now take a Method or a Str as the event argument.
- - Chg: Made 'Pages.renderXXXX()' methods public.
- - Chg: Caching HTTP headers are only set in prod mode.
- - Bug: Page context parameters are now correctly URL encoded and decoded - see [URI Encoding / Decoding]`http://fantom.org/sidewalk/topic/2357`.
-
-v1.0.20 [#v1.0.20]
-==================
- - Chg: Updated to [IoC 2.0.0]`pod:afIoc`.
- - Chg: Converted 'PageMeta' to a 'mixin'.
- - Chg: Pillow BedSheet Routes are contributed via a single 'afPillow.pageRoutes' contribution, and not placeholders.
-
-v1.0.18 [#v1.0.18]
-==================
- - Chg: Updated to [IoC 1.7.6]`pod:afIoc` and [IoC Config 1.0.14]`pod:afIocConfig`.
-
-v1.0.16 [#v1.0.16]
-==================
- - Bug: Bodged release.
-
-v1.0.14 [#v1.0.14]
-==================
- - New: Added '@PageEvent.name' which overrides the default method name.
- - New: Added 'PageMeta.eventMethods()'.
- - Chg: Updated to [IoC 1.7.2]`pod:afIoc` and [BedSheet 1.3.12]`pod:afBedSheet`.
- - Chg: Renamed 'PageMeta.eventUri' -> 'PageMeta.eventUrl'.
-
-v1.0.12 [#v1.0.12]
-==================
- - New: Added a default 'cache-control' HTTP header as a config value.
- - Chg: Renamed 'PageMeta.pageUri' -> 'PageMeta.pageUrl'.
-
-v1.0.10 [#v1.0.10]
-==================
- - New: Stack frames from 'Pillow', 'efanXtra' and 'efan' are marked as *boring* on BedSheet's Err500 page.
- - Chg: Updated to [IoC 1.6.4]`pod:afIoc`.
-
-v1.0.8 [#v1.0.8]
-================
- - New: Using [Bean Utils 0.0.2]`pod:afBeanUtils`
- - New: Page state from events are saved and restored should the page be rendered as part of the same request.
- - Chg: Page events render the containing page by default.
- - Chg: Renamed '@Page.uri' -> '@Page.url'
-
-v1.0.6 [#v1.0.6]
-================
- - Chg: Updated to use [efanXtra 1.1.0]`pod:afEfanXtra`.
- - Chg: 'Pages.pageMeta()' and 'Pages.get()' now throw a 'NotFoundErr' if the given page type could not be found.
-
-v1.0.4 [#v1.0.4]
-================
- - Chg: Page context may be nullable on 'Pages.pageMeta()'.
- - Chg: Added 'Pages.get()' operator for easy 'PageMeta' access.
- - Chg: Contributed 'Pillow Pages' section to BedSheet's Err and Not Found pages.
-
-v1.0.2 [#v1.0.2]
-================
- - Chg: Page context values may now be mutable / non-const objects.
-
-v1.0.0 [#v1.0.0]
-================
- - New: Implemented 'WelcomePageStrategy'.
- - New: Added helpful http response headers for testing.
- - Chg: 'PageUriResolver' and 'ContentTypeResolver' are now configurable.
- - Chg: Renamed ConfigId 'welcomePage' -> 'welcomePageName'.
- - Bug: Page URIs with no page context could be a directory URI.
-
-v0.0.10 [#v0.0.10]
-================
- - New: Added '@PageEvent' methods allowing URIs to be mapped to page methods.
- - New: Added '@PageContext' fields that can replace '@InitRender' methods.
- - New: Added the 'PageMeta' class to wrap up, um, page meta data! Oh, and attached an instance to the rendering pages. (Deleted 'RenderPageMeta'.)
- - New: Added 'PageMetaResponseProcessor' that renders Pillow pages when 'PageMeta' instances are returned as [BedSheet]`http://www.fantomfactory.org/pods/afBedSheet` response objects.
- - New: Added 'httpMethod' field to '@Page' and '@PageEvent'
- - New: Added 'template' uri to '@Page'
- - Chg: 'Page' is now a facet, incorporating fields from '@PageUri' and '@PageContentType' (which have now been deleted).
-
-v0.0.8 [#v0.0.8]
-================
- - New: Use the '@PageContentType' facet to explicitly define the content type for your page.
- - New: Use a double extension (e.g. 'indexPage.xhtml.slim') to set the content type for the page.
- - Bug: '@InitRender' params could incorrectly match for directory index pages.
-
-v0.0.6 [#v0.0.6]
-================
- - New: Page uris and BedSheet routes are generated from the '@InitRender' method signature.
- - New: Directory uris may now serve welcome pages.
- - Chg: Updated to use 'BedSheet 1.2'.
- - Chg: Renamed project to 'afPillow' (from 'afBedSheetEfanExtra').
- - Chg: Reanmed 'EfanPageMeta' to 'RenderPageMeta'.
- - Chg: Renamed 'PageRoute' to 'PageUri'.
-
-v0.0.4 [#v0.0.4]
-================
- - New: Added '@PageRoute' facet that lets you specify a bespoke uri
- - New: Added 'EfanPageMeta' which returns the active rendering page.
-
-v0.0.2 [#v0.0.2]
-================
- - New: Preview Release
 
