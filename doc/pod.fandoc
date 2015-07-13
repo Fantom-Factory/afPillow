@@ -342,7 +342,7 @@ syntax: fantom
 
 @Contribute { serviceType=HttpStatusResponses# }
 static Void contribute404Response(Configuration config) {
-    conf[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
+    config[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
 }
 <pre
 
