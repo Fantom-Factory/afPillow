@@ -49,7 +49,7 @@ internal class TestWelcomePage : PillowTest {
 	}
 }
 
-internal class T_AppModule07 {
+internal const class T_AppModule07 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome"
@@ -57,7 +57,7 @@ internal class T_AppModule07 {
 	}
 }
 
-internal class T_AppModule08 {
+internal const class T_AppModule08 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome"
@@ -65,7 +65,7 @@ internal class T_AppModule08 {
 	}
 }
 
-internal class T_AppModule09 {
+internal const class T_AppModule09 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome2"
@@ -77,7 +77,7 @@ internal class T_AppModule09 {
 	}
 }
 
-internal class T_AppModule10 {
+internal const class T_AppModule10 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "welcome3"

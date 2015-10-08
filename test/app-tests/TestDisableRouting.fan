@@ -25,7 +25,7 @@ internal class TestDisableRouting2 : PillowTest {
 	}
 }
 
-internal class T_AppModule02 {
+internal const class T_AppModule02 {
 	@Contribute { serviceType=Routes# }
 	static Void contributeRoutes(Configuration config) {
 		config.remove("afPillow.pageRoutes")

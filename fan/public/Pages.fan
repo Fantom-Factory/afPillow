@@ -62,8 +62,9 @@ internal const class PagesImpl : Pages {
 	@Inject private const Str					cacheControl
 
 
-	new make(PageMetaStateFactory metaFactory, |This| in) {
+	new make(Scope scope, |This| in) {
 		in(this)
+		metaFactory := (PageMetaStateFactory) scope.build(PageMetaStateFactory#)
 		cache := Type:PageMetaState[:] { ordered = true }
 		efanXtra.libraryNames.each |libName| {
 			pod := efanLibs.pod(libName)

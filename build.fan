@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.0.23")
+		version = Version("1.1.0")
 
 		meta = [	
 			"proj.name"		: "Pillow",
@@ -24,21 +24,21 @@ class Build : BuildPod {
 			"web 1.0",
 		
 			// ---- Core ------------------------
-			"afBeanUtils  1.0.4  - 1.0",
-			"afConcurrent 1.0.6  - 1.0",
-			"afPlastic    1.0.16 - 1.0",
-			"afIoc        2.0.0  - 2.0",
-			"afIocConfig  1.0.16 - 1.0",
-			"afIocEnv     1.0.14 - 1.0",
+			"afBeanUtils  1.0.6  - 1.0",
+			"afConcurrent 1.0.12 - 1.0",
+			"afPlastic    1.0.20 - 1.0",
+			"afIoc        3.0.0  - 3.0",
+			"afIocConfig  1.1.0  - 1.1",
+			"afIocEnv     1.1.0  - 1.1",
 
 			// ---- Web ------------------------
-			"afBedSheet   1.4.10 - 1.4",
-			"afEfanXtra   1.1.18 - 1.1",
+			"afBedSheet   1.5.0  - 1.5",
+			"afEfanXtra   1.2.0  - 1.2",
 //			"afEfan       1.4.3  - 1.4",
 
 			// ---- Test -----------------------
-			"afBounce     1.0.20 - 1.0",
-			"afButter     1.1.2  - 1.1"
+			"afBounce     1.1.0  - 1.1",
+			"afButter     1.1.10 - 1.1"
 		]
 
 		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
