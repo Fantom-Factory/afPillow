@@ -45,7 +45,7 @@ internal class TestWelcomePageStrategy : PillowTest {
 	}
 }
 
-internal class T_AppModule03 {
+internal const class T_AppModule03 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
@@ -53,7 +53,7 @@ internal class T_AppModule03 {
 	}
 }
 
-internal class T_AppModule04 {
+internal const class T_AppModule04 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
@@ -61,7 +61,7 @@ internal class T_AppModule04 {
 	}
 }
 
-internal class T_AppModule05 {
+internal const class T_AppModule05 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"
@@ -69,7 +69,7 @@ internal class T_AppModule05 {
 	}
 }
 
-internal class T_AppModule06 {
+internal const class T_AppModule06 {
 	@Contribute { serviceType=ApplicationDefaults# }
 	static Void contributeApplicationDefaults(Configuration config) {
 		config[PillowConfigIds.welcomePageName] 	= "start"

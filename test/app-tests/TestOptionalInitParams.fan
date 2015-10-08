@@ -7,6 +7,29 @@ internal class TestOptionalInitParams : PillowTest {
 
 	@Inject Pages? pages
 	
+	Void due() {
+		startTime	:= ""
+		endTime 	:= ""
+		segments	:= ([Str:Obj?][]) ((Obj) 9)
+
+		totalVals	:= 0
+		segments.each |segment| {
+			pvValues    := (Obj[][]) segment["pvValues"]
+			filteredPvs	:= pvValues.findAll |pvVals| {
+				pvVals[0] >= startTime && pvVals[0] <= endTime
+			}
+			segment["pvValues"] = filteredPvs
+			totalVals += filteredPvs.size
+		}
+		
+		pvValues	:= (Obj[][]) segments.reduce([,]) |Obj[] pvs, seg -> Obj| { return pvs.addAll(seg["pvValues"]) }
+		filteredPvs	:= pvValues.findAll |pvVals| {
+			pvVals[0] >= startTime && pvVals[0] <= endTime
+		}
+
+	}
+	
+//	// was commented out?
 //	Void testOptionalInitParams() {
 //		url := pages[T_OptionalInitParams#].withContext("a b c".split).pageUrl
 //		res := client.get(url)
@@ -30,6 +53,7 @@ internal class TestOptionalInitParams : PillowTest {
 //		verifyEq(res.statusCode, 404)
 //	}
 //
+//	// was commented out?
 //	Void testOptionalPageCtxs() {
 //		url := pages[T_OptionalPageCtxs#].withContext("a b c".split).pageUrl
 //		res := client.get(url)

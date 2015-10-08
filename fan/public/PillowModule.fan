@@ -16,11 +16,10 @@ const class PillowModule {
 		defs.add(PillowPrinter#)
 		defs.add(ContentTypeResolver#)
 		defs.add(PageUrlResolver#)
-		defs.add(PageMetaStateFactory#)
 		defs.add(PageFinder#)
 	}
 
-	@Build { scope=ServiceScope.perThread }
+	@Build { scopes=["request"] }
 	static PageMeta buildPageMeta() {
 		PageMetaImpl.peek(true)
 	}
@@ -88,11 +87,10 @@ const class PillowModule {
 		config.set("afPillow.pillowPages",	|WebOutStream out, Err? err| { printer.printPillowPages(out) }).after("afBedSheet.iocConfig").before("afBedSheet.routes")
 	}
 
-	@Contribute { serviceType=RegistryStartup# }
-	internal static Void contributeRegistryStartup(Configuration conf, PillowPrinter pillowPrinter) {
-		conf.remove("afEfanXtra.logLibraries")
-		conf["afPillow.logLibraries"] = |->| { pillowPrinter.logLibraries }
-	}
+//	internal static Void onRegistryStartup(Configuration conf, PillowPrinter pillowPrinter) {
+//		conf.remove("afEfanXtra.logLibraries")
+//		conf["afPillow.logLibraries"] = |->| { pillowPrinter.logLibraries }
+//	}
 	
 	@Contribute { serviceType=StackFrameFilter# }
 	static Void contributeStackFrameFilter(Configuration config) {
