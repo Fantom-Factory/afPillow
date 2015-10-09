@@ -94,19 +94,18 @@ internal const class PagesImpl : Pages {
 	}
 
 	override Text renderPageMeta(PageMeta pageMeta) {
-		page 	 := efanXtra.component(pageMeta.pageType)
-		initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
-		
 		pageStr	 := PageMetaImpl.push(pageMeta) |->Str| {
-			if (!iocEnv.isProd)
-				httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+			page 	 := efanXtra.component(pageMeta.pageType)
+			initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
+				if (!iocEnv.isProd)
+					httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+				
+				if (iocEnv.isProd)
+					// set the default cache headers
+					httpRes.headers.cacheControl = cacheControl		
 			
-			if (iocEnv.isProd)
-				// set the default cache headers
-				httpRes.headers.cacheControl = cacheControl		
-		
-			return componentRenderer.render(page, initArgs)
-//			return efanXtra.component(pageMeta.pageType).render(initArgs)
+				return componentRenderer.render(page, initArgs)
+//				return efanXtra.component(pageMeta.pageType).render(initArgs)
 		}
 		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
@@ -121,7 +120,7 @@ internal const class PagesImpl : Pages {
 		eventArgs 	:= convertArgs(eventContext ?: Str#.emptyList, eventMethod.params.map { it.type })
 		
 		return PageMetaImpl.push(pageMeta) |->Obj| {
-			return componentRenderer.runInCtx(page) |->Obj| {
+			return componentRenderer.runInCtx(page) |->Obj| {  
 				// TODO: what if InitRender returns false?
 				componentMeta.callMethod(InitRender#, page, initArgs)
 

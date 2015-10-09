@@ -19,14 +19,19 @@ const class PillowModule {
 		defs.add(PageFinder#)
 	}
 
-	@Build { scopes=["request"] }
-	static PageMeta buildPageMeta() {
-		PageMetaImpl.peek(true)
-	}
+//	@Build { scopes=["request"] }
+//	static PageMeta buildPageMeta() {
+//		PageMetaImpl.peek(true)
+//	}
 	
 	@Override
 	static ComponentFinder overrideComponentFinder() {
 		ComponentFinderImpl()
+	}
+	
+	@Contribute { serviceType=DependencyProviders# }
+	internal static Void contributeDependencyProviders(Configuration config) {
+		config["afPilloe.pageMetaProvider"] = config.build(PageMetaProvider#)
 	}
 	
 	@Contribute { serviceType=EfanLibraries# }

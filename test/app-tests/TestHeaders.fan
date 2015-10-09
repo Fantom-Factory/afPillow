@@ -16,40 +16,38 @@ internal class TestHeaders : PillowTest {
 		res = client.get(`/headerEvent/eventPage`)
 		verifyNull(res.headers.cacheControl)
 	}
-	
-		
 
-//	Void testCacheHeadersInProd() {
-//		start(T_AppModule12#)
-//
-//		res := client.get(`/headerRender/ctx`)
-//		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
-//
-//		res = client.get(`/headerEvent/eventPage`)
-//		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
-//	}
-//
-//	Void testHeadersInDev() {
-//		start(T_AppModule11#)
-//
-//		client.get(`/headerRender/ctx`)
-//		verifyEq(client.lastResponse.headers.getFirst("X-afPillow-renderedPage"), T_HeaderRender#.qname)
-//
-//		client.get(`/headerEvent/event/ctx`)
-//		verifyEq(client.lastResponse.headers.getFirst("X-afPillow-calledEvent"), T_HeaderEvent#event.qname)
-//	}
-//
-//	Void testHeadersInProd() {
-//		start(T_AppModule12#)
-//
-//		client.get(`/headerRender/ctx`)
-//		verifyNull(client.lastResponse.headers.getFirst("X-afPillow-renderedPage"))
-//
-//		client.get(`/headerEvent/event/ctx`)
-//		verifyNull(client.lastResponse.headers.getFirst("X-afPillow-calledEvent"))
-//	}
+	Void testCacheHeadersInProd() {
+		start(T_AppModule12#)
 
-	override Void setup() {	}
+		res := client.get(`/headerRender/ctx`)
+		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
+
+		res = client.get(`/headerEvent/eventPage`)
+		verifyEq(res.headers.cacheControl, "max-age=0, no-cache")
+	}
+
+	Void testHeadersInDev() {
+		start(T_AppModule11#)
+
+		client.get(`/headerRender/ctx`)
+		verifyEq(client.lastResponse.headers.getFirst("X-afPillow-renderedPage"), T_HeaderRender#.qname)
+
+		client.get(`/headerEvent/event/ctx`)
+		verifyEq(client.lastResponse.headers.getFirst("X-afPillow-calledEvent"), T_HeaderEvent#event.qname)
+	}
+
+	Void testHeadersInProd() {
+		start(T_AppModule12#)
+
+		client.get(`/headerRender/ctx`)
+		verifyNull(client.lastResponse.headers.getFirst("X-afPillow-renderedPage"))
+
+		client.get(`/headerEvent/event/ctx`)
+		verifyNull(client.lastResponse.headers.getFirst("X-afPillow-calledEvent"))
+	}
+
+	override Void setup() {	disableLogs }
 	private Void start(Type module) {
 		server := BedServer(T_AppModule#).addModule(module).startup
 		client = server.makeClient

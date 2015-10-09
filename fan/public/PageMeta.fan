@@ -61,6 +61,67 @@ mixin PageMeta {
 	abstract InitRenderMethod initRender()	
 }
 
+internal class PageMetaProxy : PageMeta {
+
+	private |->PageMeta| pageMeta := |->PageMeta| { PageMetaImpl.peek(true) }
+	
+	override Type pageType() {
+		pageMeta().pageType
+	}
+
+	override Obj?[] pageContext() {
+		pageMeta().pageContext
+		
+	}
+	override Uri pageUrl() {
+		pageMeta().pageUrl
+	}
+	
+	override MimeType contentType() {
+		pageMeta().contentType
+	}
+	
+	override Bool isWelcomePage() {
+		pageMeta().isWelcomePage
+	}
+
+	override Str httpMethod() {
+		pageMeta().httpMethod
+	}
+
+	override Bool routesDisabled() {
+		pageMeta().routesDisabled
+	}
+	
+	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {
+		pageMeta().eventUrl(event, eventContext)
+	}
+
+	override PageMeta withContext(Obj?[]? pageContext) {
+		pageMeta().withContext(pageContext)
+	}
+	
+	override Method[] eventMethods() {
+		pageMeta().eventMethods
+	}
+
+	override Uri pageGlob() {
+		pageMeta().pageGlob
+	}
+	
+	override Uri eventGlob(Method eventMethod) {
+		pageMeta().eventGlob(eventMethod)
+	}
+	
+	override InitRenderMethod initRender() {
+		pageMeta().initRender
+	}
+	
+	override Str toStr() {
+		pageMeta().toStr
+	}	
+}
+
 internal class PageMetaImpl : PageMeta {
 
 	internal 		BedSheetServer	bedServer
