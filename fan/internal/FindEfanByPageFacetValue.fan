@@ -2,7 +2,7 @@ using afIoc
 using afEfanXtra
 
 internal const class FindEfanByPageFacetValue : TemplateFinder {
-	@Inject	private const Registry	registry
+	@Inject	private const Scope	scope
 
 	new make(|This|in) { in(this) }
 
@@ -12,7 +12,7 @@ internal const class FindEfanByPageFacetValue : TemplateFinder {
 		
 		pageFacet := (Page) Type#.method("facet").callOn(componentType, [Page#])	// Stoopid F4
 		templateFile := FindEfanByFacetValue.findFile(componentType, pageFacet.template)
-		return templateFile == null ? null : registry.autobuild(TemplateSourceFile#, [templateFile])
+		return templateFile == null ? null : scope.build(TemplateSourceFile#, [templateFile])
 	}
 
 	override Uri[] templates(Type componentType) {
