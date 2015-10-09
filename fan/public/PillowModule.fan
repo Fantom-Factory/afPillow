@@ -11,19 +11,14 @@ using web
 @NoDoc
 const class PillowModule {
 
-	static Void defineServices(ServiceDefinitions defs) {
-		defs.add(Pages#)
-		defs.add(PillowPrinter#)
-		defs.add(ContentTypeResolver#)
-		defs.add(PageUrlResolver#)
-		defs.add(PageFinder#)
+	static Void defineServices(RegistryBuilder defs) {
+		defs.addService(Pages#)
+		defs.addService(PillowPrinter#)
+		defs.addService(ContentTypeResolver#)
+		defs.addService(PageUrlResolver#)
+		defs.addService(PageFinder#)
 	}
 
-//	@Build { scopes=["request"] }
-//	static PageMeta buildPageMeta() {
-//		PageMetaImpl.peek(true)
-//	}
-	
 	@Override
 	static ComponentFinder overrideComponentFinder() {
 		ComponentFinderImpl()
@@ -42,13 +37,13 @@ const class PillowModule {
 
 	@Contribute { serviceType=ComponentCompiler# }
 	static Void contributeComponentCompilerCallbacks(Configuration config) {
-		pageCompiler := (PageCompiler) config.autobuild(PageCompiler#)
+		pageCompiler := (PageCompiler) config.build(PageCompiler#)
 		config.add(pageCompiler.callback)
 	}
 
 	@Contribute { serviceType=Routes# }
 	static Void contributeRoutes(Configuration config) {
-		routeFactory := (PillowRouteFactory) config.autobuild(PillowRouteFactory#)		
+		routeFactory := (PillowRouteFactory) config.build(PillowRouteFactory#)		
 		config["afPillow.pageRoutes"] = routeFactory.pillowPageRoutes
 	}
 
@@ -61,17 +56,17 @@ const class PillowModule {
 	@Contribute { serviceType=ContentTypeResolver# } 
 	static Void contributeContentTypeResolvers(Configuration config) {
 		config["afPillow.fromPageFacet"]			= ResolveContentTypeFromPageFacet()
-		config["afPillow.fromTemplateExtension"]	= config.autobuild(ResolveContentTypeFromTemplateExtension#)
+		config["afPillow.fromTemplateExtension"]	= config.build(ResolveContentTypeFromTemplateExtension#)
 	}
 
 	@Contribute { serviceType=ResponseProcessors# }
 	static Void contributeResponseProcessors(Configuration config) {
-		config[PageMeta#] = config.autobuild(PageMetaResponseProcessor#)
+		config[PageMeta#] = config.build(PageMetaResponseProcessor#)
 	}
 	
 	@Contribute { serviceType=TemplateFinders# }
 	static Void contributeTemplateFinders(Configuration config) {
-		config["afPillow.findByPageFacetValue"]	= config.autobuild(FindEfanByPageFacetValue#)
+		config["afPillow.findByPageFacetValue"]	= config.build(FindEfanByPageFacetValue#)
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }
