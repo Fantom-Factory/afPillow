@@ -32,7 +32,7 @@ internal const class PillowPrinter {
 			return ""
 
 		maxName	 := (Int) pageTypes.reduce(0) |size, component| { ((Int) size).max(component.name.toDisplayName.size) }
-		buf.add("\nefan Library: '${libName}' has ${pageTypes.size} pages:\n\n")
+		buf.add("\nefan Library '${libName}' has ${pageTypes.size} pages:\n\n")
 
 		pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
@@ -46,7 +46,7 @@ internal const class PillowPrinter {
 				buf.add("  ${line}\n")
 			}
 		}
-		
+
 		return buf.toStr
 	}
 

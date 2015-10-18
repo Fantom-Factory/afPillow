@@ -1,7 +1,7 @@
-#Pillow v1.0.22
+#Pillow v1.1.0
 ---
 [![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
-[![pod: v1.0.22](http://img.shields.io/badge/pod-v1.0.22-yellow.svg)](http://www.fantomfactory.org/pods/afPillow)
+[![pod: v1.1.0](http://img.shields.io/badge/pod-v1.1.0-yellow.svg)](http://www.fantomfactory.org/pods/afPillow)
 ![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
 
 ## Overview
@@ -21,11 +21,11 @@ Pillow - Something for your web app to get its teeth into!
 
 Install `Pillow` with the Fantom Repository Manager ( [fanr](http://fantom.org/doc/docFanr/Tool.html#install) ):
 
-    C:\> fanr install -r http://repo.status302.com/fanr/ afPillow
+    C:\> fanr install -r http://pods.fantomfactory.org/fanr/ afPillow
 
 To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan`:
 
-    depends = ["sys 1.0", ..., "afPillow 1.0"]
+    depends = ["sys 1.0", ..., "afPillow 1.1"]
 
 ## Documentation
 
@@ -307,7 +307,7 @@ To render `Error404Page` as a BedSheet 404 status page:
 ```
 @Contribute { serviceType=HttpStatusResponses# }
 static Void contribute404Response(Configuration config) {
-    conf[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
+    config[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
 }
 ```
 

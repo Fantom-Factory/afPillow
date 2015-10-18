@@ -19,6 +19,11 @@ const class PillowModule {
 		defs.addService(PageFinder#)
 	}
 
+	internal static Void onRegistryStartup(Configuration conf, PillowPrinter pillowPrinter) {
+		conf.remove("afEfanXtra.logLibraries")
+		conf.set("afPillow.logLibraries", |->| { pillowPrinter.logLibraries }).after("afIoc.logServices")
+	}
+
 	@Override
 	static ComponentFinder overrideComponentFinder() {
 		ComponentFinderImpl()
@@ -86,11 +91,6 @@ const class PillowModule {
 	internal static Void contributeErrPrinterHtml(Configuration config, PillowPrinter printer) {
 		config.set("afPillow.pillowPages",	|WebOutStream out, Err? err| { printer.printPillowPages(out) }).after("afBedSheet.iocConfig").before("afBedSheet.routes")
 	}
-
-//	internal static Void onRegistryStartup(Configuration conf, PillowPrinter pillowPrinter) {
-//		conf.remove("afEfanXtra.logLibraries")
-//		conf["afPillow.logLibraries"] = |->| { pillowPrinter.logLibraries }
-//	}
 	
 	@Contribute { serviceType=StackFrameFilter# }
 	static Void contributeStackFrameFilter(Configuration config) {
