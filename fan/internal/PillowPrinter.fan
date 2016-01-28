@@ -53,7 +53,7 @@ internal const class PillowPrinter {
 	Void printPillowPages(WebOutStream out) {
 		title(out, "Pillow Pages")
 
-		map := [:] { ordered=true }
+		map := Str[][,]
 		pages.pageTypes.rw.sort.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
 			if (pageMeta.routesDisabled)
@@ -61,35 +61,29 @@ internal const class PillowPrinter {
 
 			pageGlob	:= pageMeta.pageGlob
 			
-			map[pageType.name.toDisplayName] = pageMeta.httpMethod.upper.justl(4) + " " + pageGlob
+			map.add([pageType.name.toDisplayName, pageMeta.httpMethod.upper.justl(4) + " " + pageGlob])
 			
 			pageType.methods.findAll { it.hasFacet(PageEvent#) }.each |eventMethod| {
-				// TODO: research why event in abstract class only appears once!?
 				pageEvent := (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])
 				eventGlob := pageMeta.eventGlob(eventMethod)
-				map["  \u2191${eventMethod.name}"] = pageEvent.httpMethod.justl(4) + " " + eventGlob 			
+				map.add(["  \u2191${eventMethod.name}", pageEvent.httpMethod.justl(4) + " " + eventGlob]) 			
 			}
 		}
 
-		prettyPrintMap(out, map, false)
+		prettyPrintMap(out, map)
 	}
 	
-	private Void title(WebOutStream out, Str title) {
+	private static Void title(WebOutStream out, Str title) {
 		out.h2("id=\"${title.fromDisplayName}\"").w(title).h2End
 	}
 	
-	private Void prettyPrintMap(WebOutStream out, Str:Obj? map, Bool sort, Str? cssClass := null) {
-		if (sort) {
-			newMap := Str:Obj?[:] { ordered = true } 
-			map.keys.sort.each |k| { newMap[k] = map[k] }
-			map = newMap
-		}
-		out.table(cssClass == null ? null : "class=\"${cssClass}\"")
-		map.each |v, k| { w(out, k, v) } 
+	private static Void prettyPrintMap(WebOutStream out, Str[][] map) {
+		out.table
+		map.each |v| { w(out, v.first, v.last) } 
 		out.tableEnd
 	}
 
-	private Void w(WebOutStream out, Str key, Obj? val) {
+	private static Void w(WebOutStream out, Str key, Obj? val) {
 		out.tr.td.writeXml(key).tdEnd.td.writeXml(val?.toStr ?: "null").tdEnd.trEnd
 	}
 
