@@ -1,9 +1,11 @@
 Versions
 ********
 
-v1.0.24
-=======
+v1.1.0
+======
+ - Chg: Updated to work with [IoC 3.0]`pod:afIoc` and [BedSheet 1.5]`pod:afBedSheet`. (Breaking change.)
  - Chg: Deprecated 'Page.disableRoutes' in favour of 'Page.disableRouting'
+ - Bug: Events were not logged correctly on the BedSheet Err pages if they had the same name.
 
 v1.0.22
 =======
