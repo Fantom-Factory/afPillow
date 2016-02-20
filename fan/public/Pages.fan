@@ -120,13 +120,16 @@ internal const class PagesImpl : Pages {
 		eventArgs 	:= convertArgs(eventContext ?: Str#.emptyList, eventMethod.params.map { it.type })
 		
 		return PageMetaImpl.push(pageMeta) |->Obj| {
-			return componentRenderer.runInCtx(page) |->Obj| {  
+			retVal := null
+			componentRenderer.runInCtx(page) |->| {  
 				// TODO: what if InitRender returns false?
 				componentMeta.callMethod(InitRender#, page, initArgs)
 
 				eventValue := eventMethod.callOn(page, eventArgs)
-				if (eventValue != null)
-					return eventValue
+				if (eventValue != null) {
+					retVal = eventValue
+					return
+				}
 
 				// re-render the page without re-calling @InitRender so event changes get picked up 
 				
@@ -137,9 +140,11 @@ internal const class PagesImpl : Pages {
 					// set the default cache headers
 					httpRes.headers.cacheControl = cacheControl		
 
-				componentRenderer.doRenderLoop(page)
-				return Text.fromContentType(componentRenderer.renderResult, pageMeta.contentType)
+				renderBuf := componentRenderer.doRenderLoop(page)
+				
+				retVal = Text.fromContentType(renderBuf.toStr, pageMeta.contentType)
 			}
+			return retVal
 		}
 	}
 	
