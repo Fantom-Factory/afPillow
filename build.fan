@@ -34,14 +34,14 @@ class Build : BuildPod {
 			// ---- Web ------------------------
 			"afBedSheet   1.5.0  - 1.5",
 			"afEfanXtra   1.2.0  - 1.2",
-//			"afEfan       1.4.3  - 1.4",
+//			"afEfan       1.5.0  - 1.5",
 
 			// ---- Test -----------------------
 			"afBounce     1.1.0  - 1.1",
 			"afButter     1.1.10 - 1.1"
 		]
 
-		srcDirs = [`test/app-tests/`, `test/app/`, `fan/`, `fan/public/`, `fan/internal/`, `fan/internal/utils/`]
+		srcDirs = [`fan/`, `fan/internal/`, `fan/internal/utils/`, `fan/public/`, `test/app/`, `test/app-tests/`]
 		resDirs = [`doc/`,`test/app/`]
 	}
 	
