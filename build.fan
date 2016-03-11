@@ -1,4 +1,5 @@
 using build
+using afBuild
 
 class Build : BuildPod {
 
@@ -10,6 +11,7 @@ class Build : BuildPod {
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
+			"testPods"		: "afBounce afButter",
 			"repo.tags"		: "web",
 			"repo.public"	: "false"
 		]
@@ -45,14 +47,15 @@ class Build : BuildPod {
 		resDirs = [`doc/`,`test/app/`]
 	}
 	
-	@Target
+	@Target { help = "Compile to pod file and associated natives" }
 	override Void compile() {
-		// remove test pods from final build
-		testPods := "afBounce afButter".split
-		depends = depends.exclude { testPods.contains(it.split.first) }
-		srcDirs = srcDirs.exclude { it.toStr.startsWith("test/") }
-		resDirs = resDirs.exclude { it.toStr.startsWith("test/") }
-		super.compile
+		BuildTask(this).run
 	}
+
+	@Target { help = "Builds, publishes, and Hg tags a new pod release" }
+	Void release() {
+		ReleaseTask(this).run
+	}
+
 }
 
