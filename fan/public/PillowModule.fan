@@ -31,7 +31,7 @@ const class PillowModule {
 	
 	@Contribute { serviceType=DependencyProviders# }
 	internal static Void contributeDependencyProviders(Configuration config) {
-		config["afPilloe.pageMetaProvider"] = config.build(PageMetaProvider#)
+		config["afPillow.pageMetaProvider"] = config.build(PageMetaProvider#)
 	}
 	
 	@Contribute { serviceType=EfanLibraries# }
