@@ -158,6 +158,33 @@ Would respond to both of the following URLs:
 
 
 
+Skip Page Rendering
+===================
+If '@InitRender' returns a non-null object, then page rendering is skipped and the returned object is passed to BedSheet for further processing.
+
+This is useful for explicitly handling authentication and / or 404 errors. Example:
+
+pre>
+syntax: fantom
+
+@Page
+const mixin ExamplePage : EfanComponent {
+
+    @InitRender
+    Obj? initRender(Str fileName) {
+        if (fileService.notFound(fileName))
+            return HttpStatus(404, "File not found")
+
+        if (!loggedInUser.isAuthorisedToView(ExamplePage#)
+            return Redirect.movedTemporarily(`/login`)
+
+        return null
+    }
+}
+<pre
+
+
+
 Page Events
 ***********
 Page events allow pages to respond to RESTful actions by mapping URLs to page event methods.
@@ -212,6 +239,8 @@ It is standard practice to prefix event methods with the word 'on', so the 'love
     }
 
 But note that the event *name* (as used in the URL) is still 'love'.
+
+Note that any '@InitRender' method is called before the event method. This gives '@InitRender' a chance to assert access control.
 
 
 
