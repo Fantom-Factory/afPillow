@@ -10,7 +10,6 @@ class Build : BuildPod {
 		meta = [	
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
-			"testPods"		: "afBounce afButter",
 			"repo.tags"		: "web",
 			"repo.public"	: "false"
 		]
@@ -44,6 +43,8 @@ class Build : BuildPod {
 
 		srcDirs = [`fan/`, `fan/internal/`, `fan/internal/utils/`, `fan/public/`, `test/app/`, `test/app-tests/`]
 		resDirs = [`doc/`,`test/app/`]
+		
+		meta["afBuild.testPods"]	= "afBounce afButter"
 	}
 }
 

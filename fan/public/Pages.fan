@@ -26,12 +26,12 @@ const mixin Pages {
 	** 
 	** Note that 'pageContext' Strs are converted to their appropriate type via BedSheet's 'ValueEncoder' service.
 	// Obj 'cos the method may be called manually (from ResponseProcessor)
-	abstract Text renderPage(Type pageType, Obj?[]? pageContext := null)
+	abstract Obj renderPage(Type pageType, Obj?[]? pageContext := null)
 
 	** Manually renders the given 'pageMeta'. 
 	** 
 	** There should be no need to call this in normal Pillow usage.
-	abstract Text renderPageMeta(PageMeta pageMeta)
+	abstract Obj renderPageMeta(PageMeta pageMeta)
 
 	** Manually executes the page event in the given page context.
 	** 
@@ -89,25 +89,40 @@ internal const class PagesImpl : Pages {
 		pageMeta(pageType, pageContext)
 	}
 	
-	override Text renderPage(Type pageType, Obj?[]? pageContext := null) {
+	override Obj renderPage(Type pageType, Obj?[]? pageContext := null) {
 		renderPageMeta(pageMeta(pageType, pageContext))
 	}
 
-	override Text renderPageMeta(PageMeta pageMeta) {
-		pageStr	 := PageMetaImpl.push(pageMeta) |->Str| {
-			page 	 := efanXtra.component(pageMeta.pageType)
-			initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
-				if (!iocEnv.isProd)
-					httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+	override Obj renderPageMeta(PageMeta pageMeta) {
+		page 	 := efanXtra.component(pageMeta.pageType)
+		initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
+
+		return PageMetaImpl.push(pageMeta) |->Obj| {
+			retVal := null
+			componentRenderer.runInCtx(page) |->| {  
 				
-				if (iocEnv.isProd)
-					// set the default cache headers
-					httpRes.headers.cacheControl = cacheControl		
-			
-				return componentRenderer.render(page, initArgs)
-//				return efanXtra.component(pageMeta.pageType).render(initArgs)
+				// call initRender() - process any non-null return value
+				initValue := componentMeta.callMethod(InitRender#, page, initArgs)
+				if (initValue != null) {
+					retVal = initValue
+					return
+
+				} else {
+					// re-render the page without re-calling @InitRender so event changes get picked up 
+					if (!iocEnv.isProd)
+						httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+	
+					if (iocEnv.isProd)
+						// set the default cache headers
+						httpRes.headers.cacheControl = cacheControl		
+	
+					renderBuf := componentRenderer.doRenderLoop(page)
+					
+					retVal = Text.fromContentType(renderBuf.toStr, pageMeta.contentType)	
+				}
+			}
+			return retVal
 		}
-		return Text.fromContentType(pageStr, pageMeta.contentType)
 	}
 
 	override Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext) {
@@ -122,27 +137,33 @@ internal const class PagesImpl : Pages {
 		return PageMetaImpl.push(pageMeta) |->Obj| {
 			retVal := null
 			componentRenderer.runInCtx(page) |->| {  
-				// TODO: what if InitRender returns false?
-				componentMeta.callMethod(InitRender#, page, initArgs)
-
-				eventValue := eventMethod.callOn(page, eventArgs)
-				if (eventValue != null) {
-					retVal = eventValue
+				
+				// call initRender() - process any non-null return value
+				initValue := componentMeta.callMethod(InitRender#, page, initArgs)
+				if (initValue != null) {
+					retVal = initValue
 					return
-				}
 
-				// re-render the page without re-calling @InitRender so event changes get picked up 
-				
-				if (!iocEnv.isProd)
-					httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
-
-				if (iocEnv.isProd)
+				} else {
+					// call event method - process any non-null return value
+					eventValue := eventMethod.callOn(page, eventArgs)
+					if (eventValue != null) {
+						retVal = eventValue
+						return
+					}
+	
+					// re-render the page without re-calling @InitRender so event changes get picked up 
+					if (!iocEnv.isProd)
+						httpRes.headers["X-afPillow-renderedPage"] = pageMeta.pageType.qname
+	
 					// set the default cache headers
-					httpRes.headers.cacheControl = cacheControl		
-
-				renderBuf := componentRenderer.doRenderLoop(page)
-				
-				retVal = Text.fromContentType(renderBuf.toStr, pageMeta.contentType)
+					if (iocEnv.isProd)
+						httpRes.headers.cacheControl = cacheControl		
+	
+					renderBuf := componentRenderer.doRenderLoop(page)
+					
+					retVal = Text.fromContentType(renderBuf.toStr, pageMeta.contentType)	
+				}
 			}
 			return retVal
 		}
@@ -171,7 +192,7 @@ internal const class PagesImpl : Pages {
 			}
 		// if the args can't be converted then clearly the URL doesn't exist!
 		catch (ValueEncodingErr valEncErr) {
-			throw HttpStatusErr(404, valEncErr.msg, valEncErr)
+			throw HttpStatus.makeErr(404, valEncErr.msg, valEncErr)
 		}
 	}
 }
