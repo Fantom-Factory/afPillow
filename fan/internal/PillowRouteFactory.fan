@@ -108,6 +108,6 @@ internal const class EventCallerFactory : RouteResponseFactory {
 	
 	override Str toStr() {
 		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
-		return "Pillow Event ${pageType.qname}${params}:${eventMethod.name}"
+		return "Pillow Event ${pageType.qname}${params}.${eventMethod.name}"
 	}	
 }
