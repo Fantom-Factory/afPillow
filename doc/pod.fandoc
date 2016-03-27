@@ -49,7 +49,7 @@ Quick Start [#quickStart]
     @SubModule { modules=[EfanXtraModule#, PillowModule#] }
     class AppModule {
         @Contribute { serviceType=TemplateDirectories# }
-        static Void contributeEfanDirs(Configuration config) {
+        Void contributeEfanDirs(Configuration config) {
             // Look for Example.efan in the same dir as this fantom file
             config.add(`./`)
         }
@@ -94,6 +94,27 @@ Examples:
   `/admin/secret` --> AdminSecret.fan
 
 Or you can use the [@Page]`Page` facet to define an explicit URL.
+
+
+
+Templates
+*********
+EfanXtra, and hence Pillow, need to know where to look for template files. This is done by contributing to the 'TemplateDirectories' service in your App Module:
+
+pre>
+syntax: fantom
+
+@Contribute { serviceType=TemplateDirectories# }
+Void contributeTemplateDirectories(Configuration config) {
+    config.add(`efan-tempaltes/`)
+}
+<pre
+
+But if no configuration is given, then Pillow defaults to looking in the following directories:
+ - 'etc/web-pages/'
+ - 'etc/web-components/'
+
+Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates]`efanXtra::index#templates` for details.
 
 
 
