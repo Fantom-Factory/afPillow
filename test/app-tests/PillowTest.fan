@@ -7,7 +7,7 @@ internal abstract class PillowTest : Test {
 	override Void setup() {
 		disableLogs
 		server := BedServer(T_AppModule#).startup
-		server.injectIntoFields(this)
+		server.inject(this)
 		client = server.makeClient
 	}
 

@@ -11,11 +11,7 @@ class Build : BuildPod {
 			"proj.name"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
 			"repo.tags"		: "web",
-			"repo.public"	: "false"
-		]
-
-		index = [	
-			"afIoc.module"	: "afPillow::PillowModule"
+			"repo.public"	: "true"
 		]
 
 		depends = [	

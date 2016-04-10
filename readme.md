@@ -65,9 +65,9 @@ Full API & fandocs are available on the [Fantom Pod Repository](http://pods.fant
         // ---- Support class, needed when running from a script ----
         
         @SubModule { modules=[EfanXtraModule#, PillowModule#] }
-        class AppModule {
+        const class AppModule {
             @Contribute { serviceType=TemplateDirectories# }
-            static Void contributeEfanDirs(Configuration config) {
+            Void contributeEfanDirs(Configuration config) {
                 // Look for Example.efan in the same dir as this fantom file
                 config.add(`./`)
             }
@@ -110,6 +110,24 @@ Pillow will automatically route URLs with your page name, to your page. Camel ca
     `/admin/secret` --> AdminSecret.fan
 
 Or you can use the [@Page](http://pods.fantomfactory.org/pods/afPillow/api/Page) facet to define an explicit URL.
+
+## Templates
+
+EfanXtra, and hence Pillow, need to know where to look for template files. This is done by contributing to the `TemplateDirectories` service in your App Module:
+
+```
+@Contribute { serviceType=TemplateDirectories# }
+Void contributeTemplateDirectories(Configuration config) {
+    config.add(`efan-tempaltes/`)
+}
+```
+
+But if no configuration is given, then Pillow defaults to looking in the following directories:
+
+- `etc/web-pages/`
+- `etc/web-components/`
+
+Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates](http://pods.fantomfactory.org/pods/afEfanXtra/api/index) for details.
 
 ## Welcome Pages
 
@@ -159,6 +177,29 @@ Would respond to both of the following URLs:
     /example
     /example/42
 
+### Skip Page Rendering
+
+If `@InitRender` returns a non-null object, then page rendering is skipped and the returned object is passed to BedSheet for further processing.
+
+This is useful for explicitly handling authentication and / or 404 errors. Example:
+
+```
+@Page
+const mixin ExamplePage : EfanComponent {
+
+    @InitRender
+    Obj? initRender(Str fileName) {
+        if (fileService.notFound(fileName))
+            return HttpStatus(404, "File not found")
+
+        if (!loggedInUser.isAuthorisedToView(ExamplePage#)
+            return Redirect.movedTemporarily(`/login`)
+
+        return null
+    }
+}
+```
+
 ## Page Events
 
 Page events allow pages to respond to RESTful actions by mapping URLs to page event methods. Page event methods are called in the context of the page they are defined. Denote page events with the `@PageEvent` facet.
@@ -206,6 +247,8 @@ It is standard practice to prefix event methods with the word `on`, so the `love
     }
 
 But note that the event *name* (as used in the URL) is still `love`.
+
+Note that any `@InitRender` method is called before the event method. This gives `@InitRender` a chance to assert access control.
 
 ### RESTful Services
 
@@ -306,7 +349,7 @@ To render `Error404Page` as a BedSheet 404 status page:
 
 ```
 @Contribute { serviceType=HttpStatusResponses# }
-static Void contribute404Response(Configuration config) {
+Void contribute404Response(Configuration config) {
     config[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
 }
 ```
@@ -315,7 +358,7 @@ To render `Error500Page` as a BedSheet error page:
 
 ```
 @Contribute { serviceType=ErrResponses# }
-static Void contributeErrResponses(Configuration config) {
+Void contributeErrResponses(Configuration config) {
     config[Err#] = MethodCall(Pages#renderPage, [Error500Page#]).toImmutableFunc
 }
 ```
