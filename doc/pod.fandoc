@@ -47,7 +47,7 @@ Quick Start [#quickStart]
     // ---- Support class, needed when running from a script ----
 
     @SubModule { modules=[EfanXtraModule#, PillowModule#] }
-    class AppModule {
+    const class AppModule {
         @Contribute { serviceType=TemplateDirectories# }
         Void contributeEfanDirs(Configuration config) {
             // Look for Example.efan in the same dir as this fantom file
@@ -114,7 +114,7 @@ But if no configuration is given, then Pillow defaults to looking in the followi
  - 'etc/web-pages/'
  - 'etc/web-components/'
 
-Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates]`efanXtra::index#templates` for details.
+Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates]`afEfanXtra::index#templates` for details.
 
 
 
@@ -391,7 +391,7 @@ pre>
 syntax: fantom
 
 @Contribute { serviceType=HttpStatusResponses# }
-static Void contribute404Response(Configuration config) {
+Void contribute404Response(Configuration config) {
     config[404] = MethodCall(Pages#renderPage, [Error404Page#]).toImmutableFunc
 }
 <pre
@@ -402,7 +402,7 @@ pre>
 syntax: fantom
 
 @Contribute { serviceType=ErrResponses# }
-static Void contributeErrResponses(Configuration config) {
+Void contributeErrResponses(Configuration config) {
     config[Err#] = MethodCall(Pages#renderPage, [Error500Page#]).toImmutableFunc
 }
 <pre
