@@ -1,6 +1,10 @@
 Versions
 ********
 
+v1.1.2
+======
+ - Chg: Page meta no longer escapes the '@' char, to be more consistent with Fantom's 'Uri' class.
+
 v1.1.0
 ======
  - Chg: Updated to work with [IoC 3.0]`pod:afIoc` and [BedSheet 1.5]`pod:afBedSheet`. (Breaking change.)

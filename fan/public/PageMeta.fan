@@ -273,7 +273,8 @@ internal class PageMetaImpl : PageMeta {
 		return Uri.fromStr(encodeUri(str))
 	}
 
-	private static const Int[] delims := ":/?#[]@\\".chars
+	// removed '@' from delims 'cos it doesn't need to be escaped in paths - also Fantom Uri doesn't and we need to be consistent 
+	private static const Int[] delims := ":/?#[]\\".chars
 
 	// Encode the Str *to* URI standard form
 	// see http://fantom.org/sidewalk/topic/2357
