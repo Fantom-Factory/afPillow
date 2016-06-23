@@ -127,7 +127,7 @@ But if no configuration is given, then Pillow defaults to looking in the followi
 - `etc/web-pages/`
 - `etc/web-components/`
 
-Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates](http://pods.fantomfactory.org/pods/afEfanXtra/api/index) for details.
+Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates](http://pods.fantomfactory.org/pods/afEfanXtra) for details.
 
 ## Welcome Pages
 
