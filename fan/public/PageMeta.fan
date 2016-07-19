@@ -153,16 +153,21 @@ internal class PageMetaImpl : PageMeta {
 		// append page context
 		if (!pageContext.isEmpty) {
 			encoded := encodeCtx(pageContext)
-			if (clientUrl.toStr.contains("**"))
+			clientStr := clientUrl.toStr
+			if (!clientStr.contains("*") || clientUrl.toStr.contains("**"))
 				clientUrl = clientUrl.plusSlash + Uri.fromStr(encoded.join("/"))
 			else {
-				urlBuf := StrBuf().add(clientUrl)
-				encoded.each {
-					i := urlBuf.toStr.index("*")
-					urlBuf.remove(i)
-					urlBuf.insert(i, it)
+				try {
+					urlBuf := StrBuf().add(clientUrl.toStr)
+					encoded.each {
+						i := urlBuf.toStr.index("*")
+						urlBuf.remove(i)
+						urlBuf.insert(i, it)
+					}
+					clientUrl = urlBuf.toStr.toUri
+				} catch (Err err) {
+					throw Err("Could not encode page ctx into URL: ${encoded} into ${clientUrl}", err)
 				}
-				clientUrl = urlBuf.toStr.toUri
 			}
 		}
 
