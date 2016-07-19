@@ -1,0 +1,14 @@
+<html>
+<body>
+
+	<div id="arg1"><%= arg1 %></div>
+	<div id="arg2"><%= arg2 %></div>
+
+	<a id="pageLink" href="<%= pageMeta.pageUrl.encode %>">Page Link</a>
+
+	<a id="plainEvent" href="<%= pageMeta.eventUrl(#onPlainEvent).encode %>">Plain Event</a>
+
+	<a id="ctxEvent" href="<%= pageMeta.eventUrl("ctxEvent", ["Emma", 69]).encode %>">Event with Context</a>
+
+</body>
+</html>

@@ -1,6 +1,10 @@
 Versions
 ********
 
+v1.1.4
+======
+ - Chg: Pages may define '*' placeholders in the URL for page ctx params.
+
 v1.1.2
 ======
  - Chg: Page meta no longer escapes the '@' char, to be more consistent with Fantom's 'Uri' class.
