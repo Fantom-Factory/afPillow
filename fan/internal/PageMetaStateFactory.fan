@@ -74,11 +74,16 @@ internal class PageMetaStateFactory  {
 	}
 
 	Uri pageGlob() {
-		clientUri 	:= pageUrlResolver.pageUrl(pageType)
-		if (welcomePageStrategy.isOn && isWelcomeUri(clientUri))
-			clientUri = clientUri.parent		
-		clientUri = initRender.paramGlob(clientUri)
-		return clientUri
+		clientUrl 	:= pageUrlResolver.pageUrl(pageType)
+
+		// leave the URL alone if it's been set by the user
+		if (!clientUrl.toStr.contains("*")) {
+			if (welcomePageStrategy.isOn && isWelcomeUri(clientUrl))
+				clientUrl = clientUrl.parent		
+			clientUrl = initRender.paramGlob(clientUrl)
+		}
+
+		return clientUrl
 	}
 
 	Method[] eventMethods() {

@@ -151,8 +151,20 @@ internal class PageMetaImpl : PageMeta {
 			throw ArgErr(ErrMsgs.invalidNumberOfPageArgs(pageType, initRender.minNoOfArgs, initRender.paramTypes.size, pageContext))		
 
 		// append page context
-		if (!pageContext.isEmpty)
-			clientUrl = clientUrl.plusSlash + ctxToUri(pageContext)
+		if (!pageContext.isEmpty) {
+			encoded := encodeCtx(pageContext)
+			if (clientUrl.toStr.contains("**"))
+				clientUrl = clientUrl.plusSlash + Uri.fromStr(encoded.join("/"))
+			else {
+				urlBuf := StrBuf().add(clientUrl)
+				encoded.each {
+					i := urlBuf.toStr.index("*")
+					urlBuf.remove(i)
+					urlBuf.insert(i, it)
+				}
+				clientUrl = urlBuf.toStr.toUri
+			}
+		}
 
 		return clientUrl
 	}
@@ -254,10 +266,6 @@ internal class PageMetaImpl : PageMeta {
 		pageUrl.toStr
 	}
 	
-	private Uri ctxToUri(Obj?[] context) {
-		((Uri) context.reduce(``) |Uri url, obj -> Uri| { url.plusSlash.plus(encodeObj(obj)) }).relTo(`/`)
-	}
-	
 	internal static Obj? push(PageMeta pageMeta, |->Obj?| f) {
 		ThreadStack.pushAndRun("afPillow.renderingPageMeta", pageMeta, f)
 	}
@@ -266,6 +274,17 @@ internal class PageMetaImpl : PageMeta {
 		ThreadStack.peek("afPillow.renderingPageMeta", false) ?: (checked ? throw PillowErr(ErrMsgs.renderingPageMetaNotRendering) : null)
 	}
 
+	private Str[] encodeCtx(Obj?[] context) {
+		context.map {
+			// null is usually represented by an empty string
+			it == null ? "" : encodeUri(valueEncoders.toClient(it.typeof, it))
+		}
+	}
+
+	private Uri ctxToUri(Obj?[] context) {
+		((Uri) context.reduce(``) |Uri url, obj -> Uri| { url.plusSlash.plus(encodeObj(obj)) }).relTo(`/`)
+	}
+	
 	private Uri encodeObj(Obj? obj) {
 		if (obj == null)
 			return ``	// null is usually represented by an empty string

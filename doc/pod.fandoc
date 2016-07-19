@@ -179,6 +179,25 @@ Would respond to both of the following URLs:
 
 
 
+Custom URLs
+===========
+To have your pages respond custom URLs, use the 'url' field in the '@Page' facet. Similar to standard BedSheet routing, use '*' to replace page context parameters.
+
+pre>
+syntax: fantom
+
+@Page { url=`/example/*/edit` }
+const mixin Example : EfanComponent {
+    @PageContext abstract name
+}
+<pre
+
+Would respond to URLs similar to:
+
+  /example/steve/edit
+
+
+
 Skip Page Rendering
 ===================
 If '@InitRender' returns a non-null object, then page rendering is skipped and the returned object is passed to BedSheet for further processing.
