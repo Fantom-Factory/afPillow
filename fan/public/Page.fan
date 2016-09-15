@@ -14,6 +14,9 @@ facet class Page {
 	** @Page { url=`/matrix_explained.html` }
 	** const mixin Matrix : EfanComponent { ... }
 	** <pre
+	** 
+	** The URL is a standard route glob and should contain an asterisk for every page context required.
+	** e.g. '/user/*'
 	const Uri? url
 
 	** By default, 'pillow' looks for a template with the same name as the page class.
