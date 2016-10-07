@@ -3,7 +3,8 @@ Versions
 
 v1.1.4
 ======
- - Chg: Pages may define '*' placeholders in the URL for page ctx params.
+ - New: Pages may define '*' placeholders in the URL for page ctx params.
+ - Chg: Event methods may be overridden.
 
 v1.1.2
 ======
