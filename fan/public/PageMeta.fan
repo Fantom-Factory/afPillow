@@ -314,7 +314,7 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	private static Str pageEventName(Method method) {
-		pageEvent := (PageEvent) Method#.method("facet").callOn(method, [PageEvent#])	// Stoopid F4
+		pageEvent := (PageEvent?) method.facet(PageEvent#, false)
 		if (pageEvent.name != null)
 			return pageEvent.name
 		eventName := method.name

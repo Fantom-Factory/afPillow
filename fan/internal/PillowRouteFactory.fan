@@ -44,7 +44,7 @@ internal const class PillowRouteFactory {
 			}
 
 			pageMeta.eventMethods.each |eventMethod| {
-				pageEvent	:= (PageEvent) Method#.method("facet").callOn(eventMethod, [PageEvent#])	// Stoopid F4
+				pageEvent	:= (PageEvent) eventMethod.facet(PageEvent#)
 				eventGlob 	:= pageMeta.eventGlob(eventMethod)
 				qname	 	:= "${pageType.qname}/${eventMethod.name}"
 				eventRoute	:= Route(eventGlob, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)

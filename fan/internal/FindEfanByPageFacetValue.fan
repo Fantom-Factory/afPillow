@@ -10,7 +10,7 @@ internal const class FindEfanByPageFacetValue : TemplateFinder {
 		if (!componentType.hasFacet(Page#))
 			return null
 		
-		pageFacet := (Page) Type#.method("facet").callOn(componentType, [Page#])	// Stoopid F4
+		pageFacet := (Page) componentType.facet(Page#)
 		templateFile := FindEfanByFacetValue.findFile(componentType, pageFacet.template)
 		return templateFile == null ? null : scope.build(TemplateSourceFile#, [templateFile])
 	}
