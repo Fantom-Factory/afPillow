@@ -21,7 +21,7 @@ internal const class PageUrlResolverImpl : PageUrlResolver {
 
 internal const class ResolvePageUrlFromPageFacet : PageUrlResolver {
 	override Uri? pageUrl(Type pageType) {
-		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
+		page := (Page) pageType.facet(Page#)
 		url	 := page.url
 		if (url == null)
 			return null

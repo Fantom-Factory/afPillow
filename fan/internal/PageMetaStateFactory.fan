@@ -64,12 +64,12 @@ internal class PageMetaStateFactory  {
 	}
 	
 	Str httpMethod() {
-		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
+		page := (Page) pageType.facet(Page#)
 		return page.httpMethod
 	}
 	
 	Bool disableRouting() {
-		page := (Page) Type#.method("facet").callOn(pageType, [Page#])	// Stoopid F4
+		page := (Page) pageType.facet(Page#)
 		return page.disableRouting 
 	}
 

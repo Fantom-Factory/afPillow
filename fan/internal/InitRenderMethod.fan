@@ -30,7 +30,7 @@ const class InitRenderMethod {
 			this.paramTypes		= initFields.map { it.type }
 			opts := false
 			this.optionals		= initFields.map |Field f->Bool| {
-				pageCtx := (PageContext?) Slot#.method("facet").callOn(f, [PageContext#, false])	// Stoopid F4
+				pageCtx := (PageContext?) f.facet(PageContext#, false)
 				optional := pageCtx?.optional ?: false
 				
 				if (optional && !f.type.isNullable)

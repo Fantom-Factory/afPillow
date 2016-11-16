@@ -5,6 +5,7 @@ v1.1.4
 ======
  - New: Pages may define '*' placeholders in the URL for page ctx params.
  - Chg: Event methods may be overridden.
+ - Chg: Code now uses the 'facet()' method after an F4 upgrade.
 
 v1.1.2
 ======
