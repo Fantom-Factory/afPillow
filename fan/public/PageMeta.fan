@@ -21,6 +21,18 @@ mixin PageMeta {
 	**  - Any parent 'WebMods'
 	abstract Uri pageUrl()
 
+	** Returns an *absolute* page URL that contains a scheme and host:
+	** 
+	**   http://eggbox.fantomfactory.org/pods/afPillow/
+	** 
+	** Convenience for:
+	** 
+	**   syntax: fantom
+	**   bedSheetServer.toAbsoluteUrl(pageMeta.pageUrl())
+	** 
+	** See `afBedSheet::BedSheetServer`.
+	abstract Uri pageUrlAbs()
+
 	** Returns the 'Content-Type' produced by this page.
 	** 
 	** Returns `PillowConfigIds.defaultContentType` if it can not be determined.
@@ -71,10 +83,14 @@ internal class PageMetaProxy : PageMeta {
 
 	override Obj?[] pageContext() {
 		pageMeta().pageContext
-		
 	}
+
 	override Uri pageUrl() {
 		pageMeta().pageUrl
+	}
+	
+	override Uri pageUrlAbs() {
+		pageMeta().pageUrlAbs
 	}
 	
 	override MimeType contentType() {
@@ -172,6 +188,10 @@ internal class PageMetaImpl : PageMeta {
 		}
 
 		return clientUrl
+	}
+	
+	override Uri pageUrlAbs() {
+		bedServer.toAbsoluteUrl(pageUrl)
 	}
 	
 	override MimeType contentType() {
