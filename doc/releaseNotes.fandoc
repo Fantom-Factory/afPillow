@@ -4,6 +4,7 @@ Versions
 v1.1.4
 ======
  - New: Pages may define '*' placeholders in the URL for page ctx params.
+ - New: Added 'PageMeta.pageUrlAbs()' method.
  - Chg: Event methods may be overridden.
  - Chg: Code now uses the 'facet()' method after an F4 upgrade.
 
