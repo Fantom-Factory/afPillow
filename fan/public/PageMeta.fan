@@ -220,14 +220,14 @@ internal class PageMetaImpl : PageMeta {
 			eventMethod = (Method) event
 			eventName := pageEventName(event)
 			if (!eventMethods.any { eventName.equalsIgnoreCase(pageEventName(it)) })
-				throw ArgNotFoundErr(ErrMsgs.eventNotFound(pageType, eventMethod.name), eventMethods.map { pageEventName(it) })
+				throw eventNotFound(eventMethod.name)
 		}
 
 		if (event is Str) {
 			eventName := (Str) event
 			eventMethod 
 				= eventMethods.find { eventName.equalsIgnoreCase(pageEventName(it)) }
-				?: throw ArgNotFoundErr(ErrMsgs.eventNotFound(pageType, eventName), eventMethods.map { pageEventName(it) })
+				?: throw eventNotFound(eventName)
 		}
 		
 		// validate args
@@ -333,14 +333,20 @@ internal class PageMetaImpl : PageMeta {
 		return buf.toStr
 	}
 	
-	private static Str pageEventName(Method method) {
+	private Str pageEventName(Method method) {
 		pageEvent := (PageEvent?) method.facet(PageEvent#, false)
+		if (pageEvent == null)
+			throw eventNotFound(method.name)
 		if (pageEvent.name != null)
 			return pageEvent.name
 		eventName := method.name
 		if (eventName.startsWith("on"))
 			eventName = eventName[2..-1].decapitalize
 		return eventName
+	}
+	
+	private Err eventNotFound(Str eventName) {
+		ArgNotFoundErr(ErrMsgs.eventNotFound(pageType, eventName), eventMethods.map { pageEventName(it) })
 	}
 }
 
