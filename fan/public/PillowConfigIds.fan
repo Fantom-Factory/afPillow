@@ -26,7 +26,7 @@ const mixin PillowConfigIds {
 
 	** The default 'Content-Type' to serve pages up as, if it can not be determined.
 	** 
-	** Defaults to 'MimeType("text/plain")'
+	** Defaults to 'MimeType("text/html; charset=utf-8")'
 	static const Str defaultContentType		:=	"afPillow.defaultContentType"
 
 	** Set the welcome page strategy which defines the interaction between welcome page URIs and directory URIs.

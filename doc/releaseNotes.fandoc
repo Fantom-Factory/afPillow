@@ -7,6 +7,7 @@ v1.1.4
  - New: Added 'PageMeta.pageUrlAbs()' method.
  - Chg: Event methods may be overridden.
  - Chg: Code now uses the 'facet()' method after an F4 upgrade.
+ - Chg: Changed the default MimeType from 'text/plain' to 'text/html'.
 
 v1.1.2
 ======
