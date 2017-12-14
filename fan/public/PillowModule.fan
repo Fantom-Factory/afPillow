@@ -86,7 +86,7 @@ const class PillowModule {
 
 	@Contribute { serviceType=FactoryDefaults# }
 	Void contributeFactoryDefaults(Configuration config) {
-		config[PillowConfigIds.defaultContentType]	= MimeType("text/plain")
+		config[PillowConfigIds.defaultContentType]	= MimeType("text/html; charset=utf-8")
 		config[PillowConfigIds.welcomePageName]		= "index"
 		config[PillowConfigIds.welcomePageStrategy]	= WelcomePageStrategy.onWithRedirects
 		config[PillowConfigIds.cacheControl]		= "max-age=0, no-cache"

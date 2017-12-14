@@ -24,6 +24,6 @@ internal class TestContentType : PillowTest {
 	Void testContentTypeDefault() {
 		res := client.get(`/contentTypeDefault`)
 		verifyEq(res.body.str, "ContentType = default")
-		verifyEq(res.headers.contentType, MimeType("text/plain"))
+		verifyEq(res.headers.contentType, MimeType("text/html; charset=utf-8"))
 	}
 }
