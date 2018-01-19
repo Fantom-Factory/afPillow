@@ -1,5 +1,5 @@
-Versions
-********
+v1.1
+****
 
 v1.1.4
 ======
@@ -20,6 +20,11 @@ v1.1.0
  - Chg: Deprecated 'Page.disableRoutes' in favour of 'Page.disableRouting'
  - Chg: Added default template directories.
  - Bug: Events were not logged correctly on the BedSheet Err pages if they had the same name.
+
+
+
+v1.0
+****
 
 v1.0.22
 =======
@@ -92,6 +97,11 @@ v1.0.0
  - Chg: 'PageUriResolver' and 'ContentTypeResolver' are now configurable.
  - Chg: Renamed ConfigId 'welcomePage' -> 'welcomePageName'.
  - Bug: Page URIs with no page context could be a directory URI.
+
+
+
+v0.0
+****
 
 v0.0.10
 =======

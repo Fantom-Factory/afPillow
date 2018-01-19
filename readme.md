@@ -1,8 +1,9 @@
-#Pillow v1.1.2
+#Pillow v1.1.4
 ---
-[![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
-[![pod: v1.1.2](http://img.shields.io/badge/pod-v1.1.2-yellow.svg)](http://www.fantomfactory.org/pods/afPillow)
-![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
+
+[![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom-lang.org/)
+[![pod: v1.1.4](http://img.shields.io/badge/pod-v1.1.4-yellow.svg)](http://www.fantomfactory.org/pods/afPillow)
+![Licence: ISC Licence](http://img.shields.io/badge/licence-ISC Licence-blue.svg)
 
 ## Overview
 
@@ -10,26 +11,30 @@ Pillow is a web framework that maps HTTP request URLs to Pillow Pages, letting t
 
 Pillow...
 
-- Is a [BedSheet](http://pods.fantomfactory.org/pods/afBedSheet) framework
-- Extends [efanXtra](http://pods.fantomfactory.org/pods/afEfanXtra) components
-- Plays great with [Slim](http://pods.fantomfactory.org/pods/afSlim)
-- Runs on [IoC](http://pods.fantomfactory.org/pods/afIoc)
+- Is a [BedSheet](http://eggbox.fantomfactory.org/pods/afBedSheet) framework
+- Extends [efanXtra](http://eggbox.fantomfactory.org/pods/afEfanXtra) components
+- Plays great with [Slim](http://eggbox.fantomfactory.org/pods/afSlim)
+- Runs on [IoC](http://eggbox.fantomfactory.org/pods/afIoc)
 
 Pillow - Something for your web app to get its teeth into!
 
 ## Install
 
-Install `Pillow` with the Fantom Repository Manager ( [fanr](http://fantom.org/doc/docFanr/Tool.html#install) ):
+Install `Pillow` with the Fantom Pod Manager ( [FPM](http://eggbox.fantomfactory.org/pods/afFpm) ):
 
-    C:\> fanr install -r http://pods.fantomfactory.org/fanr/ afPillow
+    C:\> fpm install afPillow
 
-To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan`:
+Or install `Pillow` with [fanr](http://fantom.org/doc/docFanr/Tool.html#install):
+
+    C:\> fanr install -r http://eggbox.fantomfactory.org/fanr/ afPillow
+
+To use in a [Fantom](http://fantom-lang.org/) project, add a dependency to `build.fan`:
 
     depends = ["sys 1.0", ..., "afPillow 1.1"]
 
 ## Documentation
 
-Full API & fandocs are available on the [Fantom Pod Repository](http://pods.fantomfactory.org/pods/afPillow/).
+Full API & fandocs are available on the [Eggbox](http://eggbox.fantomfactory.org/pods/afPillow/) - the Fantom Pod Repository.
 
 ## Quick Start
 
@@ -90,7 +95,7 @@ Full API & fandocs are available on the [Fantom Pod Repository](http://pods.fant
 
 ## Usage
 
-To create a web page, define an `EfanComponent` that is annotated with the [Page](http://pods.fantomfactory.org/pods/afPillow/api/Page) facet. Example:
+To create a web page, define an `EfanComponent` that is annotated with the [Page](http://eggbox.fantomfactory.org/pods/afPillow/api/Page) facet. Example:
 
 ```
 using afPillow::Page
@@ -102,14 +107,14 @@ const mixin Admin : EfanComponent {
 }
 ```
 
-[Pages](http://pods.fantomfactory.org/pods/afPillow/api/Page) are [efanXtra](http://pods.fantomfactory.org/pods/afEfanXtra) components and behave in exactly the same way.
+[Pages](http://eggbox.fantomfactory.org/pods/afPillow/api/Page) are [efanXtra](http://eggbox.fantomfactory.org/pods/afEfanXtra) components and behave in exactly the same way.
 
 Pillow will automatically route URLs with your page name, to your page. Camel casing class names results in a `/` delimiter. Examples:
 
     `/admin`        --> Admin.fan
     `/admin/secret` --> AdminSecret.fan
 
-Or you can use the [@Page](http://pods.fantomfactory.org/pods/afPillow/api/Page) facet to define an explicit URL.
+Or you can use the [@Page](http://eggbox.fantomfactory.org/pods/afPillow/api/Page) facet to define an explicit URL.
 
 ## Templates
 
@@ -127,20 +132,20 @@ But if no configuration is given, then Pillow defaults to looking in the followi
 - `etc/web-pages/`
 - `etc/web-components/`
 
-Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates](http://pods.fantomfactory.org/pods/afEfanXtra) for details.
+Template don't have to be on the file system, they may be pod files or even Type fandoc comments! See [efanXtra Templates](http://eggbox.fantomfactory.org/pods/afEfanXtra) for details.
 
 ## Welcome Pages
 
-Pillow supports the routing of welcome pages, also known as directory pages, through the [WelcomePageStrategy](http://pods.fantomfactory.org/pods/afPillow/api/WelcomePageStrategy).
+Pillow supports the routing of welcome pages, also known as directory pages, through the [WelcomePageStrategy](http://eggbox.fantomfactory.org/pods/afPillow/api/WelcomePageStrategy).
 
-When switched on, whenever a request is made for a directory URL (one that ends with a /slash/) then `Pillow` will render the directory's [welcome page](http://pods.fantomfactory.org/pods/afPillow/api/PillowConfigIds.welcomePageName), which defaults to a page named `Index`. Examples:
+When switched on, whenever a request is made for a directory URL (one that ends with a /slash/) then `Pillow` will render the directory's [welcome page](http://eggbox.fantomfactory.org/pods/afPillow/api/PillowConfigIds.welcomePageName), which defaults to a page named `Index`. Examples:
 
     `/`        --> Index.fan
     `/admin/`  --> AdminIndex.fan
 
 More can be read about directory URLs in the article: [Should Your URLs Point to the Directory or the Index Page?](http://www.thesitewizard.com/sitepromotion/directory-name-or-index-url.shtml)
 
-The [welcome page strategy](http://pods.fantomfactory.org/pods/afPillow/api/WelcomePageStrategy) also supports redirects, where requests for legacy pages (like `/index.html`) are redirected to the directory URI. Redirects are preferred over serving up the same page for multiple URIs to avoid [duplicate content](http://moz.com/learn/seo/duplicate-content).
+The [welcome page strategy](http://eggbox.fantomfactory.org/pods/afPillow/api/WelcomePageStrategy) also supports redirects, where requests for legacy pages (like `/index.html`) are redirected to the directory URI. Redirects are preferred over serving up the same page for multiple URIs to avoid [duplicate content](http://moz.com/learn/seo/duplicate-content).
 
 ## Page Contexts
 
@@ -176,6 +181,21 @@ Would respond to both of the following URLs:
 
     /example
     /example/42
+
+### Custom URLs
+
+To have your pages respond custom URLs, use the `url` field in the `@Page` facet. Similar to standard BedSheet routing, use `*` to replace page context parameters.
+
+```
+@Page { url=`/example/*/edit` }
+const mixin Example : EfanComponent {
+    @PageContext abstract name
+}
+```
+
+Would respond to URLs similar to:
+
+    /example/steve/edit
 
 ### Skip Page Rendering
 
@@ -237,7 +257,7 @@ Use `PageMeta.eventUrl(name, context)` to generate event URLs that can be used i
 
 Event methods are invoked before anything is rendered. The default action, should the event method be `Void` or return `null`, is to re-render the containing page.
 
-Event methods may return any [BedSheet](http://pods.fantomfactory.org/pods/afBedSheet) response object.
+Event methods may return any [BedSheet](http://eggbox.fantomfactory.org/pods/afBedSheet) response object.
 
 It is standard practice to prefix event methods with the word `on`, so the `loves()` method could also be written as:
 
@@ -286,7 +306,7 @@ const mixin RestService {
 
 ## Page Meta
 
-The [PageMeta](http://pods.fantomfactory.org/pods/afPillow/api/PageMeta) class holds information about the Pillow Page currently being rendered. Obviously, using `PageMeta` in a page class, returns information about itself! Which is quite handy.
+The [PageMeta](http://eggbox.fantomfactory.org/pods/afPillow/api/PageMeta) class holds information about the Pillow Page currently being rendered. Obviously, using `PageMeta` in a page class, returns information about itself! Which is quite handy.
 
 Arguably the most useful method is `pageUrl()` which returns a URL that can be used, by a client, to render the page complete with the current page context. You can create new `PageMeta` instances with different page contexts by using the `withContext()` method. Using our example again:
 
@@ -309,9 +329,9 @@ const mixin Example : EfanComponent {
 }
 ```
 
-`PageMeta` instances are [BedSheet](http://pods.fantomfactory.org/pods/afBedSheet) response objects and may be returned from route handlers. The Pillow `PageMeta` handler will then render the Pillow page.
+`PageMeta` instances are [BedSheet](http://eggbox.fantomfactory.org/pods/afBedSheet) response objects and may be returned from route handlers. The Pillow `PageMeta` handler will then render the Pillow page.
 
-Use the [Pages](http://pods.fantomfactory.org/pods/afPillow/api/Pages) service to create `PageMeta` instances for any Pillow page.
+Use the [Pages](http://eggbox.fantomfactory.org/pods/afPillow/api/Pages) service to create `PageMeta` instances for any Pillow page.
 
 ## Content Type
 
@@ -319,11 +339,11 @@ Page template files should use a double extension in their name, for example,
 
     IndexPage.html.slim
 
-The outer extension denotes the type of templating to use, [Slim](http://pods.fantomfactory.org/pods/afSlim) in our example. The innter extension is used to find the [Content-Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) that is sent in the HTTP response header. In our example, the `Content-Type` would be set to `text/html`.
+The outer extension denotes the type of templating to use, [Slim](http://eggbox.fantomfactory.org/pods/afSlim) in our example. The innter extension is used to find the [Content-Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) that is sent in the HTTP response header. In our example, the `Content-Type` would be set to `text/html`.
 
 If a double extension is not used, or not know, then the default content type, as defined by the config value, is used.
 
-Or you can use the [@Page](http://pods.fantomfactory.org/pods/afPillow/api/Page) facet to explicitly set the content type.
+Or you can use the [@Page](http://eggbox.fantomfactory.org/pods/afPillow/api/Page) facet to explicitly set the content type.
 
 ## Page Routes
 
