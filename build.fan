@@ -5,19 +5,19 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.1.3")
+		version = Version("1.1.4")
 
 		meta = [	
-			"proj.name"		: "Pillow",
+			"pod.dis"		: "Pillow",
 			"afIoc.module"	: "afPillow::PillowModule",
 			"repo.tags"		: "web",
-			"repo.public"	: "false"
+			"repo.public"	: "true"
 		]
 
 		depends = [	
-			"sys 1.0",
-			"concurrent 1.0",
-			"web 1.0",
+			"sys        1.0.68 - 1.0",
+			"concurrent 1.0.68 - 1.0",
+			"web        1.0.68 - 1.0",
 		
 			// ---- Core ------------------------
 			"afBeanUtils  1.0.6  - 1.0",
@@ -28,7 +28,7 @@ class Build : BuildPod {
 			"afIocEnv     1.1.0  - 1.1",
 
 			// ---- Web ------------------------
-			"afBedSheet   1.5.0  - 1.5",
+			"afBedSheet   1.5.6  - 1.5",
 			"afEfanXtra   1.2.0  - 1.2",
 //			"afEfan       1.5.0  - 1.5",
 
