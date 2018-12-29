@@ -80,9 +80,9 @@ const mixin T_HeaderRender : EfanComponent {
 @Page { url=`/headerEvent` }
 const mixin T_HeaderEvent : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Obj event(Str ctx) { Text.fromPlain("event pageUrl:${pageMeta.pageUrl} ctx:${ctx}") }
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Void eventPage() { }
 	override Str renderTemplate() { "wotever" }
 }

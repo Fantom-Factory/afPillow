@@ -7,27 +7,27 @@ using afBedSheet
 const mixin T_PageEvents : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
 	
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Void defaultReturnValue() {
 		// should render this page --> "Default Page"
 	}
 	
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Text onPlainEvent() {
 		return Text.fromPlain("Plain Event Fired!")
 	}
 
-	@PageEvent { name="dingdong" }
+	@PageEvent  { httpMethod="GET"; name="dingdong" }
 	Text namedEvent() {
 		return Text.fromPlain("Ding Dong Event Fired!")
 	}
 
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Text ctxEvent(Str name, Int iq) {
 		return Text.fromPlain("Event Ctx: name=$name, iq=$iq")
 	}
 
-	@PageEvent { name="opt" }
+	@PageEvent  { httpMethod="GET"; name="opt" }
 	Text optionalEvent(Str name := "not supplied") {
 		return Text.fromPlain("Optional Event Ctx: name=$name")
 	}
@@ -49,17 +49,17 @@ const mixin T_PageCtxEvents : EfanComponent {
 					abstract Str?		ctxName
 					abstract Int? 		ctxIq
 	
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Text plainEvent() {
 		return Text.fromPlain("Plain Event Fired!\nPage Ctx: name=$name, iq=$iq")
 	}
 
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Text ctxEvent(Str name2, Int iq2) {
 		return Text.fromPlain("Page Ctx: name=$name, iq=$iq\nEvent Ctx: name=$name2, iq=$iq2")
 	}
 	
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Void setVars(Str name2, Int iq2) {
 		this.ctxName = name2
 		this.ctxIq = iq2

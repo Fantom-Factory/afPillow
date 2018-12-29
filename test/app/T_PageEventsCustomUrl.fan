@@ -11,12 +11,12 @@ const mixin T_PageEventsCustomUrl : EfanComponent {
 	
 	@Inject	abstract PageMeta	pageMeta
 	
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Text onPlainEvent() {
 		return Text.fromPlain("Plain Event Fired!")
 	}
 
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Text ctxEvent(Str name, Int iq) {
 		return Text.fromPlain("Event Ctx: name=$name, iq=$iq")
 	}

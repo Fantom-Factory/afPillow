@@ -34,7 +34,7 @@ const mixin T_InitRender2 : EfanComponent {
 	Obj? initRender() {
 		return HttpStatus(469, "Bad Ass!")
 	}
-	@PageEvent
+	@PageEvent { httpMethod="GET" }
 	Void stuff() {}
 	override Str renderTemplate() { "FAIL" }
 }
