@@ -2,8 +2,8 @@ using afIoc
 using afEfanXtra
 using afBedSheet
 
-@Page { url=`/pageEvents` }
 @NoDoc
+@Page { url=`/pageEvents` }
 const mixin T_PageEvents : EfanComponent {
 	@Inject	abstract PageMeta	pageMeta
 	
@@ -13,7 +13,7 @@ const mixin T_PageEvents : EfanComponent {
 	}
 	
 	@PageEvent { httpMethod="GET" }
-	Text onPlainEvent() {
+	virtual Text onPlainEvent() {
 		return Text.fromPlain("Plain Event Fired!")
 	}
 
@@ -38,9 +38,16 @@ const mixin T_PageEvents : EfanComponent {
 	}
 }
 
-
-@Page { url=`/pageCtxEvents` }
 @NoDoc
+@Page { url=`/pageEvents2` }
+const mixin T_PageEvents2 : T_PageEvents {
+	override Text onPlainEvent() {
+		return Text.fromPlain("Plain SUBCLASS Event Fired!")
+	}
+}
+
+@NoDoc
+@Page { url=`/pageCtxEvents` }
 const mixin T_PageCtxEvents : EfanComponent {
 	@Inject			abstract PageMeta	pageMeta
 	@PageContext	abstract Str?		name

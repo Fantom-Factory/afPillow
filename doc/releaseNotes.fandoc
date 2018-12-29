@@ -1,6 +1,10 @@
 v1.1
 ****
 
+v1.1.6
+======
+ - Chg: Page event methods may be overridden by subclasses.
+
 v1.1.4
 ======
  - New: Pages may define '*' placeholders in the URL for page ctx params.

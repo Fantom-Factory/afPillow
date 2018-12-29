@@ -84,4 +84,13 @@ internal class TestPageEvents : PillowTest {
 		res := client.postForm(`/pageEvents`, [:])
 		verifyEq(res.body.str, "Empty Event Ctx: name=not supplied")
 	}
+
+	Void testEventOverride() {
+		client.get(`/pageEvents2`)
+		plainEvent := Link("#plainEvent")
+		verifyEq(plainEvent.href, `/pageEvents2/plainEvent`)
+
+		res := plainEvent.click
+		verifyEq(res.body.str, "Plain SUBCLASS Event Fired!")
+	}
 }

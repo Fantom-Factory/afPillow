@@ -87,7 +87,7 @@ internal class PageMetaStateFactory  {
 	}
 
 	Method[] eventMethods() {
-		pageType.methods.findAll { it.hasFacet(PageEvent#) }
+		pageType.inheritance.map { it.methods.findAll { it.hasFacet(PageEvent#) } }.flatten
 	}
 	
 	private Bool isWelcomeUri(Uri clientUri) {

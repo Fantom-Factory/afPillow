@@ -335,8 +335,23 @@ internal class PageMetaImpl : PageMeta {
 	
 	private Str pageEventName(Method method) {
 		pageEvent := (PageEvent?) method.facet(PageEvent#, false)
-		if (pageEvent == null)
-			throw eventNotFound(method.name)
+		
+		if (pageEvent == null) {
+			// 2nd chance - check for inheritance
+			while (pageEvent == null && method.isOverride) {
+				// this search isn't perfect as we may not follow the correct inheritance route
+				newMethod := [method.parent.base].addAll(method.parent.mixins).eachWhile { it.method(method.name, false) }
+				if (newMethod != null) {
+					method 	  = newMethod
+					pageEvent = method.facet(PageEvent#, false)
+				}
+			}
+			// naa - still not found
+			if (pageEvent == null)
+				throw eventNotFound(method.name)
+		}
+		
+		
 		if (pageEvent.name != null)
 			return pageEvent.name
 		eventName := method.name
