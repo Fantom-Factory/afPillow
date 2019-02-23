@@ -43,13 +43,7 @@ internal const class ResolveContentTypeFromTemplateExtension : ContentTypeResolv
 		efan 	:= tsrc.location.ext ?: ""
 		name 	:= tsrc.location.name[0..<-(efan.size+1)]
 		ext		:= name.toUri.ext?.lower
-		eType 	:= ext != null ? MimeType.forExt(ext) : null
-		
-		// TODO: Fantom-1.0.67 - see http://fantom.org/sidewalk/topic/2277#c14506 
-		// hmmm... what if...!?
-		if (ext == "xhtml")
-			return  MimeType("application/xhtml+xml; charset=utf-8")
-
+		eType 	:= ext != null ? MimeType.forExt(ext) : null		
 		return eType
 	}
 }

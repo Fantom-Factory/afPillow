@@ -4,6 +4,7 @@ v1.1
 v1.1.6
 ======
  - Chg: Page event methods may be overridden by subclasses.
+ - Chg: Removed hardcoding for 'xhtml' MIME type - [see here]`https://fantom.org/forum/topic/2277#c14506`.
 
 v1.1.4
 ======

@@ -18,7 +18,7 @@ internal class TestContentType : PillowTest {
 	Void testContentTypeXhtml() {
 		res := client.get(`/contentTypeXhtml`)
 		verifyEq(res.body.str, "ContentType = xhtml")
-		verifyEq(res.headers.contentType, MimeType("application/xhtml+xml; charset=utf-8"))
+		verifyEq(res.headers.contentType, MimeType("application/xhtml+xml"))
 	}
 
 	Void testContentTypeDefault() {
