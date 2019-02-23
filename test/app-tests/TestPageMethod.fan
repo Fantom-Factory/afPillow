@@ -1,4 +1,4 @@
-using afBounce
+using afButter::ButterRequest
 
 internal class TestMethod : PillowTest {
 	
@@ -20,4 +20,15 @@ internal class TestMethod : PillowTest {
 		verifyEq(res.body.str, "POST Event Rendered")
 	}
 
+	Void testGetHead() {
+		// test GET
+		res := client.get(`/welcome`)
+		verifyEq(res.headers.contentLength, 31)
+		verifyEq(res.body.str, "WelcomePage ClientUri: /welcome")
+		
+		// test HEAD
+		res = client.sendRequest(ButterRequest(`/welcome`) { it.method = "HEAD" })
+		verifyEq(res.headers.contentLength, 31)
+		verifyEq(res.body.str, "")
+	}
 }

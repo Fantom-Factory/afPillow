@@ -43,8 +43,8 @@ facet class Page {
 	
 	** The HTTP method the Page should respond to.
 	** 
-	** Defaults to 'GET'
-	const Str httpMethod	:= "GET"
+	** Defaults to 'GET HEAD'
+	const Str httpMethod	:= "GET HEAD"
 	
 	** If 'true' then Page Routes, including events and welcome page redirects, are *not* added to BedSheet.
 	** 
