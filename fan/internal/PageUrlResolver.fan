@@ -37,7 +37,7 @@ internal const class ResolvePageUrlFromTypeName : PageUrlResolver {
 	override Uri? pageUrl(Type pageType) {
 		pageName := pageType.name
 
-		// TODO: contribute page name endings?
+		// TODO contribute page name endings?
 		if (pageName.endsWith("Impl"))
 			pageName = pageName[0..-5]
 		

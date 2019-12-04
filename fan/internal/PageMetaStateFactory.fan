@@ -28,7 +28,7 @@ internal class PageMetaStateFactory  {
 		// can't have optional page params AND event methods
 		if (initRender.hasOptionalParams && !eventMethods.isEmpty)
 			// unless the event is called with NO page ctx AND has a different httpMethod
-			if (initRender.minNoOfArgs > 0)	// TODO: check http methods -> introduce an Event objs
+			if (initRender.minNoOfArgs > 0)	// TODO check http methods -> introduce an Event objs
 				throw PillowErr(ErrMsgs.optionalParamsNotAllowedWithEvents)
 		
 		return PageMetaState {

@@ -4,6 +4,7 @@ using afBedSheet
 using afEfanXtra
 using afPlastic
 using web
+using afEfan::EfanCompiler
 
 ** The [IoC]`pod:afIoc` module class.
 ** 
@@ -50,7 +51,7 @@ const class PillowModule {
 			config["app"] = bedServer.appPod
 	}
 
-	@Contribute { serviceType=ComponentCompiler# }
+	@Contribute { serviceType=EfanCompiler# }
 	Void contributeComponentCompilerCallbacks(Configuration config) {
 		pageCompiler := (PageCompiler) config.build(PageCompiler#)
 		config.add(pageCompiler.callback)
