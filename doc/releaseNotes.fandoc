@@ -3,6 +3,7 @@ v1.1
 
 v1.2.0
 ======
+ - New: Added 'redirect' methods to 'PageMeta'.
  - Chg: Updated to efan v2.0.
 
 v1.1.6

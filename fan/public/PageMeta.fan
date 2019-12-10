@@ -1,6 +1,8 @@
-using afIoc
-using afBedSheet
-using afBeanUtils
+using afBedSheet::BedSheetServer
+using afBedSheet::HttpRequest
+using afBedSheet::Redirect
+using afBedSheet::ValueEncoders
+using afBeanUtils::ArgNotFoundErr
 using web::WebUtil
 
 ** (Service) - Returns details about the Pillow page currently being rendered.
@@ -63,6 +65,12 @@ mixin PageMeta {
 	** Returns all the event methods on the page.
 	abstract Method[] eventMethods()
 
+	** Returns a 'Redirect.movedTemporarily' to this page.
+	abstract Redirect redirect()
+
+	** Returns a 'Redirect.afterPost' to this page.
+	abstract Redirect redirectAfterPost()
+	
 	@NoDoc
 	abstract Uri pageGlob()
 	
@@ -132,7 +140,15 @@ internal class PageMetaProxy : PageMeta {
 	override InitRenderMethod initRender() {
 		pageMeta().initRender
 	}
-	
+
+	override Redirect redirect() {
+		pageMeta().redirect
+	}
+
+	override Redirect redirectAfterPost() {
+		pageMeta().redirectAfterPost
+	}
+
 	override Str toStr() {
 		pageMeta().toStr
 	}	
@@ -288,6 +304,14 @@ internal class PageMetaImpl : PageMeta {
 		pageState.initRender
 	}
 	
+	override Redirect redirect() {
+		Redirect.movedTemporarily(pageUrl)
+	}
+
+	override Redirect redirectAfterPost() {
+		Redirect.afterPost(pageUrl)
+	}
+
 	override Str toStr() {
 		pageUrl.toStr
 	}
