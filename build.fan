@@ -15,9 +15,9 @@ class Build : BuildPod {
 		]
 
 		depends = [	
-			"sys        1.0.68 - 1.0",
-			"concurrent 1.0.68 - 1.0",
-			"web        1.0.68 - 1.0",
+			"sys        1.0.71 - 1.0",
+			"concurrent 1.0.71 - 1.0",
+			"web        1.0.71 - 1.0",
 		
 			// ---- Core ------------------------
 			"afBeanUtils  1.0.10 - 1.0",
@@ -28,12 +28,10 @@ class Build : BuildPod {
 			"afIocEnv     1.1.0  - 1.1",
 
 			// ---- Web ------------------------
-			"afBedSheet   1.5.12 - 1.5",
+			"afBedSheet   1.5.14 - 1.5",
 			"afEfanXtra   2.0.0  - 2.0",
-			"afEfan       2.0.0  - 2.0",
+			"afEfan       2.0.4  - 2.0",
 
-//			"afEfanXtra   1.2.0  - 1.2",
-			
 			// ---- Test -----------------------
 			"afBounce     1.1.8  - 1.1",
 			"afButter     1.2.8  - 1.2"
