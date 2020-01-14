@@ -81,6 +81,18 @@ mixin PageMeta {
 	abstract InitRenderMethod initRender()	
 }
 
+** Returns details about the Pillow event currently being called.
+** 
+@NoDoc	// Advanced WIP - used by Mars to re-direct events to other pages
+class EventMeta {
+	
+	PageMeta	pageMeta
+	Method		eventMethod
+	Obj?[]		eventContext
+	
+	new make(|This| f) { f(this) }
+}
+
 internal class PageMetaProxy : PageMeta {
 
 	private |->PageMeta| pageMeta := |->PageMeta| { PageMetaImpl.peek(true) }

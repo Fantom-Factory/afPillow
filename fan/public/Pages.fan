@@ -52,7 +52,7 @@ internal const class PagesImpl : Pages {
 	@Inject	private const IocEnv				iocEnv
 	@Inject	private const BedSheetServer		bedServer			
 	@Inject	private const HttpResponse			httpRes
-	@Inject	private const HttpRequest			httpRequest
+	@Inject	private const HttpRequest			httpReq
 	@Inject	private const ComponentRenderer		componentRenderer
 	@Inject private const ComponentMeta			componentMeta
 	@Inject private const PageFinder			pageFinder
@@ -80,7 +80,7 @@ internal const class PagesImpl : Pages {
 		pageState := pageCache[pageType] ?: throw PageNotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
 		return PageMetaImpl(pageState, pageContext) {
 			it.bedServer		= this.bedServer
-			it.httpRequest		= this.httpRequest
+			it.httpRequest		= this.httpReq
 			it.valueEncoders	= this.valueEncoders
 		}
 	}
@@ -96,7 +96,11 @@ internal const class PagesImpl : Pages {
 	override Obj renderPageMeta(PageMeta pageMeta) {
 		page 	 := efanXtra.component(pageMeta.pageType)
 		initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
+		pageMeta = pageMeta.withContext(initArgs)
 
+		// TODO we should "pop" this when leaving the method 
+		httpReq.stash["afPillow.pageMeta"]	= pageMeta
+		
 		return PageMetaImpl.push(pageMeta) |->Obj| {
 			retVal := null
 			componentRenderer.runInCtx(page) |->| {  
@@ -133,6 +137,13 @@ internal const class PagesImpl : Pages {
 		pageMeta	:= pageMeta(pageType, pageContext)
 		initArgs 	:= convertArgs(pageContext  ?: Str#.emptyList, pageMeta.initRender.paramTypes)
 		eventArgs 	:= convertArgs(eventContext ?: Str#.emptyList, eventMethod.params.map { it.type })
+		
+		// TODO we should "pop" this when leaving the method 
+		httpReq.stash["afPillow.eventMeta"]	= EventMeta {
+			it.pageMeta		= pageMeta.withContext(initArgs)
+			it.eventMethod	= eventMethod
+			it.eventContext	= eventArgs
+		}
 		
 		return PageMetaImpl.push(pageMeta) |->Obj| {
 			retVal := null

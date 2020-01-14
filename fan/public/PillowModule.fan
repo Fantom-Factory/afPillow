@@ -77,7 +77,8 @@ const class PillowModule {
 
 	@Contribute { serviceType=ResponseProcessors# }
 	Void contributeResponseProcessors(Configuration config) {
-		config[PageMeta#] = config.build(PageMetaResponseProcessor#)
+		config[PageMeta#]	= config.build(PageMetaResponseProcessor#)
+		config[EventMeta#]	= config.build(EventMetaResponseProcessor#)
 	}
 	
 	@Contribute { serviceType=TemplateFinders# }

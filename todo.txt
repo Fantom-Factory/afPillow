@@ -1,0 +1,6 @@
+
+Replace Route Regex globs with new BedSheet wildcard URLs (actually we can re-use our globs!) 
+
+Clean up / replace the ThreadStack with a nested parent object
+
+Create a first class EventMeta object that can be injected, returned, and rendered
