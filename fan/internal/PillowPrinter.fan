@@ -36,6 +36,9 @@ internal const class PillowPrinter {
 
 		pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
+			if (pageMeta.routesDisabled)
+				return
+
 			pageGlob	:= pageMeta.pageGlob
 			line := pageType.name.toDisplayName.padl(maxName) + " : " + pageGlob
 			buf.add("  ${line}\n")
