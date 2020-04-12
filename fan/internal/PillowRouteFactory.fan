@@ -24,19 +24,20 @@ internal const class PillowRouteFactory {
 			if (pageMeta.routesDisabled)
 				return
 			
-			serverUri	:= pageMeta.pageGlob
 			initTypes	:= pageMeta.initRender.paramTypes
-			events		:= pageType.methods.findAll { it.hasFacet(PageEvent#) }
 			routes		:= pageMeta.isWelcomePage ? welcomeRoutes : normalRoutes
-			pageRoute	:= Route(serverUri, PillowPageResponse(pageMeta.pageType, pageMeta.initRender), pageMeta.httpMethod)
-			routes.add(pageRoute)
+			pageRes		:= PageResponse(pageMeta.pageType, pageMeta.initRender)
+			pageRes.addRoutes(routes, pageMeta)
 			
-			if (strategy == WelcomePageStrategy.offWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
+			if (strategy == WelcomePageStrategy.offWithRedirects && initTypes.isEmpty && pageMeta.eventMethods.isEmpty && pageMeta.isWelcomePage) {
+				serverUri	:= pageMeta.pageGlob
 				redirect := Route(serverUri.parent, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
 				routes.add(redirect)
 			}
 
-			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
+			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && pageMeta.eventMethods.isEmpty && pageMeta.isWelcomePage) {
+				serverUri	:= pageMeta.pageGlob
+				// FIXME
 				// route all file extensions too, e.g. index.html
 				regex	 := ("(?i)^" + Regex.glob(serverUri.plusSlash.toStr).toStr + welcomePageName + "(?:\\..+)?").toRegex 
 //				redirect := Route(regex, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
@@ -47,8 +48,8 @@ internal const class PillowRouteFactory {
 				pageEvent	:= (PageEvent) eventMethod.facet(PageEvent#)
 				eventGlob 	:= pageMeta.eventGlob(eventMethod)
 				qname	 	:= "${pageType.qname}/${eventMethod.name}"
-//				eventRoute	:= Route(eventGlob, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)
-//				routes.add(eventRoute)
+				eventRoute	:= Route(eventGlob, EventResponse(pageType, initTypes, eventMethod), pageEvent.httpMethod)
+				routes.add(eventRoute)
 			}
 		}
 		
@@ -58,7 +59,7 @@ internal const class PillowRouteFactory {
 	}	
 }
 
-internal const class PillowPageResponse {
+internal const class PageResponse {
 	const Type				pageType	// thinking about inheritance, this may NOT be initRender.parent()
 	const InitRenderMethod	initRender
 	
@@ -67,8 +68,50 @@ internal const class PillowPageResponse {
 		this.initRender = initRender
 	}
 	
+	Void addRoutes(Route[] routes, PageMeta pageMeta) {
+		urlGlob		:= pageMeta.pageGlob
+		httpMethod	:= pageMeta.httpMethod
+		
+		if (pageMeta.initRender.hasOptionalParams) {
+			path	:= urlGlob.path
+			numArgs	:= pageMeta.initRender.minNumArgs
+			numWild	:= 0
+			for (i := 0; i < path.size; ++i) {
+				if (path[i] == "*" || path[i] == "**") {
+					if (numWild >= numArgs) {
+						url := ``
+						for (x := 0; x < i; ++x) {
+							url = url.plusSlash.plusName(path[x])
+						}
+						routes.add(Route(url, this, httpMethod))
+					}
+					numWild++
+				}
+			}
+		}
+		
+		routes.add(Route(urlGlob, this, httpMethod))
+	}
+	
 	override Str toStr() {
 		"Pillow Page  ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
+	}
+}
+
+internal const class EventResponse {
+	const Type 		pageType
+	const Type[]	initParams
+	const Method 	eventMethod
+	
+	new make(Type pageType, Type[] initParams, Method eventMethod) {
+		this.pageType 		= pageType
+		this.initParams		= initParams
+		this.eventMethod	= eventMethod
+	}
+	
+	override Str toStr() {
+		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
+		return "Pillow Event ${pageType.qname}${params}.${eventMethod.name}"
 	}
 }
 

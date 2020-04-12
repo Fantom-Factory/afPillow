@@ -191,8 +191,8 @@ internal class PageMetaImpl : PageMeta {
 		clientUrl = bedServer.toClientUrl(clientUrl)
 
 		// validate args
-		if (pageContext.size < initRender.minNoOfArgs || pageContext.size > initRender.paramTypes.size)
-			throw ArgErr(ErrMsgs.invalidNumberOfPageArgs(pageType, initRender.minNoOfArgs, initRender.paramTypes.size, pageContext))		
+		if (pageContext.size < initRender.minNumArgs || pageContext.size > initRender.paramTypes.size)
+			throw ArgErr(ErrMsgs.invalidNumberOfPageArgs(pageType, initRender.minNumArgs, initRender.paramTypes.size, pageContext))		
 
 		// append page context
 		if (!pageContext.isEmpty) {
@@ -297,7 +297,7 @@ internal class PageMetaImpl : PageMeta {
 		eventMethod.params.each {
 			if (!hasDefs)
 				if (it.hasDefault) {
-					eventCtx += "/?**"
+					eventCtx += "/**"	// FIXME
 					hasDefs = true
 				} else
 					eventCtx += "/*"

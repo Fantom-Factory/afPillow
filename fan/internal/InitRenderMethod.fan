@@ -47,8 +47,12 @@ const class InitRenderMethod {
 		}
 	}
 
-	Int minNoOfArgs() {
+	Int minNumArgs() {
 		optionals.findAll { !it }.size
+	}
+
+	Int maxNumArgs() {
+		optionals.size
 	}
 	
 	Bool hasOptionalParams() {
@@ -56,28 +60,21 @@ const class InitRenderMethod {
 	}
 
 	Uri paramGlob(Uri pageGlob) {
-		hasDefs := false
-		optionals.each {
-			if (!hasDefs)
-				if (it) {
-					// need to use `/**` syntax to match optional params
-					pageGlob = pageGlob.plusSlash.plusName("?**")
-					hasDefs = true
-				} else
-					pageGlob = pageGlob.plusSlash.plusName("*")
+		for (i := 0; i < optionals.size; ++i) {
+			pageGlob = pageGlob.plusSlash.plusName("*")			
 		}
 		return pageGlob
 	}
 	
-	Bool argsMatch(Str?[] segments) {
-		if (segments.size < minNoOfArgs || segments.size > paramTypes.size)
-			return false
-		return paramTypes.all |Type paramType, i->Bool| {
-			if (i >= segments.size)
-				return optionals[i]
-			return (segments[i] == null) ? paramType.isNullable : true
-		}
-	}
+//	Bool argsMatch(Str?[] segments) {
+//		if (segments.size < minNoOfArgs || segments.size > paramTypes.size)
+//			return false
+//		return paramTypes.all |Type paramType, i->Bool| {
+//			if (i >= segments.size)
+//				return optionals[i]
+//			return (segments[i] == null) ? paramType.isNullable : true
+//		}
+//	}
 	
 	Void compileMethod(PlasticClassModel model) {
 		if (initFields == null)

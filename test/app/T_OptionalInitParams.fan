@@ -30,25 +30,6 @@ const mixin T_OptionalPageCtxs : EfanComponent {
 	override Str renderTemplate() { "$p1 $p2 $p3" }
 }
 
-// ---- Nullable ----
-
-@NoDoc
-@Page { url=`/initParamNullable`}
-const mixin T_InitParamNullable : EfanComponent {
-	abstract Str? p1
-	@InitRender
-	Void initRender(Str? p1) { this.p1 = p1	}
-	override Str renderTemplate() { "$p1" }
-}
-
-@NoDoc
-@Page { url=`/pageCtxNullable`}
-const mixin T_PageCtxNullable : EfanComponent {
-	@PageContext
-	abstract Str? p1
-	override Str renderTemplate() { "$p1" }
-}
-
 // ---- Optional ----
 
 @NoDoc

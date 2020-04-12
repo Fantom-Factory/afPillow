@@ -28,7 +28,7 @@ internal class PageMetaStateFactory  {
 		// can't have optional page params AND event methods
 		if (initRender.hasOptionalParams && !eventMethods.isEmpty)
 			// unless the event is called with NO page ctx AND has a different httpMethod
-			if (initRender.minNoOfArgs > 0)	// TODO check http methods -> introduce an Event objs
+			if (initRender.minNumArgs > 0)	// TODO check http methods -> introduce an Event objs
 				throw PillowErr(ErrMsgs.optionalParamsNotAllowedWithEvents)
 		
 		return PageMetaState {
@@ -77,12 +77,14 @@ internal class PageMetaStateFactory  {
 		clientUrl 	:= pageUrlResolver.pageUrl(pageType)
 
 		// leave the URL alone if it's been set by the user
-		if (!clientUrl.toStr.contains("*")) {
-			if (welcomePageStrategy.isOn && isWelcomeUri(clientUrl))
-				clientUrl = clientUrl.parent		
-			clientUrl = initRender.paramGlob(clientUrl)
-		}
+		if (clientUrl.toStr.contains("*"))
+			return clientUrl
+		
+		if (welcomePageStrategy.isOn && isWelcomeUri(clientUrl))
+			clientUrl = clientUrl.parent		
 
+		// add wildcards for each param
+		clientUrl = initRender.paramGlob(clientUrl)
 		return clientUrl
 	}
 

@@ -1,7 +1,7 @@
 using afIoc::Inject
 using afBedSheet::ResponseProcessor
 
-internal const class PageMetaResponseProcessor : ResponseProcessor {
+internal const class PageMetaProcessor : ResponseProcessor {
 	@Inject private const Pages pages
 	
 	new make(|This|in) { in(this) }

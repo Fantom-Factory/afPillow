@@ -22,8 +22,8 @@ internal class TestPageContext : PillowTest {
 		verifyEq(url, `/pageContextStr/`)
 
 		// Fantom Bug: see http://fantom.org/sidewalk/topic/2359
-//		url = pages[T_PageContext#].withContext([`foo/`]).pageUrl
-//		verifyEq(url, `foo/`)
+		url = pages[T_PageContext#].withContext([`foo/`]).pageUrl
+		verifyEq(url, `foo/`)
 
 		// this tests the DECODING
 		res  := client.get(Uri.fromStr("/pageContextStr/em\\:ma"))
