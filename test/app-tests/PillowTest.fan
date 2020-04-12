@@ -15,7 +15,7 @@ internal abstract class PillowTest : Test {
 		Log.get("afIoc").level 		= LogLevel.warn
 		Log.get("afIocEnv").level 	= LogLevel.warn
 		Log.get("afBedSheet").level	= LogLevel.warn
-//		Log.get("afPillow").level	= LogLevel.warn
+		Log.get("afPillow").level	= LogLevel.warn
 	}
 	
 	override Void teardown() {

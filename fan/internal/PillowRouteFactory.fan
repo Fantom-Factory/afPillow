@@ -37,11 +37,9 @@ internal const class PillowRouteFactory {
 
 			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && pageMeta.eventMethods.isEmpty && pageMeta.isWelcomePage) {
 				serverUri	:= pageMeta.pageGlob
-				// FIXME
-				// route all file extensions too, e.g. index.html
-				regex	 := ("(?i)^" + Regex.glob(serverUri.plusSlash.toStr).toStr + welcomePageName + "(?:\\..+)?").toRegex 
-//				redirect := Route(regex, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
-//				routes.add(redirect)
+				indexUrl	 := serverUri.plusSlash.plusName(welcomePageName) 
+				redirect := Route(indexUrl, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
+				routes.add(redirect)
 			}
 
 			pageMeta.eventMethods.each |eventMethod| {
@@ -146,57 +144,3 @@ internal const class EventResponse {
 		return "Pillow Event ${pageType.qname}${params}.${eventMethod.name}"
 	}
 }
-
-//internal const class PageRenderFactory : RouteResponseFactory {
-//	const InitRenderMethod initRender
-//	
-//	new make(InitRenderMethod initRender) {
-//		this.initRender = initRender
-//	}
-//	
-//	override Bool matchSegments(Str?[] segments) {
-//		initRender.argsMatch(segments)
-//	}
-//	
-//	override Obj? createResponse(Str?[] segments) {
-//		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
-//		return MethodCall(Pages#renderPage, [initRender.pageType, segments])
-//	}
-//	
-//	override Str toStr() {
-//		"Pillow Page  ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
-//	}
-//}
-
-//internal const class EventCallerFactory : RouteResponseFactory {
-//	const Type 		pageType
-//	const Type[]	initParams
-//	const Method 	eventMethod
-//	
-//	new make(Type pageType, Type[] initParams, Method eventMethod) {
-//		this.pageType 		= pageType
-//		this.initParams		= initParams
-//		this.eventMethod	= eventMethod
-//	}
-//	
-//	override Bool matchSegments(Str?[] segments) {
-//		if (segments.size < initParams.size)
-//			return false
-//		initSegs := segments[0..<initParams.size]
-//		if (!matchesParams(initParams, initSegs))
-//			return false
-//		eventSegs := segments[initParams.size..-1]
-//		return matchesMethod(eventMethod, eventSegs)
-//	}
-//
-//	override Obj? createResponse(Str?[] segments) {
-//		pageSegs  := segments[0..<initParams.size]
-//		eventSegs := segments[initParams.size..-1]
-//		return MethodCall(Pages#callPageEvent, [pageType, pageSegs, eventMethod, eventSegs])
-//	}
-//	
-//	override Str toStr() {
-//		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
-//		return "Pillow Event ${pageType.qname}${params}.${eventMethod.name}"
-//	}	
-//}

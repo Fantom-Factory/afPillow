@@ -32,8 +32,8 @@ internal class TestWelcomePageStrategy : PillowTest {
 		verifyEq(client.get(`/start`	 ).statusCode, 307)
 		verifyEq(client.lastResponse.headers.location, `/`)
 		verifyEq(client.get(`/`			 ).statusCode, 200) 
-		verifyEq(client.get(`/start.html`).statusCode, 307) 
-		verifyEq(client.lastResponse.headers.location, `/`)
+		// is no-longer a 307 redirect due to BedSheet no-longer serving regex routes 
+		verifyEq(client.get(`/start.html`).statusCode, 404)
 	}
 	
 	override Void setup() {	}
