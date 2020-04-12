@@ -1,6 +1,6 @@
 using afBedSheet::BedSheetServer
 using afBedSheet::HttpRequest
-using afBedSheet::Redirect
+using afBedSheet::HttpRedirect
 using afBedSheet::ValueEncoders
 using afBeanUtils::ArgNotFoundErr
 using web::WebUtil
@@ -66,10 +66,10 @@ mixin PageMeta {
 	abstract Method[] eventMethods()
 
 	** Returns a 'Redirect.movedTemporarily' to this page.
-	abstract Redirect redirect()
+	abstract HttpRedirect redirect()
 
 	** Returns a 'Redirect.afterPost' to this page.
-	abstract Redirect redirectAfterPost()
+	abstract HttpRedirect redirectAfterPost()
 	
 	@NoDoc
 	abstract Uri pageGlob()
@@ -153,11 +153,11 @@ internal const class PageMetaProxy : PageMeta {
 		pageMeta.initRender
 	}
 
-	override Redirect redirect() {
+	override HttpRedirect redirect() {
 		pageMeta.redirect
 	}
 
-	override Redirect redirectAfterPost() {
+	override HttpRedirect redirectAfterPost() {
 		pageMeta.redirectAfterPost
 	}
 
@@ -316,12 +316,12 @@ internal class PageMetaImpl : PageMeta {
 		pageState.initRender
 	}
 	
-	override Redirect redirect() {
-		Redirect.movedTemporarily(pageUrl)
+	override HttpRedirect redirect() {
+		HttpRedirect.movedTemporarily(pageUrl)
 	}
 
-	override Redirect redirectAfterPost() {
-		Redirect.afterPost(pageUrl)
+	override HttpRedirect redirectAfterPost() {
+		HttpRedirect.afterPost(pageUrl)
 	}
 
 	override Str toStr() {
