@@ -1,5 +1,7 @@
 using afIoc::Inject
-using afEfanXtra
+using afEfanXtra::Abstract
+using afEfanXtra::EfanComponent
+using afEfanXtra::ComponentFinder
 
 internal const class ComponentFinderImpl : ComponentFinder {
 	override Type[] findComponentTypes(Pod pod) {

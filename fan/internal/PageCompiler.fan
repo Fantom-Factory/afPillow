@@ -1,6 +1,5 @@
-using afIoc
-using afPlastic
-using afEfanXtra
+using afIoc::Inject
+using afPlastic::PlasticClassModel
 
 internal const class PageCompiler {
 	

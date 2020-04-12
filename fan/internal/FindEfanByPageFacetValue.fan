@@ -1,5 +1,9 @@
-using afIoc
-using afEfanXtra
+using afIoc::Inject
+using afIoc::Scope
+using afEfanXtra::TemplateFinder
+using afEfanXtra::TemplateSource
+using afEfanXtra::TemplateSourceFile
+using afEfanXtra::FindEfanByFacetValue
 
 internal const class FindEfanByPageFacetValue : TemplateFinder {
 	@Inject	private const Scope	scope

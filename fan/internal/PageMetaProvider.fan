@@ -1,4 +1,7 @@
-using afIoc
+using afIoc::Inject
+using afIoc::Scope
+using afIoc::InjectionCtx
+using afIoc::DependencyProvider
 
 internal const class PageMetaProvider : DependencyProvider {
 

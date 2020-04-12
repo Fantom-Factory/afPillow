@@ -1,7 +1,8 @@
 using concurrent::Actor
-using afIoc
-using afIocConfig
-using afEfanXtra
+using afIoc::Inject
+using afIocConfig::Config
+using afEfanXtra::ComponentMeta
+using afEfanXtra::EfanXtra
 
 internal class PageMetaStateFactory  {
 
@@ -14,7 +15,6 @@ internal class PageMetaStateFactory  {
 	@Inject	private const PageUrlResolver		pageUrlResolver
 	@Inject	private const ComponentMeta			componentMeta
 	@Inject	private const EfanXtra				efanXtra
-	@Inject	private const Registry				registry
 
 	Type? pageType
 	InitRenderMethod? initRender

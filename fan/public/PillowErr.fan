@@ -1,4 +1,4 @@
-using afBeanUtils
+using afBeanUtils::NotFoundErr
 
 ** As thrown by Pillow.
 const class PillowErr : Err {

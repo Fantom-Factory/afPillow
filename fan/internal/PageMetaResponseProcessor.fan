@@ -1,5 +1,5 @@
-using afIoc
-using afBedSheet
+using afIoc::Inject
+using afBedSheet::ResponseProcessor
 
 internal const class PageMetaResponseProcessor : ResponseProcessor {
 	@Inject private const Pages pages

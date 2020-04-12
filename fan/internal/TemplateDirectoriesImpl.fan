@@ -1,4 +1,4 @@
-using afEfanXtra
+using afEfanXtra::TemplateDirectories
 
 ** The original Impl is 'internal' so we create out own.
 internal const class TemplateDirectoriesImpl : TemplateDirectories {

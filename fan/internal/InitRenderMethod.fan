@@ -1,5 +1,7 @@
-using afPlastic
-using afEfanXtra
+using afPlastic::PlasticClassModel
+using afPlastic::PlasticFacetModel
+using afEfanXtra::InitRender
+using afEfanXtra::ComponentMeta
 
 @NoDoc	// public 'cos Sitemap needs to know if a page has params 
 const class InitRenderMethod {
