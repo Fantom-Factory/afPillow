@@ -32,14 +32,14 @@ internal const class PillowRouteFactory {
 			routes.add(pageRoute)
 			
 			if (strategy == WelcomePageStrategy.offWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
-				redirect := Route(serverUri.parent, Redirect.movedPermanently(serverUri), pageMeta.httpMethod)
+				redirect := Route(serverUri.parent, Redirect.movedTemporarily(serverUri), pageMeta.httpMethod)
 				routes.add(redirect)
 			}
 
 			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
 				// route all file extensions too, e.g. index.html
 				regex	 := ("(?i)^" + Regex.glob(serverUri.plusSlash.toStr).toStr + welcomePageName + "(?:\\..+)?").toRegex 
-				redirect := Route(regex, Redirect.movedPermanently(serverUri), pageMeta.httpMethod)
+				redirect := Route(regex, Redirect.movedTemporarily(serverUri), pageMeta.httpMethod)
 				routes.add(redirect)
 			}
 
