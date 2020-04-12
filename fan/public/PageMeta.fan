@@ -93,76 +93,76 @@ class EventMeta {
 	new make(|This| f) { f(this) }
 }
 
-internal class PageMetaProxy : PageMeta {
+internal const class PageMetaProxy : PageMeta {
 
-	private |->PageMeta| pageMeta := |->PageMeta| { PageMetaImpl.peek(true) }
+	private PageMeta pageMeta() { PageMetaImpl.peek(true) }
 	
 	override Type pageType() {
-		pageMeta().pageType
+		pageMeta.pageType
 	}
 
 	override Obj?[] pageContext() {
-		pageMeta().pageContext
+		pageMeta.pageContext
 	}
 
 	override Uri pageUrl() {
-		pageMeta().pageUrl
+		pageMeta.pageUrl
 	}
 	
 	override Uri pageUrlAbs() {
-		pageMeta().pageUrlAbs
+		pageMeta.pageUrlAbs
 	}
 	
 	override MimeType contentType() {
-		pageMeta().contentType
+		pageMeta.contentType
 	}
 	
 	override Bool isWelcomePage() {
-		pageMeta().isWelcomePage
+		pageMeta.isWelcomePage
 	}
 
 	override Str httpMethod() {
-		pageMeta().httpMethod
+		pageMeta.httpMethod
 	}
 
 	override Bool routesDisabled() {
-		pageMeta().routesDisabled
+		pageMeta.routesDisabled
 	}
 	
 	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {
-		pageMeta().eventUrl(event, eventContext)
+		pageMeta.eventUrl(event, eventContext)
 	}
 
 	override PageMeta withContext(Obj?[]? pageContext) {
-		pageMeta().withContext(pageContext)
+		pageMeta.withContext(pageContext)
 	}
 	
 	override Method[] eventMethods() {
-		pageMeta().eventMethods
+		pageMeta.eventMethods
 	}
 
 	override Uri pageGlob() {
-		pageMeta().pageGlob
+		pageMeta.pageGlob
 	}
 	
 	override Uri eventGlob(Method eventMethod) {
-		pageMeta().eventGlob(eventMethod)
+		pageMeta.eventGlob(eventMethod)
 	}
 	
 	override InitRenderMethod initRender() {
-		pageMeta().initRender
+		pageMeta.initRender
 	}
 
 	override Redirect redirect() {
-		pageMeta().redirect
+		pageMeta.redirect
 	}
 
 	override Redirect redirectAfterPost() {
-		pageMeta().redirectAfterPost
+		pageMeta.redirectAfterPost
 	}
 
 	override Str toStr() {
-		pageMeta().toStr
+		pageMeta.toStr
 	}	
 }
 
