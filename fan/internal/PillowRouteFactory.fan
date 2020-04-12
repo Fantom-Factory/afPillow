@@ -45,11 +45,8 @@ internal const class PillowRouteFactory {
 			}
 
 			pageMeta.eventMethods.each |eventMethod| {
-				pageEvent	:= (PageEvent) eventMethod.facet(PageEvent#)
-				eventGlob 	:= pageMeta.eventGlob(eventMethod)
-				qname	 	:= "${pageType.qname}/${eventMethod.name}"
-				eventRoute	:= Route(eventGlob, EventResponse(pageType, initTypes, eventMethod), pageEvent.httpMethod)
-				routes.add(eventRoute)
+				eventRes	:= EventResponse(pageType, initTypes, eventMethod)
+				eventRes.addRoutes(routes, pageMeta)
 			}
 		}
 		
@@ -107,6 +104,41 @@ internal const class EventResponse {
 		this.pageType 		= pageType
 		this.initParams		= initParams
 		this.eventMethod	= eventMethod
+	}
+	
+	Void addRoutes(Route[] routes, PageMeta pageMeta) {
+		pageEvent	:= (PageEvent) eventMethod.facet(PageEvent#)
+		urlGlob 	:= pageMeta.eventGlob(eventMethod)
+		httpMethod	:= pageEvent.httpMethod
+		
+		numArgs		:= 0
+		for (i := 0; i < eventMethod.params.size; ++i) {
+			if (!eventMethod.params[i].hasDefault)
+				numArgs++
+		}
+		hasDefaults	:= numArgs != eventMethod.params.size
+		
+		if (hasDefaults) {
+			path	:= urlGlob.path
+			numArgs	+= pageMeta.initRender.maxNumArgs
+			numWild	:= 0
+			
+			
+			for (i := 0; i < path.size; ++i) {
+				if (path[i] == "*" || path[i] == "**") {
+					if (numWild >= numArgs) {
+						url := ``
+						for (x := 0; x < i; ++x) {
+							url = url.plusSlash.plusName(path[x])
+						}
+						routes.add(Route(url, this, httpMethod))
+					}
+					numWild++
+				}
+			}
+		}
+		
+		routes.add(Route(urlGlob, this, httpMethod))
 	}
 	
 	override Str toStr() {

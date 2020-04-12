@@ -66,16 +66,6 @@ const class InitRenderMethod {
 		return pageGlob
 	}
 	
-//	Bool argsMatch(Str?[] segments) {
-//		if (segments.size < minNoOfArgs || segments.size > paramTypes.size)
-//			return false
-//		return paramTypes.all |Type paramType, i->Bool| {
-//			if (i >= segments.size)
-//				return optionals[i]
-//			return (segments[i] == null) ? paramType.isNullable : true
-//		}
-//	}
-	
 	Void compileMethod(PlasticClassModel model) {
 		if (initFields == null)
 			return

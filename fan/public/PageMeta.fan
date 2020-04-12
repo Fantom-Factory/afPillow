@@ -172,7 +172,7 @@ internal class PageMetaImpl : PageMeta {
 	internal 		HttpRequest		httpRequest
 	internal 		ValueEncoders	valueEncoders
 	private const 	PageMetaState	pageState
-	override 		Obj?[]			pageContext
+	override 		Obj?[]			pageContext		// FIXME no nulls allowed!
 	
 	internal new make(PageMetaState pageState, Obj?[]? pageContext, |This|in) {
 		in(this)
@@ -267,9 +267,11 @@ internal class PageMetaImpl : PageMeta {
 		eventName := pageEventName(eventMethod)
 		eventUrl := pageUrl
 		if (!eventName.isEmpty)
-			eventUrl = eventUrl.plusSlash + Uri.fromStr(encodeUri(eventName))
+			eventUrl = eventUrl.plusSlash.plusName(eventName)
 		if (eventContext != null && !eventContext.isEmpty)
-			eventUrl = eventUrl.plusSlash + ctxToUri(eventContext)
+			for (i := 0; i < eventContext.size; ++i) {
+				eventUrl = eventUrl.plusSlash.plusName(encodeObj(eventContext[i]))
+			}
 		return eventUrl
 	}
 
@@ -290,25 +292,15 @@ internal class PageMetaImpl : PageMeta {
 	}
 	
 	override Uri eventGlob(Method eventMethod) {
+		eventGlob	:= pageGlob
 		eventName	:= pageEventName(eventMethod)
-		
-		eventCtx := ""
-		hasDefs := false
-		eventMethod.params.each {
-			if (!hasDefs)
-				if (it.hasDefault) {
-					eventCtx += "/**"	// FIXME
-					hasDefs = true
-				} else
-					eventCtx += "/*"
+		if (!eventName.isEmpty)
+			eventGlob = eventGlob.plusSlash.plusName(eventName)
+
+		for (i := 0; i < eventMethod.params.size; ++i) {
+			eventGlob = eventGlob.plusSlash.plusName("*")			
 		}
 
-		eventGlob := pageGlob
-		if (!eventName.isEmpty)
-			eventGlob = eventGlob.plusSlash + Uri.fromStr(encodeUri(eventName))
-		if (!eventCtx.isEmpty)
-			eventGlob = eventGlob.plusSlash + eventCtx.toUri.relTo(`/`)
-		
 		return eventGlob
 	}
 	
@@ -343,15 +335,8 @@ internal class PageMetaImpl : PageMeta {
 		}
 	}
 
-	private Uri ctxToUri(Obj?[] context) {
-		((Uri) context.reduce(``) |Uri url, obj -> Uri| { url.plusSlash.plus(encodeObj(obj)) }).relTo(`/`)
-	}
-	
-	private Uri encodeObj(Obj? obj) {
-		if (obj == null)
-			return ``	// null is usually represented by an empty string
-		str := valueEncoders.toClient(obj.typeof, obj)
-		return Uri.fromStr(encodeUri(str))
+	private Str encodeObj(Obj obj) {
+		valueEncoders.toClient(obj.typeof, obj)
 	}
 
 	// removed '@' from delims 'cos it doesn't need to be escaped in paths - also Fantom Uri doesn't and we need to be consistent 
