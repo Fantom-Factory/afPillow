@@ -320,12 +320,12 @@ internal class PageMetaImpl : PageMeta {
 		pageUrl.toStr
 	}
 	
-	internal static Obj? push(PageMeta pageMeta, |->Obj?| f) {
-		ThreadStack.pushAndRun("afPillow.renderingPageMeta", pageMeta, f)
+	internal static Obj? push(PageMeta pageMeta, |->Obj?| fn) {
+		PageMetaCtx(pageMeta).runInCtx(fn)
 	}
 	
 	internal static PageMeta? peek(Bool checked) {
-		ThreadStack.peek("afPillow.renderingPageMeta", false) ?: (checked ? throw PillowErr(ErrMsgs.renderingPageMetaNotRendering) : null)
+		PageMetaCtx.peek(checked)?.pageMeta
 	}
 
 	private Str[] encodeCtx(Obj[] context) {

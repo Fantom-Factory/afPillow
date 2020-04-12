@@ -108,10 +108,9 @@ internal const class PagesImpl : Pages {
 		initArgs := convertArgs(pageMeta.pageContext, pageMeta.initRender.paramTypes)
 		pageMeta = pageMeta.withContext(initArgs)
 
-		// TODO we should "pop" this when leaving the method 
+		// todo - does this meta need to be stacked? -> see PageMetaCtx
 		httpReq.stash["afPillow.pageMeta"]	= pageMeta
-		
-		return PageMetaImpl.push(pageMeta) |->Obj| {
+		try return PageMetaImpl.push(pageMeta) |->Obj| {
 			retVal := null
 			componentRenderer.runInCtx(page) |->| {  
 				
@@ -137,6 +136,7 @@ internal const class PagesImpl : Pages {
 			}
 			return retVal
 		}
+		finally httpReq.stash.remove("afPillow.pageMeta")
 	}
 
 	override Obj callPageEvent(Type pageType, Obj[]? pageContext, Method eventMethod, Obj[]? eventContext) {
@@ -148,14 +148,14 @@ internal const class PagesImpl : Pages {
 		initArgs 	:= convertArgs(pageContext  ?: Str#.emptyList, pageMeta.initRender.paramTypes)
 		eventArgs 	:= convertArgs(eventContext ?: Str#.emptyList, eventMethod.params.map { it.type })
 		
-		// TODO we should "pop" this when leaving the method 
+		// todo - does this meta need to be stacked? -> see PageMetaCtx
 		httpReq.stash["afPillow.eventMeta"]	= EventMeta {
 			it.pageMeta		= pageMeta.withContext(initArgs)
 			it.eventMethod	= eventMethod
 			it.eventContext	= eventArgs
 		}
 		
-		return PageMetaImpl.push(pageMeta) |->Obj| {
+		try return PageMetaImpl.push(pageMeta) |->Obj| {
 			retVal := null
 			componentRenderer.runInCtx(page) |->| {  
 				
@@ -188,6 +188,7 @@ internal const class PagesImpl : Pages {
 			}
 			return retVal
 		}
+		finally httpReq.stash.remove("afPillow.eventMeta")
 	}
 	
 //	override EfanComponent? getRenderingPage() {

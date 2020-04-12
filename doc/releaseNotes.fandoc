@@ -3,15 +3,20 @@ v1.2
 
 v1.2.2
 ======
+ - New: Rewrote regex route globs for new BedSheet wildcard URLs.
  - New: Limited (NoDoc) support for 'EventMeta'.
+ - Chg: Updated to [BedSheet 1.5.16]`pod:afBedSheet` (Breaking change.)
  - Chg: Page and Event context args may no longer be 'null' (it's complicated and under-used), use a default / optional argument instead.
  - Chg: 'WelcomePageStrategy' redirects downgraded to a '307 Temporary Redirect'.
+ - Chg: Deleted internal 'ThreadStack' pattern and replaced it with a nested parent obj.
  - Bug: Pages and Events with routes disabled were printed as valid routes on startup.
 
 v1.2.0
 ======
  - New: Added 'redirect' methods to 'PageMeta'.
  - Chg: Updated to efan v2.0.
+
+
 
 v1.1
 ****

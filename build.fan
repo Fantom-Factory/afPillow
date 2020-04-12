@@ -37,7 +37,7 @@ class Build : BuildPod {
 			"afButter     1.2.8  - 1.2"
 		]
 
-		srcDirs = [`fan/`, `fan/internal/`, `fan/internal/utils/`, `fan/public/`, `test/app/`, `test/app-tests/`]
+		srcDirs = [`fan/`, `fan/internal/`, `fan/public/`, `test/app/`, `test/app-tests/`]
 		resDirs = [`doc/`,`test/app/`]
 		
 		meta["afBuild.testPods"]	= "afBounce afButter"

@@ -1,6 +1,4 @@
 
-Replace Route Regex globs with new BedSheet wildcard URLs (actually we can re-use our globs!) 
-
-Clean up / replace the ThreadStack with a nested parent object
-
 Create a first class EventMeta object that can be injected, returned, and rendered
+
+List PillowConfigIds strings in pod.fandoc and NoDoc PillowConfigIds - copy / paste rules!

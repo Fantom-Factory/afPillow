@@ -13,10 +13,6 @@ internal const class ErrMsgs {
 		"Page ${pageType.qname} may NOT have both an @InitRender method AND and use @PageContext. Choose one!"
 	}
 
-	static Str renderingPageMetaNotRendering() {
-		"Pillow is NOT currently rendering a page."
-	}
-
 	static Str invalidNumberOfPageArgs(Type pageType, Int minNoOfArgs, Int maxNoOfArgs, Obj[] context) {
 		extra := (minNoOfArgs != maxNoOfArgs) ? " to ${maxNoOfArgs}" : Str.defVal
 		return "Page ${pageType.qname} requires ${minNoOfArgs}${extra} init parameter(s) but ${context.size} were given: " + context.map { it.toStr }
