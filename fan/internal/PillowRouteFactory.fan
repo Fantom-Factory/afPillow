@@ -1,6 +1,7 @@
-using afIoc
-using afIocConfig
-using afBedSheet
+using afIoc::Inject
+using afIocConfig::Config
+using afBedSheet::HttpRedirect
+using afBedSheet::Route
 
 internal const class PillowRouteFactory {
 	
@@ -26,29 +27,28 @@ internal const class PillowRouteFactory {
 			serverUri	:= pageMeta.pageGlob
 			initTypes	:= pageMeta.initRender.paramTypes
 			events		:= pageType.methods.findAll { it.hasFacet(PageEvent#) }
-			pageRoute	:= Route(serverUri, PageRenderFactory(pageMeta.initRender), pageMeta.httpMethod)
 			routes		:= pageMeta.isWelcomePage ? welcomeRoutes : normalRoutes
-			
+			pageRoute	:= Route(serverUri, PillowPageResponse(pageMeta.pageType, pageMeta.initRender), pageMeta.httpMethod)
 			routes.add(pageRoute)
 			
 			if (strategy == WelcomePageStrategy.offWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
-				redirect := Route(serverUri.parent, Redirect.movedTemporarily(serverUri), pageMeta.httpMethod)
+				redirect := Route(serverUri.parent, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
 				routes.add(redirect)
 			}
 
 			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && events.isEmpty && pageMeta.isWelcomePage) {
 				// route all file extensions too, e.g. index.html
 				regex	 := ("(?i)^" + Regex.glob(serverUri.plusSlash.toStr).toStr + welcomePageName + "(?:\\..+)?").toRegex 
-				redirect := Route(regex, Redirect.movedTemporarily(serverUri), pageMeta.httpMethod)
-				routes.add(redirect)
+//				redirect := Route(regex, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
+//				routes.add(redirect)
 			}
 
 			pageMeta.eventMethods.each |eventMethod| {
 				pageEvent	:= (PageEvent) eventMethod.facet(PageEvent#)
 				eventGlob 	:= pageMeta.eventGlob(eventMethod)
 				qname	 	:= "${pageType.qname}/${eventMethod.name}"
-				eventRoute	:= Route(eventGlob, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)
-				routes.add(eventRoute)
+//				eventRoute	:= Route(eventGlob, EventCallerFactory(pageType, initTypes, eventMethod), pageEvent.httpMethod)
+//				routes.add(eventRoute)
 			}
 		}
 		
@@ -58,20 +58,13 @@ internal const class PillowRouteFactory {
 	}	
 }
 
-internal const class PageRenderFactory : RouteResponseFactory {
-	const InitRenderMethod initRender
+internal const class PillowPageResponse {
+	const Type				pageType	// thinking about inheritance, this may NOT be initRender.parent()
+	const InitRenderMethod	initRender
 	
-	new make(InitRenderMethod initRender) {
+	new make(Type pageType, InitRenderMethod initRender) {
+		this.pageType	= pageType
 		this.initRender = initRender
-	}
-	
-	override Bool matchSegments(Str?[] segments) {
-		initRender.argsMatch(segments)
-	}
-	
-	override Obj? createResponse(Str?[] segments) {
-		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
-		return MethodCall(Pages#renderPage, [initRender.pageType, segments])
 	}
 	
 	override Str toStr() {
@@ -79,35 +72,56 @@ internal const class PageRenderFactory : RouteResponseFactory {
 	}
 }
 
-internal const class EventCallerFactory : RouteResponseFactory {
-	const Type 		pageType
-	const Type[]	initParams
-	const Method 	eventMethod
-	
-	new make(Type pageType, Type[] initParams, Method eventMethod) {
-		this.pageType 		= pageType
-		this.initParams		= initParams
-		this.eventMethod	= eventMethod
-	}
-	
-	override Bool matchSegments(Str?[] segments) {
-		if (segments.size < initParams.size)
-			return false
-		initSegs := segments[0..<initParams.size]
-		if (!matchesParams(initParams, initSegs))
-			return false
-		eventSegs := segments[initParams.size..-1]
-		return matchesMethod(eventMethod, eventSegs)
-	}
+//internal const class PageRenderFactory : RouteResponseFactory {
+//	const InitRenderMethod initRender
+//	
+//	new make(InitRenderMethod initRender) {
+//		this.initRender = initRender
+//	}
+//	
+//	override Bool matchSegments(Str?[] segments) {
+//		initRender.argsMatch(segments)
+//	}
+//	
+//	override Obj? createResponse(Str?[] segments) {
+//		// segments is RO and (internally) needs to be a Str, so we can't just append pageType to the start of segments.
+//		return MethodCall(Pages#renderPage, [initRender.pageType, segments])
+//	}
+//	
+//	override Str toStr() {
+//		"Pillow Page  ${initRender.pageType.qname}" + (initRender.paramTypes.isEmpty ? "" : "(" + initRender.paramTypes.join(",").replace("sys::", "") + ")")
+//	}
+//}
 
-	override Obj? createResponse(Str?[] segments) {
-		pageSegs  := segments[0..<initParams.size]
-		eventSegs := segments[initParams.size..-1]
-		return MethodCall(Pages#callPageEvent, [pageType, pageSegs, eventMethod, eventSegs])
-	}
-	
-	override Str toStr() {
-		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
-		return "Pillow Event ${pageType.qname}${params}.${eventMethod.name}"
-	}	
-}
+//internal const class EventCallerFactory : RouteResponseFactory {
+//	const Type 		pageType
+//	const Type[]	initParams
+//	const Method 	eventMethod
+//	
+//	new make(Type pageType, Type[] initParams, Method eventMethod) {
+//		this.pageType 		= pageType
+//		this.initParams		= initParams
+//		this.eventMethod	= eventMethod
+//	}
+//	
+//	override Bool matchSegments(Str?[] segments) {
+//		if (segments.size < initParams.size)
+//			return false
+//		initSegs := segments[0..<initParams.size]
+//		if (!matchesParams(initParams, initSegs))
+//			return false
+//		eventSegs := segments[initParams.size..-1]
+//		return matchesMethod(eventMethod, eventSegs)
+//	}
+//
+//	override Obj? createResponse(Str?[] segments) {
+//		pageSegs  := segments[0..<initParams.size]
+//		eventSegs := segments[initParams.size..-1]
+//		return MethodCall(Pages#callPageEvent, [pageType, pageSegs, eventMethod, eventSegs])
+//	}
+//	
+//	override Str toStr() {
+//		params := initParams.isEmpty ? "" : "(" + initParams.join(",").replace("sys::", "") + ")"
+//		return "Pillow Event ${pageType.qname}${params}.${eventMethod.name}"
+//	}	
+//}
