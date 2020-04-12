@@ -17,14 +17,14 @@ internal const class ErrMsgs {
 		"Pillow is NOT currently rendering a page."
 	}
 
-	static Str invalidNumberOfPageArgs(Type pageType, Int minNoOfArgs, Int maxNoOfArgs, Obj?[] context) {
+	static Str invalidNumberOfPageArgs(Type pageType, Int minNoOfArgs, Int maxNoOfArgs, Obj[] context) {
 		extra := (minNoOfArgs != maxNoOfArgs) ? " to ${maxNoOfArgs}" : Str.defVal
-		return "Page ${pageType.qname} requires ${minNoOfArgs}${extra} init parameter(s) but ${context.size} were given: " + context.map { it?.toStr }
+		return "Page ${pageType.qname} requires ${minNoOfArgs}${extra} init parameter(s) but ${context.size} were given: " + context.map { it.toStr }
 	}
 
-	static Str invalidNumberOfEventArgs(Method eventMethod, Int minNoOfArgs, Int maxNoOfArgs, Obj?[]? context) {
+	static Str invalidNumberOfEventArgs(Method eventMethod, Int minNoOfArgs, Int maxNoOfArgs, Obj[]? context) {
 		extra := (minNoOfArgs != maxNoOfArgs) ? " to ${maxNoOfArgs}" : Str.defVal
-		return "Event ${eventMethod.qname} requires ${minNoOfArgs}${extra} parameter(s) but ${context?.size ?: 0} were given: " + context?.map { it?.toStr }
+		return "Event ${eventMethod.qname} requires ${minNoOfArgs}${extra} parameter(s) but ${context?.size ?: 0} were given: " + context?.map { it.toStr }
 	}
 
 	static Str eventNotFound(Type pageType, Str eventName) {

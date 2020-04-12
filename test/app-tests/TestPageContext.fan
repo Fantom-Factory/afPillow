@@ -18,9 +18,6 @@ internal class TestPageContext : PillowTest {
 		verifyEq(url, `/pageContextStr/venture 4x4`)
 		verifyEq(url.encode, "/pageContextStr/venture%204x4")
 
-		url = pages[T_PageContext#].withContext([null]).pageUrl
-		verifyEq(url, `/pageContextStr/`)
-
 		// Fantom Bug: see http://fantom.org/sidewalk/topic/2359
 		url = pages[T_PageContext#].withContext([`foo/`]).pageUrl
 		verifyEq(url, `/pageContextStr/foo\/`)

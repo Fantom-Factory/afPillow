@@ -4,6 +4,7 @@ v1.2
 v1.2.2
 ======
  - New: Limited (NoDoc) support for 'EventMeta'.
+ - Chg: Page and Event context args may no longer be 'null' (it's complicated and under-used), use a default / optional argument instead.
  - Chg: 'WelcomePageStrategy' redirects downgraded to a '307 Temporary Redirect'.
  - Bug: Pages and Events with routes disabled were printed as valid routes on startup.
 

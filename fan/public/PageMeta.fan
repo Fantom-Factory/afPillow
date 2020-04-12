@@ -14,7 +14,7 @@ mixin PageMeta {
 	abstract Type pageType()
 
 	** Returns the context used to initialise this page.
-	abstract Obj?[] pageContext()
+	abstract Obj[] pageContext()
 
 	** Returns a client URL that can be used to render the given page. 
 	** The URL takes into account:
@@ -57,10 +57,10 @@ mixin PageMeta {
 	** 'event' may be either a: 
 	**  - 'Str' - the name of the event (*not* the name of the method)
 	**  - 'Method' - the event method itself 
-	abstract Uri eventUrl(Obj event, Obj?[]? eventContext := null)
+	abstract Uri eventUrl(Obj event, Obj[]? eventContext := null)
 
 	** Returns a new 'PageMeta' with the given page context.
-	abstract PageMeta withContext(Obj?[]? pageContext)
+	abstract PageMeta withContext(Obj[]? pageContext)
 	
 	** Returns all the event methods on the page.
 	abstract Method[] eventMethods()
@@ -88,7 +88,7 @@ class EventMeta {
 	
 	PageMeta	pageMeta
 	Method		eventMethod
-	Obj?[]		eventContext
+	Obj[]		eventContext
 	
 	new make(|This| f) { f(this) }
 }
@@ -101,7 +101,7 @@ internal const class PageMetaProxy : PageMeta {
 		pageMeta.pageType
 	}
 
-	override Obj?[] pageContext() {
+	override Obj[] pageContext() {
 		pageMeta.pageContext
 	}
 
@@ -129,11 +129,11 @@ internal const class PageMetaProxy : PageMeta {
 		pageMeta.routesDisabled
 	}
 	
-	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {
+	override Uri eventUrl(Obj event, Obj[]? eventContext := null) {
 		pageMeta.eventUrl(event, eventContext)
 	}
 
-	override PageMeta withContext(Obj?[]? pageContext) {
+	override PageMeta withContext(Obj[]? pageContext) {
 		pageMeta.withContext(pageContext)
 	}
 	
@@ -172,9 +172,9 @@ internal class PageMetaImpl : PageMeta {
 	internal 		HttpRequest		httpRequest
 	internal 		ValueEncoders	valueEncoders
 	private const 	PageMetaState	pageState
-	override 		Obj?[]			pageContext		// FIXME no nulls allowed!
+	override 		Obj[]			pageContext
 	
-	internal new make(PageMetaState pageState, Obj?[]? pageContext, |This|in) {
+	internal new make(PageMetaState pageState, Obj[]? pageContext, |This|in) {
 		in(this)
 		this.pageState		= pageState
 		this.pageContext 	= pageContext ?: Obj#.emptyList
@@ -238,7 +238,7 @@ internal class PageMetaImpl : PageMeta {
 		pageState.routesDisabled
 	}
 	
-	override Uri eventUrl(Obj event, Obj?[]? eventContext := null) {
+	override Uri eventUrl(Obj event, Obj[]? eventContext := null) {
 		eventMethod := (Method?) null
 
 		if (event isnot Str && event isnot Method)
@@ -275,7 +275,7 @@ internal class PageMetaImpl : PageMeta {
 		return eventUrl
 	}
 
-	override PageMeta withContext(Obj?[]? pageContext) {
+	override PageMeta withContext(Obj[]? pageContext) {
 		PageMetaImpl(pageState, pageContext) {
 			it.bedServer 	 = this.bedServer
 			it.httpRequest 	 = this.httpRequest
@@ -328,10 +328,9 @@ internal class PageMetaImpl : PageMeta {
 		ThreadStack.peek("afPillow.renderingPageMeta", false) ?: (checked ? throw PillowErr(ErrMsgs.renderingPageMetaNotRendering) : null)
 	}
 
-	private Str[] encodeCtx(Obj?[] context) {
+	private Str[] encodeCtx(Obj[] context) {
 		context.map {
-			// null is usually represented by an empty string
-			it == null ? "" : encodeUri(valueEncoders.toClient(it.typeof, it))
+			encodeUri(valueEncoders.toClient(it.typeof, it))
 		}
 	}
 

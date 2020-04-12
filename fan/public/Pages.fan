@@ -24,19 +24,19 @@ const mixin Pages {
 	** Create 'PageMeta' for the given page type and context. 
 	** 
 	** (Note: 'pageContext' are the arguments to the '@InitRender' method, if any.) 
-	abstract PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null)
+	abstract PageMeta pageMeta(Type pageType, Obj[]? pageContext := null)
 
 	** Create 'PageMeta' for the given page type and context.
 	**  
 	** Convenience / alias for 'pageMeta(...)'.
 	@Operator
-	abstract PageMeta get(Type pageType, Obj?[]? pageContext := null)
+	abstract PageMeta get(Type pageType, Obj[]? pageContext := null)
 
 	** Manually renders the given page using 'pageContext' as arguments to '@InitRender'. 
 	** 
 	** Note that 'pageContext' Strs are converted to their appropriate type via BedSheet's 'ValueEncoder' service.
 	// Obj 'cos the method may be called manually (from ResponseProcessor)
-	abstract Obj renderPage(Type pageType, Obj?[]? pageContext := null)
+	abstract Obj renderPage(Type pageType, Obj[]? pageContext := null)
 
 	** Manually renders the given 'pageMeta'. 
 	** 
@@ -47,7 +47,7 @@ const mixin Pages {
 	** 
 	** Note this may be used to call *any* method on a page, not just ones annotated with the '@PageEvent' facet.
 	// Obj 'cos the method may be called manually (from ResponseProcessor)
-	abstract Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext)
+	abstract Obj callPageEvent(Type pageType, Obj[]? pageContext, Method eventMethod, Obj[]? eventContext)
 
 	// moar thought needs to go into how to get / set the data ctx so the page can retrieve thread local data
 //	** Returns the currently rendering page. Or 'null' if no page is being rendered.
@@ -86,7 +86,7 @@ internal const class PagesImpl : Pages {
 		this.pageTypes = pageCache.keys.sort
 	}
 	
-	override PageMeta pageMeta(Type pageType, Obj?[]? pageContext := null) {
+	override PageMeta pageMeta(Type pageType, Obj[]? pageContext := null) {
 		pageState := pageCache[pageType] ?: throw PageNotFoundErr(ErrMsgs.couldNotFindPage(pageType), pageCache.keys) 
 		return PageMetaImpl(pageState, pageContext) {
 			it.bedServer		= this.bedServer
@@ -95,11 +95,11 @@ internal const class PagesImpl : Pages {
 		}
 	}
 
-	override PageMeta get(Type pageType, Obj?[]? pageContext := null) {
+	override PageMeta get(Type pageType, Obj[]? pageContext := null) {
 		pageMeta(pageType, pageContext)
 	}
 	
-	override Obj renderPage(Type pageType, Obj?[]? pageContext := null) {
+	override Obj renderPage(Type pageType, Obj[]? pageContext := null) {
 		renderPageMeta(pageMeta(pageType, pageContext))
 	}
 
@@ -139,7 +139,7 @@ internal const class PagesImpl : Pages {
 		}
 	}
 
-	override Obj callPageEvent(Type pageType, Obj?[]? pageContext, Method eventMethod, Obj?[]? eventContext) {
+	override Obj callPageEvent(Type pageType, Obj[]? pageContext, Method eventMethod, Obj[]? eventContext) {
 		if (!iocEnv.isProd) 
 			httpRes.headers["X-afPillow-calledEvent"] = eventMethod.qname
 
@@ -201,7 +201,7 @@ internal const class PagesImpl : Pages {
 	// ---- Private Methods --------------------------------------------------------------------------------------------
 	
 	** Convert the Str from Routes into real arg objs
-	private Obj[] convertArgs(Obj?[] argsIn, Type[] convertTo) {
+	private Obj[] convertArgs(Obj[] argsIn, Type[] convertTo) {
 		try
 			return argsIn.map |arg, i -> Obj?| {
 				// guard against having more args than the method has params! 
