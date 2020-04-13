@@ -2,3 +2,20 @@
 Create a first class EventMeta object that can be injected, returned, and rendered
 
 List PillowConfigIds strings in pod.fandoc and NoDoc PillowConfigIds - copy / paste rules!
+
+Pillow - respond to HEAD requests
+
+
+
+Bad Ideas
+=========
+
+@PageEvent should default to POST not GET (for security) ... but:
+ - It is NOT expected behaviour
+ - All HTML forms default to GET
+ - It's a massive breaking change
+
+
+Pillow - pageContext is Str (when composed from URL) and object when made from .withCtx([...])
+ - So? Args get coerced to their real types via ValueEncoders
+ 

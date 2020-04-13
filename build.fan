@@ -1,11 +1,11 @@
-using build
+using build::BuildPod
 
 class Build : BuildPod {
 
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.2.1")
+		version = Version("1.2.2")
 
 		meta = [	
 			"pod.dis"		: "Pillow",
@@ -15,9 +15,9 @@ class Build : BuildPod {
 		]
 
 		depends = [	
-			"sys        1.0.71 - 1.0",
-			"concurrent 1.0.71 - 1.0",
-			"web        1.0.71 - 1.0",
+			"sys          1.0.71 - 1.0",
+			"concurrent   1.0.71 - 1.0",
+			"web          1.0.71 - 1.0",
 		
 			// ---- Core ------------------------
 			"afBeanUtils  1.0.10 - 1.0",
@@ -28,13 +28,13 @@ class Build : BuildPod {
 			"afIocEnv     1.1.0  - 1.1",
 
 			// ---- Web ------------------------
-			"afBedSheet   1.5.14 - 1.5",
-			"afEfanXtra   2.0.0  - 2.0",
+			"afBedSheet   1.5.16 - 1.5",
+			"afEfanXtra   2.0.2  - 2.0",
 			"afEfan       2.0.4  - 2.0",
 
 			// ---- Test -----------------------
-			"afBounce     1.1.8  - 1.1",
-			"afButter     1.2.8  - 1.2"
+			"afBounce     1.1.12 - 1.1",
+			"afButter     1.2.10 - 1.2"
 		]
 
 		srcDirs = [`fan/`, `fan/internal/`, `fan/public/`, `test/app/`, `test/app-tests/`]
@@ -43,4 +43,3 @@ class Build : BuildPod {
 		meta["afBuild.testPods"]	= "afBounce afButter"
 	}
 }
-

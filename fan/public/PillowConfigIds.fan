@@ -1,5 +1,5 @@
 
-// FIXME list PillowConfigIds strings somewhere and NoDoc this
+// TODO list PillowConfigIds strings somewhere and NoDoc this
 
 ** [IocConfig]`http://repo.status302.com/doc/afIocConfig/` values as provided by 'Pillow'.
 ** To change their value, override them in your 'AppModule'. Example:
