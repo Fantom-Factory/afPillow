@@ -117,7 +117,6 @@ internal const class EventResponse {
 			numArgs	+= pageMeta.initRender.maxNumArgs
 			numWild	:= 0
 			
-			
 			for (i := 0; i < path.size; ++i) {
 				if (path[i] == "*" || path[i] == "**") {
 					if (numWild >= numArgs) {
