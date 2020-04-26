@@ -95,7 +95,18 @@ internal class PageMetaStateFactory  {
 	}
 
 	Method[] eventMethods() {
-		pageType.inheritance.map { it.methods.findAll { it.hasFacet(PageEvent#) } }.flatten.unique
+		// find all page event methods, taking care to both search the hierarchy AND take unique overridden methods 
+		methods := Str:Method[:]
+		inheritance := pageType.inheritance.rw.reverse
+		for (i := 0; i < inheritance.size; ++i) {
+			meths := inheritance[i].methods
+			for (x := 0; x < meths.size; ++x) {
+				method := meths[x]
+				if (method.hasFacet(PageEvent#))
+					methods[method.name] = method
+			}
+		}
+		return methods.vals
 	}
 	
 	private Bool isWelcomeUri(Uri clientUri) {
