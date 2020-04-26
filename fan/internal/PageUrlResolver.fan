@@ -39,10 +39,10 @@ internal const class ResolvePageUrlFromTypeName : PageUrlResolver {
 
 		// TODO contribute page name endings?
 		if (pageName.endsWith("Impl"))
-			pageName = pageName[0..-5]
+			pageName = pageName[0..<-4]
 		
 		if (pageName.endsWith("Page"))
-			pageName = pageName[0..-5]
+			pageName = pageName[0..<-4]
 		
 		pageUrl := pageName.toDisplayName.replace(" ", "/").lower
 	

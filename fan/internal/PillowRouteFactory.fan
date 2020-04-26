@@ -16,8 +16,7 @@ internal const class PillowRouteFactory {
 	new make(|This| in) { in(this) }
 	
 	Route[] pillowPageRoutes() {
-		normalRoutes 	:= Route[,]
-		welcomeRoutes	:= Route[,]
+		routes 	:= Route[,]
 
 		pages.pageTypes.each |pageType| {
 			pageMeta 	:= pages.pageMeta(pageType, null)
@@ -25,20 +24,19 @@ internal const class PillowRouteFactory {
 				return
 			
 			initTypes	:= pageMeta.initRender.paramTypes
-			routes		:= pageMeta.isWelcomePage ? welcomeRoutes : normalRoutes
 			pageRes		:= PageResponse(pageMeta.pageType, pageMeta.initRender)
 			pageRes.addRoutes(routes, pageMeta)
 			
 			if (strategy == WelcomePageStrategy.offWithRedirects && initTypes.isEmpty && pageMeta.eventMethods.isEmpty && pageMeta.isWelcomePage) {
 				serverUri	:= pageMeta.pageGlob
-				redirect := Route(serverUri.parent, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
+				redirect	:= Route(serverUri.parent, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
 				routes.add(redirect)
 			}
 
 			if (strategy == WelcomePageStrategy.onWithRedirects && initTypes.isEmpty && pageMeta.eventMethods.isEmpty && pageMeta.isWelcomePage) {
 				serverUri	:= pageMeta.pageGlob
-				indexUrl	 := serverUri.plusSlash.plusName(welcomePageName) 
-				redirect := Route(indexUrl, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
+				indexUrl	:= serverUri.plusSlash.plusName(welcomePageName) 
+				redirect	:= Route(indexUrl, HttpRedirect.movedTemporarily(serverUri), pageMeta.httpMethod)
 				routes.add(redirect)
 			}
 
@@ -48,9 +46,7 @@ internal const class PillowRouteFactory {
 			}
 		}
 		
-		// welcomeRoutes, i.e. /poo/ and /poo/index need to come before normalRoutes, 'cos normalRoutes may have a
-		// capture all pageContext like /poo/* meaning the welcomeRoute would never get a look in!
-		return welcomeRoutes.addAll(normalRoutes)
+		return routes
 	}	
 }
 

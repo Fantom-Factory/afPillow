@@ -195,27 +195,36 @@ internal class PageMetaImpl : PageMeta {
 			throw ArgErr(ErrMsgs.invalidNumberOfPageArgs(pageType, initRender.minNumArgs, initRender.paramTypes.size, pageContext))		
 
 		// append page context
-		if (!pageContext.isEmpty) {
-			encoded := encodeCtx(pageContext)
-			clientStr := clientUrl.toStr
-			if (!clientStr.contains("*") || clientUrl.toStr.contains("**"))
-				clientUrl = clientUrl.plusSlash + Uri.fromStr(encoded.join("/"))
-			else {
-				try {
-					urlBuf := StrBuf().add(clientUrl.toStr)
-					encoded.each {
-						i := urlBuf.toStr.index("*")
-						urlBuf.remove(i)
-						urlBuf.insert(i, it)
-					}
-					clientUrl = urlBuf.toStr.toUri
-				} catch (Err err) {
-					throw Err("Could not encode page ctx into URL: ${encoded} into ${clientUrl}", err)
+		if (pageContext.isEmpty)
+			return clientUrl
+		
+		url	:= ``
+		try {
+			pageContext	:= pageContext.dup.rw
+			clientPath	:= clientUrl.path
+			
+			for (i := 0; i < clientPath.size; ++i) {
+				seg := clientPath[i]
+				
+				if (seg == "*") {
+					val := pageContext.removeAt(0)
+					seg = valueEncoders.toClient(val.typeof, val)
 				}
+				
+				if (seg != "**")
+					url = url.plusSlash.plusName(Uri.escapeToken(seg, Uri.sectionPath))
 			}
-		}
+			
+			for (i := 0; i < pageContext.size; ++i) {
+				val := pageContext[i]
+				seg := valueEncoders.toClient(val.typeof, val)
+				url = url.plusSlash.plusName(Uri.escapeToken(seg, Uri.sectionPath))
+			}
 
-		return clientUrl
+		} catch (Err err)
+			throw Err("Could not encode page ctx into URL: ${pageContext} into ${url}", err)
+		
+		return url
 	}
 	
 	override Uri pageUrlAbs() {
@@ -270,7 +279,8 @@ internal class PageMetaImpl : PageMeta {
 			eventUrl = eventUrl.plusSlash.plusName(eventName)
 		if (eventContext != null && !eventContext.isEmpty)
 			for (i := 0; i < eventContext.size; ++i) {
-				eventUrl = eventUrl.plusSlash.plusName(encodeObj(eventContext[i]))
+				seg := encodeObj(eventContext[i])
+				eventUrl = eventUrl.plusSlash.plusName(Uri.escapeToken(seg, Uri.sectionPath))
 			}
 		return eventUrl
 	}
@@ -326,12 +336,6 @@ internal class PageMetaImpl : PageMeta {
 	
 	internal static PageMeta? peek(Bool checked) {
 		PageMetaCtx.peek(checked)?.pageMeta
-	}
-
-	private Str[] encodeCtx(Obj[] context) {
-		context.map {
-			encodeUri(valueEncoders.toClient(it.typeof, it))
-		}
 	}
 
 	private Str encodeObj(Obj obj) {
