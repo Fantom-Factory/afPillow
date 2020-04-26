@@ -80,8 +80,14 @@ internal class PageMetaStateFactory  {
 		if (clientUrl.toStr.contains("*"))
 			return clientUrl
 		
-		if (welcomePageStrategy.isOn && isWelcomeUri(clientUrl))
-			clientUrl = clientUrl.parent		
+		if (welcomePageStrategy.isOn && isWelcomeUri(clientUrl)) {
+			clientUrl = clientUrl.parent
+			
+			// remove the trailing /slash/ as per the new BedSheet routing standard
+			// (if we don't, we'll incur a redirect penalty)
+			if (clientUrl.path.size > 0)
+				clientUrl = clientUrl.parent.plusName(clientUrl.name)
+		}
 
 		// add wildcards for each param
 		clientUrl = initRender.paramGlob(clientUrl)
