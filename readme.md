@@ -202,7 +202,7 @@ This is useful for explicitly handling authentication and / or 404 errors. Examp
                 return HttpStatus(404, "File not found")
     
             if (!loggedInUser.isAuthorisedToView(ExamplePage#)
-                return Redirect.movedTemporarily(`/login`)
+                return HttpRedirect.movedTemporarily(`/login`)
     
             return null
         }

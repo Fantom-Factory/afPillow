@@ -6,6 +6,7 @@ v1.2.2
  - New: Rewrote regex route globs for new BedSheet wildcard URLs.
  - New: Limited (NoDoc) support for 'EventMeta'.
  - Chg: Updated to [BedSheet 1.5.16]`pod:afBedSheet` (Breaking change.)
+ - Chg: Welcome Pages no-longer end with a directory slash as per the new BedSheet standard.
  - Chg: Page and Event context args may no longer be 'null' (it's complicated and under-used), use a default / optional argument instead.
  - Chg: 'WelcomePageStrategy' redirects downgraded to a '307 Temporary Redirect'.
  - Chg: Deleted internal 'ThreadStack' pattern and replaced it with a nested parent obj.

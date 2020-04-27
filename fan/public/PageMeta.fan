@@ -65,10 +65,10 @@ mixin PageMeta {
 	** Returns all the event methods on the page.
 	abstract Method[] eventMethods()
 
-	** Returns a 'Redirect.movedTemporarily' to this page.
+	** Returns a 'HttpRedirect.movedTemporarily' to this page.
 	abstract HttpRedirect redirect()
 
-	** Returns a 'Redirect.afterPost' to this page.
+	** Returns a 'HttpRedirect.afterPost' to this page.
 	abstract HttpRedirect redirectAfterPost()
 	
 	@NoDoc
