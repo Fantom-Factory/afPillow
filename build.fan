@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afPillow"
 		summary = "Something for your web app to get its teeth into!"
-		version = Version("1.2.2")
+		version = Version("1.2.3")
 
 		meta = [	
 			"pod.dis"		: "Pillow",
@@ -34,7 +34,7 @@ class Build : BuildPod {
 
 			// ---- Test -----------------------
 			"afBounce     1.1.12 - 1.1",
-			"afButter     1.2.10 - 1.2"
+			"afButter     1.2.12 - 1.2"
 		]
 
 		srcDirs = [`fan/`, `fan/internal/`, `fan/public/`, `test/app/`, `test/app-tests/`]
